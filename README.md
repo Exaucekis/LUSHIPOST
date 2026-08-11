@@ -116,6 +116,27 @@ src/
 | Modérateur | Commentaires |
 | Vidéaste | Vidéos et médias |
 
+## Déploiement Vercel
+
+Consultez **[DEPLOYMENT.md](./DEPLOYMENT.md)** pour le guide complet.
+
+**Résumé rapide :**
+
+1. Créez une base PostgreSQL sur [Neon](https://neon.tech)
+2. Importez le dépôt sur [vercel.com/new](https://vercel.com/new)
+3. Ajoutez les variables d'environnement :
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | URL poolée Neon (`?pgbouncer=true`) |
+| `DIRECT_URL` | URL directe Neon |
+| `NEXTAUTH_SECRET` | Secret aléatoire 32+ caractères |
+| `NEXTAUTH_URL` | URL Vercel (ex. `https://lushipost.vercel.app`) |
+| `NEXT_PUBLIC_SITE_URL` | Même URL que `NEXTAUTH_URL` |
+
+4. Initialisez la base en local : `npm run db:push && npm run db:seed`
+5. Deploy → chaque push sur `main` redéploie automatiquement
+
 ## SEO
 
 - Meta tags dynamiques par page
