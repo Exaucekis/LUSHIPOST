@@ -1,0 +1,63 @@
+import { Role } from "@prisma/client";
+
+const PERMISSIONS: Record<Role, string[]> = {
+  SUPER_ADMIN: ["*"],
+  REDACTEUR_EN_CHEF: [
+    "articles:read",
+    "articles:create",
+    "articles:update",
+    "articles:publish",
+    "articles:delete",
+    "homepage:manage",
+    "categories:manage",
+    "breaking:manage",
+    "media:manage",
+    "users:read",
+    "analytics:read",
+    "comments:moderate",
+  ],
+  JOURNALISTE: [
+    "articles:read",
+    "articles:create",
+    "articles:update:own",
+    "media:upload",
+  ],
+  EDITEUR: [
+    "articles:read",
+    "articles:create",
+    "articles:update",
+    "articles:publish",
+    "media:manage",
+    "comments:moderate",
+  ],
+  MODERATEUR: ["comments:moderate", "articles:read"],
+  VIDEOASTE: ["videos:manage", "media:manage", "articles:read"],
+};
+
+export function hasPermission(role: Role | string, permission: string): boolean {
+  const perms = PERMISSIONS[role as Role];
+  if (!perms) return false;
+  if (perms.includes("*")) return true;
+  return perms.some(
+    (p) => p === permission || permission.startsWith(p.replace(":own", ""))
+  );
+}
+
+export function canPublish(role: Role | string): boolean {
+  return hasPermission(role, "articles:publish");
+}
+
+export function canManageHomepage(role: Role | string): boolean {
+  return hasPermission(role, "homepage:manage");
+}
+
+export function isAdminRole(role: Role | string): boolean {
+  return [
+    "SUPER_ADMIN",
+    "REDACTEUR_EN_CHEF",
+    "JOURNALISTE",
+    "EDITEUR",
+    "MODERATEUR",
+    "VIDEOASTE",
+  ].includes(role);
+}

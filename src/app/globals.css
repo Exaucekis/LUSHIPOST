@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@theme {
+  --color-lp-black: #0a0a0a;
+  --color-lp-anthracite: #1a1a1a;
+  --color-lp-dark: #2d2d2d;
+  --color-lp-gray: #6b7280;
+  --color-lp-light: #f5f5f5;
+  --color-lp-white: #ffffff;
+  --color-lp-accent: #c41e3a;
+  --color-lp-accent-hover: #a01830;
+  --color-lp-breaking: #dc2626;
+  --color-lp-live: #ef4444;
+
+  --font-display: "Georgia", "Times New Roman", serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, monospace;
+
+  --breakpoint-xs: 480px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-lp-white text-lp-black font-[family-name:var(--font-body)];
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  ::selection {
+    @apply bg-lp-accent/20 text-lp-black;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-lp-accent;
+  }
+}
+
+@layer components {
+  .lp-container {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .lp-section-title {
+    @apply flex items-center gap-3 border-b-2 border-lp-black pb-2 text-lg font-bold uppercase tracking-wider;
+  }
+
+  .lp-section-title::before {
+    content: "";
+    @apply block h-5 w-1 bg-lp-accent;
+  }
+
+  .lp-category-badge {
+    @apply inline-block text-xs font-bold uppercase tracking-widest text-lp-accent;
+  }
+
+  .lp-article-title {
+    font-family: var(--font-display);
+    @apply text-xl font-bold leading-tight text-lp-black transition-colors hover:text-lp-accent md:text-2xl;
+  }
+
+  .lp-article-title-lg {
+    font-family: var(--font-display);
+    @apply text-2xl font-bold leading-tight text-lp-black transition-colors hover:text-lp-accent md:text-4xl lg:text-5xl;
+  }
+
+  .lp-btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-all;
+  }
+
+  .lp-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-all bg-lp-black text-lp-white hover:bg-lp-anthracite;
+  }
+
+  .lp-btn-accent {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-all bg-lp-accent text-lp-white hover:bg-lp-accent-hover;
+  }
+
+  .lp-btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-all border border-lp-black text-lp-black hover:bg-lp-black hover:text-lp-white;
+  }
+
+  .lp-card {
+    @apply overflow-hidden bg-lp-white transition-shadow hover:shadow-lg;
+  }
+
+  .lp-prose {
+    @apply max-w-none text-base leading-relaxed text-lp-dark;
+  }
+
+  .lp-prose h2 {
+    @apply mt-8 mb-4 text-2xl font-bold;
+  }
+
+  .lp-prose h3 {
+    @apply mt-6 mb-3 text-xl font-bold;
+  }
+
+  .lp-prose p {
+    @apply mb-4;
+  }
+
+  .lp-prose blockquote {
+    @apply my-6 border-l-4 border-lp-accent pl-6 text-lg italic text-lp-gray;
+  }
+
+  .lp-prose a {
+    @apply text-lp-accent underline hover:text-lp-accent-hover;
+  }
+
+  .lp-prose ul, .lp-prose ol {
+    @apply mb-4 ml-6;
+  }
+
+  .lp-prose li {
+    @apply mb-2;
+  }
+
+  .lp-breaking-ticker {
+    animation: ticker 30s linear infinite;
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .lp-live-pulse {
+    animation: livePulse 2s ease-in-out infinite;
+  }
+
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

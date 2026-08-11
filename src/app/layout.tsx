@@ -1,0 +1,70 @@
+import type { Metadata, Viewport } from "next";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { BreakingNewsBar } from "@/components/layout/BreakingNewsBar";
+import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
+import { getSiteUrl } from "@/lib/utils";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(getSiteUrl()),
+  title: {
+    default: `${SITE_NAME} — L'information au cœur de Lubumbashi`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "Lushipost",
+    "Lubumbashi actualité",
+    "Actualité Lubumbashi",
+    "Haut-Katanga",
+    "RDC actualité",
+    "RDC news",
+    "actualité Congo",
+    "politique RDC",
+    "économie RDC",
+    "sport RDC",
+    "Afrique",
+  ],
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    siteName: SITE_NAME,
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  robots: { index: true, follow: true },
+  alternates: {
+    types: {
+      "application/rss+xml": "/feed.xml",
+    },
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0a0a",
+  width: "device-width",
+  initialScale: 1,
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="fr">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+      </head>
+      <body className="min-h-screen flex flex-col">
+        <Header />
+        <BreakingNewsBar />
+        <main className="flex-1">{children}</main>
+        <Footer />
+      </body>
+    </html>
+  );
+}

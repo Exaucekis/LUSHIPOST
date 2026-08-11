@@ -1,0 +1,400 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  REDACTEUR_EN_CHEF
+  JOURNALISTE
+  EDITEUR
+  MODERATEUR
+  VIDEOASTE
+}
+
+enum ArticleStatus {
+  BROUILLON
+  EN_REVISION
+  PROGRAMME
+  PUBLIE
+  ARCHIVE
+}
+
+enum ContentType {
+  FAITS
+  ANALYSE
+  OPINION
+}
+
+enum FactCheckVerdict {
+  VRAI
+  FAUX
+  TROMPEUR
+  MANQUE_DE_CONTEXTE
+  NON_VERIFIE
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  AUDIO
+}
+
+enum CommentStatus {
+  EN_ATTENTE
+  APPROUVE
+  SIGNALE
+  SUPPRIME
+}
+
+enum NotificationType {
+  PUSH
+  NEWSLETTER
+  BREAKING
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  name          String
+  role          Role      @default(JOURNALISTE)
+  avatar        String?
+  bio           String?
+  twoFactorEnabled Boolean @default(false)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  articles      Article[]
+  media         Media[]
+  comments      Comment[]
+  auditLogs     AuditLog[]
+  accounts      Account[]
+  sessions      Session[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  color       String?
+  parentId    String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryHierarchy")
+  articles    Article[]
+}
+
+model Author {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  bio       String?
+  avatar    String?
+  email     String?
+  twitter   String?
+  linkedin  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  articles  Article[]
+}
+
+model Source {
+  id        String   @id @default(cuid())
+  name      String
+  url       String?
+  logo      String?
+  createdAt DateTime @default(now())
+
+  articles  Article[]
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  articles  ArticleTag[]
+}
+
+model Article {
+  id              String        @id @default(cuid())
+  title           String
+  slug            String        @unique
+  subtitle        String?
+  excerpt         String?       @db.Text
+  content         String        @db.Text
+  contentType     ContentType   @default(FAITS)
+  status          ArticleStatus @default(BROUILLON)
+  featuredImage   String?
+  featuredImageAlt String?
+  featuredImageCaption String?
+  gallery         Json?
+  keyPoints       Json?
+  isBreaking      Boolean       @default(false)
+  isFeatured      Boolean       @default(false)
+  isSponsored     Boolean       @default(false)
+  isFactCheck     Boolean       @default(false)
+  factCheckVerdict FactCheckVerdict?
+  geoZone         String?
+  africaRegion    String?
+  intlRegion      String?
+  viewCount       Int           @default(0)
+  shareCount      Int           @default(0)
+  readTimeMinutes Int           @default(5)
+  publishedAt     DateTime?
+  scheduledAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  categoryId      String
+  authorId        String?
+  userId          String?
+  sourceId        String?
+
+  category        Category      @relation(fields: [categoryId], references: [id])
+  author          Author?       @relation(fields: [authorId], references: [id])
+  user            User?         @relation(fields: [userId], references: [id])
+  source          Source?       @relation(fields: [sourceId], references: [id])
+  tags            ArticleTag[]
+  comments        Comment[]
+  views           ArticleView[]
+  homepageSlots   HomepageSlot[]
+  breakingNews    BreakingNews[]
+  liveEvents      LiveEvent[]
+
+  @@index([status, publishedAt])
+  @@index([categoryId])
+  @@index([slug])
+  @@index([isFeatured])
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+}
+
+model ArticleView {
+  id        String   @id @default(cuid())
+  articleId String
+  ipHash    String?
+  userAgent String?
+  duration  Int?
+  createdAt DateTime @default(now())
+
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([articleId, createdAt])
+}
+
+model Media {
+  id        String    @id @default(cuid())
+  name      String
+  url       String
+  type      MediaType
+  mimeType  String?
+  size      Int?
+  altText   String?
+  caption   String?
+  width     Int?
+  height    Int?
+  userId    String?
+  createdAt DateTime  @default(now())
+
+  user      User?     @relation(fields: [userId], references: [id])
+}
+
+model Video {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?  @db.Text
+  thumbnail   String?
+  videoUrl    String
+  platform    String?
+  duration    Int?
+  isVertical  Boolean  @default(false)
+  viewCount   Int      @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model LiveEvent {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  description String?  @db.Text
+  streamUrl   String?
+  embedCode   String?  @db.Text
+  isLive      Boolean  @default(false)
+  startedAt   DateTime?
+  endedAt     DateTime?
+  articleId   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  article     Article? @relation(fields: [articleId], references: [id])
+}
+
+model BreakingNews {
+  id        String   @id @default(cuid())
+  title     String
+  url       String?
+  articleId String?
+  isActive  Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+
+  article   Article? @relation(fields: [articleId], references: [id])
+}
+
+model HomepageSlot {
+  id        String   @id @default(cuid())
+  slot      String
+  articleId String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@unique([slot, order])
+  @@index([slot])
+}
+
+model Comment {
+  id        String        @id @default(cuid())
+  content   String        @db.Text
+  status    CommentStatus @default(EN_ATTENTE)
+  articleId String
+  userId    String?
+  authorName String?
+  authorEmail String?
+  ipHash    String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  article   Article       @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user      User?         @relation(fields: [userId], references: [id])
+
+  @@index([articleId, status])
+}
+
+model NewsletterSubscriber {
+  id             String   @id @default(cuid())
+  email          String   @unique
+  isConfirmed    Boolean  @default(false)
+  confirmToken   String?  @unique
+  unsubscribeToken String @unique @default(cuid())
+  preferences    Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  title     String
+  body      String
+  type      NotificationType
+  url       String?
+  sentAt    DateTime?
+  createdAt DateTime         @default(now())
+}
+
+model SocialLink {
+  id        String   @id @default(cuid())
+  platform  String
+  url       String
+  isActive  Boolean  @default(true)
+  order     Int      @default(0)
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  entity    String
+  entityId  String?
+  details   Json?
+  userId    String?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id])
+
+  @@index([createdAt])
+  @@index([userId])
+}
+
+model AnalyticsDaily {
+  id          String   @id @default(cuid())
+  date        DateTime @unique @db.Date
+  pageViews   Int      @default(0)
+  visitors    Int      @default(0)
+  articlesRead Int     @default(0)
+  avgReadTime Float    @default(0)
+  topArticles Json?
+  topCategories Json?
+  devices     Json?
+  countries   Json?
+}
