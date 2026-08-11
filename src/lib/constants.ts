@@ -1,5 +1,7 @@
 export const SITE_NAME = "LUSHIPOST";
 export const SITE_TAGLINE = "L'information au cœur de Lubumbashi.";
+export const SITE_PHONE = "+243 970 824 872";
+export const SITE_PHONE_HREF = "tel:+243970824872";
 export const SITE_DESCRIPTION =
   "LUSHIPOST — Média d'information numérique basé à Lubumbashi. Actualités du Haut-Katanga, de la RDC, de l'Afrique et du monde.";
 

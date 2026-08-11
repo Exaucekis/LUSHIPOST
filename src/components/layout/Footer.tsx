@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
-import { FOOTER_NAV } from "@/lib/constants";
+import { FOOTER_NAV, SITE_PHONE, SITE_PHONE_HREF } from "@/lib/constants";
 import { getSocialLinks } from "@/lib/data/articles";
 import { SocialIcons } from "@/components/ui/SocialIcons";
+import { Phone } from "lucide-react";
 
 export async function Footer() {
   const socialLinks = await getSocialLinks().catch(() => []);
@@ -74,6 +75,18 @@ export async function Footer() {
               Suivez LUSHIPOST
             </h3>
             <SocialIcons links={socialLinks} variant="light" />
+            <div className="mt-6 border-t border-white/10 pt-4">
+              <p className="mb-2 text-xs font-bold uppercase tracking-widest text-white/60">
+                Contact
+              </p>
+              <a
+                href={SITE_PHONE_HREF}
+                className="inline-flex items-center gap-2 text-sm text-white/80 transition-colors hover:text-white"
+              >
+                <Phone className="h-4 w-4 shrink-0" aria-hidden="true" />
+                {SITE_PHONE}
+              </a>
+            </div>
           </div>
         </div>
       </div>
