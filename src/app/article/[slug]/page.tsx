@@ -85,7 +85,7 @@ export default async function ArticlePage({ params }: PageProps) {
     publisher: {
       "@type": "Organization",
       name: SITE_NAME,
-      logo: { "@type": "ImageObject", url: `${getSiteUrl()}/logo/lushipost.svg` },
+      logo: { "@type": "ImageObject", url: `${getSiteUrl()}/logo/lushipost-brand.png` },
     },
     mainEntityOfPage: articleUrl,
   };

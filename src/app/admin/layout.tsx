@@ -1,12 +1,13 @@
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { authOptions } from "@/lib/auth";
 import {
   LayoutDashboard,
   FileText,
   Layout,
-  Image,
+  Image as ImageIcon,
   Users,
   BarChart3,
   MessageSquare,
@@ -21,7 +22,7 @@ const NAV = [
   { href: "/admin/articles", label: "Articles", icon: FileText },
   { href: "/admin/homepage", label: "Gestion de la UNE", icon: Layout },
   { href: "/admin/breaking", label: "Dernières infos", icon: Radio },
-  { href: "/admin/media", label: "Médiathèque", icon: Image },
+  { href: "/admin/media", label: "Médiathèque", icon: ImageIcon },
   { href: "/admin/videos", label: "Vidéos", icon: Video },
   { href: "/admin/comments", label: "Commentaires", icon: MessageSquare },
   { href: "/admin/users", label: "Utilisateurs", icon: Users },
@@ -45,10 +46,14 @@ export default async function AdminLayout({
       <aside className="fixed inset-y-0 left-0 z-40 w-64 bg-lp-anthracite text-white">
         <div className="border-b border-white/10 p-6">
           <Link href="/admin" className="block">
-            <span className="text-lg font-black tracking-tight">
-              LUSHI<span className="text-lp-accent">POST</span>
-            </span>
-            <span className="mt-1 block text-[10px] uppercase tracking-widest text-white/50">
+            <Image
+              src="/logo/lushipost-monogram.png"
+              alt="LUSHIPOST Newsroom"
+              width={48}
+              height={48}
+              className="object-contain"
+            />
+            <span className="mt-2 block text-[10px] uppercase tracking-widest text-white/50">
               Newsroom
             </span>
           </Link>

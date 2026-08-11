@@ -53,14 +53,12 @@ Back-office : [http://localhost:3000/admin](http://localhost:3000/admin)
 
 ## Logo officiel
 
-Remplacez les fichiers placeholder par votre logo officiel :
+Remplacez ou mettez à jour les fichiers officiels dans :
 
 ```
-public/logo/lushipost.svg       → Logo fond clair
-public/logo/lushipost-white.svg → Logo fond sombre
+public/logo/lushipost-monogram.png  → Symbole lp (favicon, mobile)
+public/logo/lushipost-brand.png     → Logo complet Lubumbashi Post
 ```
-
-**Ne pas** modifier les proportions, déformer ou remplacer le symbole du logo officiel.
 
 ## Architecture
 

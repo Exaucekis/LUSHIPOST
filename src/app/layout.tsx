@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fr_FR",
     siteName: SITE_NAME,
+    images: [{ url: "/logo/lushipost-brand.png", alt: "LUSHIPOST" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -56,6 +57,7 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
+        <link rel="icon" href="/logo/lushipost-monogram.png" type="image/png" />
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>

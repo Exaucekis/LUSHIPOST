@@ -4,6 +4,7 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import Image from "next/image";
 
 function LoginForm() {
   const router = useRouter();
@@ -38,10 +39,15 @@ function LoginForm() {
     <div className="flex min-h-screen items-center justify-center bg-lp-anthracite">
       <div className="w-full max-w-md bg-white p-8 shadow-2xl">
         <div className="mb-8 text-center">
-          <h1 className="text-2xl font-black tracking-tight">
-            LUSHI<span className="text-lp-accent">POST</span>
-          </h1>
-          <p className="mt-1 text-xs uppercase tracking-widest text-lp-gray">
+          <Image
+            src="/logo/lushipost-brand.png"
+            alt="LUSHIPOST"
+            width={240}
+            height={144}
+            className="mx-auto h-auto object-contain"
+            style={{ maxHeight: 80, width: "auto" }}
+          />
+          <p className="mt-3 text-xs uppercase tracking-widest text-lp-gray">
             Newsroom — Connexion
           </p>
         </div>
