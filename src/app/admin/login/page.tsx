@@ -38,16 +38,20 @@ function LoginForm() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-lp-anthracite">
       <div className="w-full max-w-md bg-white p-8 shadow-2xl">
-        <div className="mb-8 text-center">
-          <Image
-            src="/logo/lushipost-brand.png"
-            alt="LUSHIPOST"
-            width={240}
-            height={144}
-            className="mx-auto h-auto object-contain"
-            style={{ maxHeight: 80, width: "auto" }}
-          />
-          <p className="mt-3 text-xs uppercase tracking-widest text-lp-gray">
+        <div className="mb-8 flex flex-col items-center">
+          <div
+            className="relative mx-auto overflow-hidden"
+            style={{ height: "3rem", width: "min(100%, 16rem)" }}
+          >
+            <Image
+              src="/logo/lushipost-brand.png"
+              alt="LUSHIPOST"
+              fill
+              className="object-cover object-top"
+              sizes="256px"
+            />
+          </div>
+          <p className="mt-4 text-xs uppercase tracking-widest text-lp-gray">
             Newsroom — Connexion
           </p>
         </div>

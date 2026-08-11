@@ -11,7 +11,7 @@ export async function Footer() {
     <footer className="bg-lp-anthracite text-white">
       <div className="lp-container py-12">
         <div className="mb-10">
-          <Logo variant="footer" size="lg" showTagline />
+          <Logo variant="footer" showTagline />
         </div>
 
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">

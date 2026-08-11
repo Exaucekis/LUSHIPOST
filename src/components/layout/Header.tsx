@@ -35,19 +35,22 @@ export function Header() {
       </div>
 
       <div className="lp-container">
-        <div className="flex h-16 items-center justify-between gap-4 md:h-20">
-          <button
-            type="button"
-            className="lg:hidden"
-            onClick={() => setMobileOpen(!mobileOpen)}
-            aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
-          >
-            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+        <div className="relative flex h-16 items-center justify-between gap-3 md:h-20">
+          <div className="flex w-9 shrink-0 items-center lg:hidden">
+            <button
+              type="button"
+              onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            >
+              {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
 
-          <Logo size="md" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0 md:flex-1">
+            <Logo />
+          </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3">
             <button
               type="button"
               onClick={() => setSearchOpen(!searchOpen)}
