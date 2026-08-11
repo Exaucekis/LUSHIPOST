@@ -20,6 +20,7 @@ interface ArticleCardProps {
   variant?: "default" | "horizontal" | "compact" | "featured";
   showExcerpt?: boolean;
   priority?: boolean;
+  rank?: number;
 }
 
 export function ArticleCard({
@@ -27,35 +28,39 @@ export function ArticleCard({
   variant = "default",
   showExcerpt = false,
   priority = false,
+  rank,
 }: ArticleCardProps) {
   const href = `/article/${article.slug}`;
   const region = article.geoZone || article.africaRegion;
 
   if (variant === "horizontal") {
     return (
-      <article className="lp-card group flex gap-4 border-b border-gray-100 pb-4">
+      <article className="lp-card-flat group flex gap-4 py-4">
         {article.featuredImage && (
-          <Link href={href} className="relative block h-24 w-36 shrink-0 overflow-hidden">
+          <Link
+            href={href}
+            className="relative block h-[5.5rem] w-[5.5rem] shrink-0 overflow-hidden rounded-sm sm:h-24 sm:w-32"
+          >
             <Image
               src={article.featuredImage}
               alt={article.featuredImageAlt || article.title}
               fill
-              className="object-cover transition-transform group-hover:scale-105"
-              sizes="144px"
+              className="lp-image-zoom object-cover"
+              sizes="128px"
             />
           </Link>
         )}
         <div className="flex min-w-0 flex-1 flex-col justify-center">
           {article.category && (
-            <Link href={`/${article.category.slug}`} className="lp-category-badge mb-1">
+            <Link href={`/${article.category.slug}`} className="lp-category-badge mb-1.5 w-fit">
               {article.category.name}
             </Link>
           )}
           <Link href={href}>
-            <h3 className="lp-article-title text-base md:text-lg">{article.title}</h3>
+            <h3 className="lp-article-title text-base">{article.title}</h3>
           </Link>
           {article.publishedAt && (
-            <time className="mt-1 text-xs text-lp-gray">
+            <time className="mt-1.5 text-xs text-lp-muted">
               {formatRelativeDate(article.publishedAt)}
             </time>
           )}
@@ -65,18 +70,19 @@ export function ArticleCard({
   }
 
   if (variant === "compact") {
+    const displayRank = rank ?? 1;
     return (
-      <article className="group border-b border-gray-100 py-3">
+      <article className="group border-b border-gray-100 py-3 last:border-0">
         <Link href={href} className="flex gap-3">
-          <span className="text-2xl font-black text-lp-accent/30">
-            {String(Math.floor(Math.random() * 5) + 1).padStart(2, "0")}
+          <span className="lp-rank-number w-8 shrink-0 text-2xl">
+            {String(displayRank).padStart(2, "0")}
           </span>
           <div>
-            <h3 className="text-sm font-bold leading-snug group-hover:text-lp-accent">
+            <h3 className="text-sm font-bold leading-snug transition-colors group-hover:text-lp-accent">
               {article.title}
             </h3>
             {article.publishedAt && (
-              <time className="text-xs text-lp-gray">
+              <time className="text-xs text-lp-muted">
                 {formatRelativeDate(article.publishedAt)}
               </time>
             )}
@@ -88,30 +94,32 @@ export function ArticleCard({
 
   if (variant === "featured") {
     return (
-      <article className="lp-card group relative">
+      <article className="group overflow-hidden rounded-sm bg-lp-black shadow-lg">
         <Link href={href} className="block">
           {article.featuredImage && (
-            <div className="relative aspect-[16/9] overflow-hidden">
+            <div className="relative aspect-[16/9] overflow-hidden sm:aspect-[16/8]">
               <Image
                 src={article.featuredImage}
                 alt={article.featuredImageAlt || article.title}
                 fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="lp-image-zoom object-cover"
                 priority={priority}
                 sizes="(max-width: 768px) 100vw, 66vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+              <div className="absolute inset-0 lp-hero-overlay" />
+              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
                 {article.category && (
-                  <span className="mb-2 inline-block text-xs font-bold uppercase tracking-widest text-red-400">
+                  <span className="mb-3 inline-block rounded-sm bg-lp-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
                     {article.category.name}
                   </span>
                 )}
-                <h2 className="lp-article-title-lg text-white group-hover:text-red-200">
+                <h2 className="lp-article-title-lg text-balance text-white group-hover:text-red-200">
                   {article.title}
                 </h2>
                 {showExcerpt && article.excerpt && (
-                  <p className="mt-2 line-clamp-2 text-sm text-white/80">{article.excerpt}</p>
+                  <p className="mt-3 line-clamp-2 max-w-3xl text-sm leading-relaxed text-white/80 sm:text-base">
+                    {article.excerpt}
+                  </p>
                 )}
               </div>
             </div>
@@ -122,42 +130,46 @@ export function ArticleCard({
   }
 
   return (
-    <article className="lp-card group">
-      <Link href={href}>
+    <article className="lp-card group rounded-sm">
+      <Link href={href} className="block">
         {article.featuredImage && (
           <div className="relative aspect-[16/10] overflow-hidden">
             <Image
               src={article.featuredImage}
               alt={article.featuredImageAlt || article.title}
               fill
-              className="object-cover transition-transform group-hover:scale-105"
+              className="lp-image-zoom object-cover"
               sizes="(max-width: 768px) 100vw, 33vw"
             />
             {article.isSponsored && (
-              <span className="absolute left-2 top-2 bg-yellow-500 px-2 py-0.5 text-[10px] font-bold uppercase">
+              <span className="absolute left-2 top-2 rounded-sm bg-yellow-500 px-2 py-0.5 text-[10px] font-bold uppercase text-black">
                 Publicité
+              </span>
+            )}
+            {article.category && (
+              <span className="absolute bottom-2 left-2 lp-category-badge bg-white/95 backdrop-blur-sm">
+                {article.category.name}
               </span>
             )}
           </div>
         )}
-        <div className="p-4">
-          <div className="mb-2 flex items-center gap-2">
-            {article.category && (
-              <span className="lp-category-badge">{article.category.name}</span>
-            )}
-            {region && (
-              <span className="text-[10px] uppercase text-lp-gray">{region}</span>
+        <div className="p-4 sm:p-5">
+          {!article.featuredImage && article.category && (
+            <span className="lp-category-badge mb-2">{article.category.name}</span>
+          )}
+          <h3 className="lp-article-title">{article.title}</h3>
+          {showExcerpt && article.excerpt && (
+            <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-lp-gray">
+              {article.excerpt}
+            </p>
+          )}
+          <div className="mt-3 flex items-center gap-2 text-xs text-lp-muted">
+            {region && <span className="uppercase">{region}</span>}
+            {region && article.publishedAt && <span>·</span>}
+            {article.publishedAt && (
+              <time>{formatRelativeDate(article.publishedAt)}</time>
             )}
           </div>
-          <h3 className="lp-article-title text-lg">{article.title}</h3>
-          {showExcerpt && article.excerpt && (
-            <p className="mt-2 line-clamp-2 text-sm text-lp-gray">{article.excerpt}</p>
-          )}
-          {article.publishedAt && (
-            <time className="mt-2 block text-xs text-lp-gray">
-              {formatRelativeDate(article.publishedAt)}
-            </time>
-          )}
         </div>
       </Link>
     </article>

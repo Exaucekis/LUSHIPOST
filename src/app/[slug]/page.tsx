@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import {
   getCategoryBySlug,
@@ -9,8 +8,8 @@ import {
   getLatestArticles,
 } from "@/lib/data/articles";
 import { ArticleCard } from "@/components/articles/ArticleCard";
-import { CATEGORY_SLUGS } from "@/lib/constants";
-import { SITE_NAME } from "@/lib/constants";
+import { PopularSection } from "@/components/home/PopularSection";
+import { CATEGORY_SLUGS, SITE_NAME } from "@/lib/constants";
 
 const CATEGORY_DESCRIPTIONS: Record<string, string> = {
   lubumbashi:
@@ -63,53 +62,57 @@ export default async function CategoryPage({ params }: PageProps) {
   const rest = articles.slice(1);
 
   return (
-    <div className="lp-container py-8">
-      <header className="mb-8 border-b-2 border-lp-black pb-6">
-        <h1 className="text-4xl font-bold">{category.name}</h1>
-        {CATEGORY_DESCRIPTIONS[slug] && (
-          <p className="mt-3 max-w-3xl text-lp-gray">{CATEGORY_DESCRIPTIONS[slug]}</p>
-        )}
-      </header>
-
-      <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          {featured && (
-            <div className="mb-8">
-              <ArticleCard article={featured} variant="featured" showExcerpt priority />
-            </div>
-          )}
-
-          <div className="grid gap-6 sm:grid-cols-2">
-            {rest.map((article) => (
-              <ArticleCard key={article.id} article={article} showExcerpt />
-            ))}
-          </div>
-
-          {articles.length === 0 && (
-            <p className="py-12 text-center text-lp-gray">
-              Aucun article publié dans cette rubrique pour le moment.
+    <div className="pb-12">
+      <div className="border-b border-gray-200 bg-lp-light">
+        <div className="lp-container py-10 sm:py-12">
+          <nav className="mb-4 text-xs font-semibold uppercase tracking-wider text-lp-muted">
+            <Link href="/" className="hover:text-lp-accent">Accueil</Link>
+            <span className="mx-2">/</span>
+            <span className="text-lp-black">{category.name}</span>
+          </nav>
+          <h1 className="text-4xl font-bold sm:text-5xl">{category.name}</h1>
+          {CATEGORY_DESCRIPTIONS[slug] && (
+            <p className="mt-4 max-w-3xl text-base leading-relaxed text-lp-gray">
+              {CATEGORY_DESCRIPTIONS[slug]}
             </p>
           )}
         </div>
+      </div>
 
-        <aside className="space-y-8">
-          <div>
-            <h2 className="mb-4 text-sm font-bold uppercase tracking-wider">
-              Les plus lus
-            </h2>
-            {popular.map((article, i) => (
-              <ArticleCard key={article.id} article={article} variant="compact" />
-            ))}
+      <div className="lp-container py-10">
+        <div className="grid gap-10 lg:grid-cols-3">
+          <div className="lg:col-span-2">
+            {featured && (
+              <div className="mb-10">
+                <ArticleCard article={featured} variant="featured" showExcerpt priority />
+              </div>
+            )}
+
+            <div className="grid gap-6 sm:grid-cols-2">
+              {rest.map((article) => (
+                <ArticleCard key={article.id} article={article} showExcerpt />
+              ))}
+            </div>
+
+            {articles.length === 0 && (
+              <p className="py-16 text-center text-lp-gray">
+                Aucun article publié dans cette rubrique pour le moment.
+              </p>
+            )}
           </div>
-          <div>
-            <h2 className="mb-4 text-sm font-bold uppercase tracking-wider">
-              Dernières informations
-            </h2>
-            {latest.map((article) => (
-              <ArticleCard key={article.id} article={article} variant="horizontal" />
-            ))}
-          </div>
-        </aside>
+
+          <aside className="space-y-8">
+            <PopularSection articles={popular} />
+            <div className="rounded-lg border border-gray-200 bg-white p-5 shadow-sm">
+              <h2 className="mb-4 border-b border-gray-100 pb-3 text-sm font-bold uppercase tracking-wider">
+                Dernières infos
+              </h2>
+              {latest.map((article) => (
+                <ArticleCard key={article.id} article={article} variant="horizontal" />
+              ))}
+            </div>
+          </aside>
+        </div>
       </div>
     </div>
   );

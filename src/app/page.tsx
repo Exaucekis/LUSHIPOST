@@ -1,117 +1,69 @@
 import { HeroSection } from "@/components/home/HeroSection";
+import { QuickAccess } from "@/components/home/QuickAccess";
 import { CategorySection } from "@/components/home/CategorySection";
 import { NewsletterForm } from "@/components/home/NewsletterForm";
+import { PopularSection } from "@/components/home/PopularSection";
+import { VideoSection } from "@/components/home/VideoSection";
 import { getLatestArticles, getPopularArticles, getVideos } from "@/lib/data/articles";
 import { ArticleCard } from "@/components/articles/ArticleCard";
-import Link from "next/link";
-import Image from "next/image";
+
+const CATEGORY_SECTIONS = [
+  {
+    title: "Lubumbashi",
+    slug: "lubumbashi",
+    description:
+      "L'actualité locale : autorités, communes, entreprises, culture et vie quotidienne.",
+  },
+  { title: "RDC", slug: "rdc" },
+  { title: "Haut-Katanga", slug: "haut-katanga" },
+  { title: "Politique", slug: "politique" },
+  { title: "Économie", slug: "economie" },
+  { title: "Société", slug: "societe" },
+  { title: "Sport", slug: "sport" },
+  { title: "Afrique", slug: "afrique" },
+  { title: "International", slug: "international" },
+  { title: "Tech", slug: "tech" },
+];
 
 export default async function HomePage() {
   const [latest, popular, videos] = await Promise.all([
     getLatestArticles(6).catch(() => []),
-    getPopularArticles(5).catch(() => []),
+    getPopularArticles(6).catch(() => []),
     getVideos(4).catch(() => []),
   ]);
 
   return (
     <>
       <HeroSection />
+      <QuickAccess />
 
-      <section className="border-t border-gray-200 bg-lp-light py-8">
+      <section className="border-y border-gray-200 bg-lp-light py-10 sm:py-12">
         <div className="lp-container">
-          <h2 className="lp-section-title mb-6">Actualités à la une</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {latest.map((article) => (
-              <ArticleCard key={article.id} article={article} showExcerpt />
-            ))}
+          <h2 className="lp-section-title mb-8">Actualités à la une</h2>
+          <div className="grid gap-8 lg:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 lg:col-span-2">
+              {latest.map((article, i) => (
+                <div key={article.id} className={`lp-fade-in ${i > 0 ? `lp-stagger-${Math.min(i, 4)}` : ""}`}>
+                  <ArticleCard article={article} showExcerpt />
+                </div>
+              ))}
+            </div>
+            <PopularSection articles={popular} />
           </div>
         </div>
       </section>
 
-      <CategorySection
-        title="Lubumbashi"
-        slug="lubumbashi"
-        description="L'actualité locale de Lubumbashi : autorités, communes, entreprises, culture et vie quotidienne."
-      />
-      <CategorySection title="RDC" slug="rdc" />
-      <CategorySection title="Haut-Katanga" slug="haut-katanga" />
-      <CategorySection title="Politique" slug="politique" />
-      <CategorySection title="Économie" slug="economie" />
-      <CategorySection title="Société" slug="societe" />
-      <CategorySection title="Sport" slug="sport" />
-      <CategorySection title="Afrique" slug="afrique" />
-      <CategorySection title="International" slug="international" />
-      <CategorySection title="Tech" slug="tech" />
+      {CATEGORY_SECTIONS.map((cat, i) => (
+        <CategorySection
+          key={cat.slug}
+          title={cat.title}
+          slug={cat.slug}
+          description={cat.description}
+          alternate={i % 2 === 1}
+        />
+      ))}
 
-      {videos.length > 0 && (
-        <section className="lp-container py-8" aria-labelledby="videos-section">
-          <div className="mb-6 flex items-end justify-between">
-            <h2 id="videos-section" className="lp-section-title">
-              LUSHIPOST Vidéo
-            </h2>
-            <Link
-              href="/video"
-              className="text-xs font-bold uppercase tracking-wider text-lp-accent hover:underline"
-            >
-              Voir tout →
-            </Link>
-          </div>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {videos.map((video) => (
-              <Link key={video.id} href={`/video/${video.slug}`} className="lp-card group">
-                <div className="relative aspect-video overflow-hidden">
-                  {video.thumbnail && (
-                    <Image
-                      src={video.thumbnail}
-                      alt={video.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform"
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                    />
-                  )}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-full bg-lp-accent text-white">
-                      ▶
-                    </span>
-                  </div>
-                </div>
-                <div className="p-3">
-                  <h3 className="text-sm font-bold leading-snug group-hover:text-lp-accent">
-                    {video.title}
-                  </h3>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <section className="border-t border-gray-200 py-8">
-        <div className="lp-container">
-          <h2 className="lp-section-title mb-6">Les plus lus</h2>
-          <div className="grid gap-4 md:grid-cols-2">
-            {popular.map((article, index) => (
-              <article key={article.id} className="group flex gap-4 border-b border-gray-100 pb-4">
-                <span className="text-4xl font-black text-lp-accent/20">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <div>
-                  {article.category && (
-                    <span className="lp-category-badge">{article.category.name}</span>
-                  )}
-                  <Link href={`/article/${article.slug}`}>
-                    <h3 className="mt-1 text-base font-bold group-hover:text-lp-accent">
-                      {article.title}
-                    </h3>
-                  </Link>
-                  <p className="text-xs text-lp-gray">{article.viewCount.toLocaleString("fr-FR")} lectures</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
+      <VideoSection videos={videos} />
       <NewsletterForm />
     </>
   );

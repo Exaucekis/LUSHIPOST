@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { BreakingNewsBar } from "@/components/layout/BreakingNewsBar";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import { getSiteUrl } from "@/lib/utils";
+import { fontDisplay, fontBody } from "@/lib/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -61,7 +62,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
-      <body className="min-h-screen flex flex-col">
+      <body className={`${fontDisplay.variable} ${fontBody.variable} min-h-screen flex flex-col antialiased`}>
         <Header />
         <BreakingNewsBar />
         <main className="flex-1">{children}</main>

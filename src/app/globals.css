@@ -5,18 +5,22 @@
   --color-lp-anthracite: #1a1a1a;
   --color-lp-dark: #2d2d2d;
   --color-lp-gray: #6b7280;
-  --color-lp-light: #f5f5f5;
+  --color-lp-muted: #9ca3af;
+  --color-lp-light: #f7f7f7;
   --color-lp-white: #ffffff;
   --color-lp-accent: #c41e3a;
   --color-lp-accent-hover: #a01830;
+  --color-lp-accent-soft: #fef2f2;
   --color-lp-breaking: #dc2626;
   --color-lp-live: #ef4444;
+  --color-lp-gold: #d4a853;
 
-  --font-display: "Georgia", "Times New Roman", serif;
-  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: ui-monospace, monospace;
+  --font-display: var(--font-lp-display), "Georgia", "Times New Roman", serif;
+  --font-body: var(--font-lp-body), system-ui, -apple-system, sans-serif;
 
-  --breakpoint-xs: 480px;
+  --shadow-lp-card: 0 1px 3px rgb(0 0 0 / 0.06), 0 4px 12px rgb(0 0 0 / 0.04);
+  --shadow-lp-card-hover: 0 8px 30px rgb(0 0 0 / 0.12);
+  --shadow-lp-nav: 0 4px 20px rgb(0 0 0 / 0.08);
 }
 
 @layer base {
@@ -27,19 +31,20 @@
   }
 
   body {
-    @apply bg-lp-white text-lp-black font-[family-name:var(--font-body)];
+    @apply bg-lp-white text-lp-black;
+    font-family: var(--font-body);
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.65;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    line-height: 1.2;
+    line-height: 1.15;
     font-weight: 700;
   }
 
   ::selection {
-    @apply bg-lp-accent/20 text-lp-black;
+    @apply bg-lp-accent/25 text-lp-black;
   }
 
   :focus-visible {
@@ -53,46 +58,70 @@
   }
 
   .lp-section-title {
-    @apply flex items-center gap-3 border-b-2 border-lp-black pb-2 text-lg font-bold uppercase tracking-wider;
+    @apply flex items-center gap-3 pb-3 text-xl font-bold uppercase tracking-wider sm:text-2xl;
+    font-family: var(--font-display);
+    border-bottom: 3px solid var(--color-lp-black);
   }
 
   .lp-section-title::before {
     content: "";
-    @apply block h-5 w-1 bg-lp-accent;
+    @apply block h-6 w-1 shrink-0 bg-lp-accent;
+  }
+
+  .lp-section-link {
+    @apply inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-lp-accent transition-all hover:gap-2;
   }
 
   .lp-category-badge {
-    @apply inline-block text-xs font-bold uppercase tracking-widest text-lp-accent;
+    @apply inline-flex items-center rounded-sm bg-lp-accent-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-lp-accent transition-colors;
+  }
+
+  .lp-category-badge:hover {
+    @apply bg-lp-accent text-white;
   }
 
   .lp-article-title {
     font-family: var(--font-display);
-    @apply text-xl font-bold leading-tight text-lp-black transition-colors hover:text-lp-accent md:text-2xl;
+    @apply text-lg font-bold leading-snug text-lp-black transition-colors duration-200 group-hover:text-lp-accent sm:text-xl;
   }
 
   .lp-article-title-lg {
     font-family: var(--font-display);
-    @apply text-2xl font-bold leading-tight text-lp-black transition-colors hover:text-lp-accent md:text-4xl lg:text-5xl;
+    @apply text-2xl font-bold leading-tight text-lp-black transition-colors duration-300 sm:text-3xl md:text-4xl lg:text-[2.75rem];
   }
 
   .lp-btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-sm px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-all;
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-5 py-2.5 text-sm font-semibold uppercase tracking-wide transition-all duration-200 active:scale-[0.98];
   }
 
   .lp-btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-sm px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-all bg-lp-black text-lp-white hover:bg-lp-anthracite;
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-5 py-2.5 text-sm font-semibold uppercase tracking-wide transition-all duration-200 active:scale-[0.98] bg-lp-black text-lp-white hover:bg-lp-anthracite hover:shadow-md;
   }
 
   .lp-btn-accent {
-    @apply inline-flex items-center justify-center gap-2 rounded-sm px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-all bg-lp-accent text-lp-white hover:bg-lp-accent-hover;
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-5 py-2.5 text-sm font-semibold uppercase tracking-wide transition-all duration-200 active:scale-[0.98] bg-lp-accent text-lp-white hover:bg-lp-accent-hover hover:shadow-lg hover:shadow-lp-accent/25;
   }
 
   .lp-btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-sm px-4 py-2 text-sm font-semibold uppercase tracking-wide transition-all border border-lp-black text-lp-black hover:bg-lp-black hover:text-lp-white;
+    @apply inline-flex items-center justify-center gap-2 rounded-sm px-5 py-2.5 text-sm font-semibold uppercase tracking-wide transition-all duration-200 active:scale-[0.98] border-2 border-lp-black text-lp-black hover:bg-lp-black hover:text-lp-white;
   }
 
   .lp-card {
-    @apply overflow-hidden bg-lp-white transition-shadow hover:shadow-lg;
+    @apply overflow-hidden bg-lp-white transition-all duration-300;
+    box-shadow: var(--shadow-lp-card);
+  }
+
+  .lp-card:hover {
+    box-shadow: var(--shadow-lp-card-hover);
+    transform: translateY(-2px);
+  }
+
+  .lp-card-flat {
+    @apply overflow-hidden bg-lp-white transition-all duration-200 hover:bg-lp-light/80;
+  }
+
+  .lp-image-zoom {
+    @apply transition-transform duration-500 ease-out group-hover:scale-105;
   }
 
   .lp-prose {
@@ -100,27 +129,27 @@
   }
 
   .lp-prose h2 {
-    @apply mt-8 mb-4 text-2xl font-bold;
+    @apply mt-10 mb-4 text-2xl font-bold;
   }
 
   .lp-prose h3 {
-    @apply mt-6 mb-3 text-xl font-bold;
+    @apply mt-8 mb-3 text-xl font-bold;
   }
 
   .lp-prose p {
-    @apply mb-4;
+    @apply mb-5;
   }
 
   .lp-prose blockquote {
-    @apply my-6 border-l-4 border-lp-accent pl-6 text-lg italic text-lp-gray;
+    @apply my-8 border-l-4 border-lp-accent bg-lp-accent-soft/50 py-2 pl-6 text-lg italic text-lp-gray;
   }
 
   .lp-prose a {
-    @apply text-lp-accent underline hover:text-lp-accent-hover;
+    @apply text-lp-accent underline decoration-lp-accent/30 underline-offset-2 hover:text-lp-accent-hover hover:decoration-lp-accent;
   }
 
   .lp-prose ul, .lp-prose ol {
-    @apply mb-4 ml-6;
+    @apply mb-5 ml-6;
   }
 
   .lp-prose li {
@@ -128,7 +157,11 @@
   }
 
   .lp-breaking-ticker {
-    animation: ticker 30s linear infinite;
+    animation: ticker 40s linear infinite;
+  }
+
+  .lp-breaking-ticker:hover {
+    animation-play-state: paused;
   }
 
   @keyframes ticker {
@@ -137,17 +170,85 @@
   }
 
   .lp-live-pulse {
-    animation: livePulse 2s ease-in-out infinite;
+    animation: livePulse 1.5s ease-in-out infinite;
   }
 
   @keyframes livePulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.85); }
+  }
+
+  .lp-fade-in {
+    animation: fadeInUp 0.6s ease-out both;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .lp-stagger-1 { animation-delay: 0.05s; }
+  .lp-stagger-2 { animation-delay: 0.1s; }
+  .lp-stagger-3 { animation-delay: 0.15s; }
+  .lp-stagger-4 { animation-delay: 0.2s; }
+
+  .lp-quick-pill {
+    @apply flex shrink-0 items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-lp-black shadow-sm transition-all duration-200 hover:border-lp-accent hover:bg-lp-accent hover:text-white hover:shadow-md;
+  }
+
+  .lp-quick-pill-live {
+    @apply flex shrink-0 items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-lp-breaking shadow-sm transition-all duration-200 hover:bg-lp-breaking hover:text-white hover:shadow-md;
+  }
+
+  .lp-rank-number {
+    @apply text-5xl font-black leading-none text-lp-accent/15 transition-colors duration-200 group-hover:text-lp-accent/40;
+    font-family: var(--font-display);
+  }
+
+  .lp-gradient-editorial {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+  }
+
+  .lp-nav-link {
+    @apply relative block px-3 py-3 text-xs font-bold uppercase tracking-wider text-lp-black transition-colors hover:text-lp-accent;
+  }
+
+  .lp-nav-link::after {
+    content: "";
+    @apply absolute bottom-0 left-3 right-3 h-0.5 origin-left scale-x-0 bg-lp-accent transition-transform duration-200;
+  }
+
+  .lp-nav-link:hover::after {
+    @apply scale-x-100;
+  }
+
+  .lp-hero-overlay {
+    background: linear-gradient(
+      to top,
+      rgb(0 0 0 / 0.92) 0%,
+      rgb(0 0 0 / 0.55) 45%,
+      rgb(0 0 0 / 0.15) 100%
+    );
   }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
