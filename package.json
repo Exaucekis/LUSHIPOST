@@ -16,7 +16,7 @@
     "db:deploy": "prisma db push"
   },
   "engines": {
-    "node": ">=20"
+    "node": "20.x"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.4",
