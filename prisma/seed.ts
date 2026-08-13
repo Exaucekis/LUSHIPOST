@@ -86,24 +86,31 @@ async function main() {
 
   const articles = [
     {
-      title: "Lubumbashi : le gouverneur du Haut-Katanga annonce de nouveaux investissements miniers",
+      title: "Haut-Katanga : les mines de cuivre et de cobalt redynamisent l'économie de Lubumbashi",
       slug: "lubumbashi-investissements-miniers-haut-katanga",
-      subtitle: "Un plan de développement économique de 500 millions de dollars présenté ce mardi",
-      excerpt: "Le gouverneur du Haut-Katanga a dévoilé un ambitieux plan d'investissement visant à moderniser l'infrastructure minière de la province et créer des milliers d'emplois locaux.",
-      content: `<p>En marge d'une conférence de presse tenue à Lubumbashi, le gouverneur du Haut-Katanga a présenté un plan de développement économique d'une envergure inédite pour la province.</p>
-<h2>Un plan structurant pour la province</h2>
-<p>Le programme, évalué à 500 millions de dollars, prévoit la modernisation des sites miniers, la construction de routes d'accès et la formation de 5 000 jeunes aux métiers de l'extraction responsable.</p>
-<blockquote>« Notre ambition est de faire du Haut-Katanga un modèle de développement minier durable en Afrique centrale », a déclaré le gouverneur.</blockquote>
-<p>Les premiers chantiers devraient démarrer dès le troisième trimestre 2026, avec un accent particulier sur les communes de Kamalondo et Kenya.</p>`,
-      categoryId: catLubumbashi.id,
-      featuredImage: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&h=675&fit=crop",
-      featuredImageAlt: "Vue aérienne de Lubumbashi",
-      featuredImageCaption: "Lubumbashi, capitale économique du Haut-Katanga. Photo : Unsplash",
-      geoZone: "Lubumbashi",
+      subtitle: "Kamoto, Tenke Fungurume, Kipushi… Le Copperbelt congolais accélère sa production",
+      excerpt: "Les sites miniers du Haut-Katanga, cœur historique de l'exploitation du cuivre et du cobalt en RDC, connaissent une reprise d'activité majeure. À Lubumbashi, capitale minière, opérateurs et autorités annoncent de nouveaux investissements.",
+      content: `<p>Le Haut-Katanga concentre une part essentielle de la production congolaise de cuivre et de cobalt, minerais stratégiques pour l'industrie mondiale des batteries et de la transition énergétique.</p>
+<h2>Une province minière au cœur de l'économie congolaise</h2>
+<p>Autour de Lubumbashi, Likasi et Kipushi, les concessions historiques du Copperbelt — dont Kamoto Copper Company (KCC), Tenke Fungurume Mining (TFM) ou encore les projets de Kipushi — emploient des dizaines de milliers de travailleurs directs et indirects.</p>
+<p>Les autorités provinciales ont présenté un plan de modernisation des infrastructures minières : routes d'accès, alimentation électrique, formation des jeunes aux métiers de l'extraction responsable et renforcement des contrôles environnementaux.</p>
+<blockquote>« Le Haut-Katanga doit tirer profit de ses richesses minières tout en garantissant des retombées concrètes pour les populations de Lubumbashi et de toute la province », insiste la rédaction LUSHIPOST sur place.</blockquote>
+<h2>Cuivre, cobalt et emplois locaux</h2>
+<p>Le cuivre reste le principal levier d'exportation de la province. Le cobalt, lui, place la RDC au premier rang mondial des producteurs — un atout majeur pour Lubumbashi, où transitent une large part des activités logistiques et commerciales liées au secteur minier.</p>
+<p>Les observateurs économiques saluent la relance, tout en appelant à une meilleure transparence sur les revenus miniers et à un développement équilibré des communes riveraines des sites d'exploitation.</p>`,
+      categoryId: catHautKatanga.id,
+      featuredImage: "https://images.unsplash.com/photo-1513836279014-a89f7d76ae86?w=1200&h=675&fit=crop&q=80",
+      featuredImageAlt: "Site minier à ciel ouvert — exploitation industrielle",
+      featuredImageCaption: "Exploitation minière à ciel ouvert. Photo d'illustration : Unsplash",
+      geoZone: "Haut-Katanga",
       viewCount: 4821,
       isFeatured: true,
       isBreaking: true,
-      keyPoints: ["Plan de 500 M$ pour le Haut-Katanga", "5 000 emplois prévus", "Démarrage des travaux en Q3 2026"],
+      keyPoints: [
+        "Le Haut-Katanga concentre l'essentiel du cuivre et du cobalt congolais",
+        "Kamoto, TFM et Kipushi parmi les sites majeurs du Copperbelt",
+        "Lubumbashi reste la capitale économique du secteur minier en RDC",
+      ],
     },
     {
       title: "RDC : le président reçoit les ambassadeurs du G7 à Kinshasa",
@@ -189,7 +196,25 @@ async function main() {
     const publishedAt = new Date(now.getTime() - index * 3600000);
     await prisma.article.upsert({
       where: { slug: article.slug },
-      update: {},
+      update: {
+        title: article.title,
+        subtitle: article.subtitle,
+        excerpt: article.excerpt,
+        content: article.content,
+        categoryId: article.categoryId,
+        featuredImage: article.featuredImage,
+        featuredImageAlt: article.featuredImageAlt,
+        featuredImageCaption: article.featuredImageCaption,
+        geoZone: article.geoZone,
+        africaRegion: article.africaRegion,
+        intlRegion: article.intlRegion,
+        viewCount: article.viewCount,
+        isFeatured: article.isFeatured ?? false,
+        isBreaking: article.isBreaking ?? false,
+        keyPoints: article.keyPoints ?? undefined,
+        status: ArticleStatus.PUBLIE,
+        publishedAt,
+      },
       create: {
         ...article,
         status: ArticleStatus.PUBLIE,
@@ -234,7 +259,7 @@ async function main() {
   await prisma.breakingNews.deleteMany({});
   await prisma.breakingNews.create({
     data: {
-      title: "Lubumbashi : le gouverneur annonce un plan d'investissement de 500 M$ pour le Haut-Katanga",
+      title: "Haut-Katanga : les mines de cuivre et de cobalt en pleine activité autour de Lubumbashi",
       articleId: mainArticle.id,
       isActive: true,
       order: 0,
@@ -248,7 +273,7 @@ async function main() {
         title: "Reportage : une journée dans les mines du Haut-Katanga",
         slug: "reportage-mines-haut-katanga",
         description: "Immersion au cœur de l'industrie minière congolaise.",
-        thumbnail: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=640&h=360&fit=crop",
+        thumbnail: "https://images.unsplash.com/photo-1513836279014-a89f7d76ae86?w=640&h=360&fit=crop&q=80",
         videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
         platform: "youtube",
         duration: 720,

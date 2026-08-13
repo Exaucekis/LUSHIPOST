@@ -15,27 +15,37 @@ export const MOCK_CATEGORIES = [
 
 const cat = (slug: string) => MOCK_CATEGORIES.find((c) => c.slug === slug)!;
 
+const MINING_HERO_IMAGE =
+  "https://images.unsplash.com/photo-1513836279014-a89f7d76ae86?w=1200&h=675&fit=crop&q=80";
+
 export const MOCK_ARTICLES = [
   {
     id: "a1",
-    title: "Lubumbashi : le gouverneur du Haut-Katanga annonce de nouveaux investissements miniers",
+    title: "Haut-Katanga : les mines de cuivre et de cobalt redynamisent l'économie de Lubumbashi",
     slug: "lubumbashi-investissements-miniers-haut-katanga",
-    subtitle: "Un plan de développement économique de 500 millions de dollars présenté ce mardi",
-    excerpt: "Le gouverneur du Haut-Katanga a dévoilé un ambitieux plan d'investissement visant à moderniser l'infrastructure minière de la province.",
-    content: "<p>En marge d'une conférence de presse tenue à Lubumbashi, le gouverneur a présenté un plan de développement économique d'une envergure inédite.</p>",
+    subtitle: "Kamoto, Tenke Fungurume, Kipushi… Le Copperbelt congolais accélère sa production",
+    excerpt:
+      "Les sites miniers du Haut-Katanga, cœur de l'exploitation du cuivre et du cobalt en RDC, connaissent une reprise d'activité majeure autour de Lubumbashi.",
+    content: `<p>Le Haut-Katanga concentre une part essentielle de la production congolaise de cuivre et de cobalt.</p>
+<h2>Une province minière stratégique</h2>
+<p>Autour de Lubumbashi, Likasi et Kipushi, les concessions du Copperbelt emploient des dizaines de milliers de travailleurs.</p>`,
     contentType: "FAITS" as const,
     status: "PUBLIE" as const,
-    featuredImage: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=1200&h=675&fit=crop",
-    featuredImageAlt: "Vue aérienne de Lubumbashi",
-    featuredImageCaption: null,
+    featuredImage: MINING_HERO_IMAGE,
+    featuredImageAlt: "Site minier à ciel ouvert — exploitation industrielle",
+    featuredImageCaption: "Exploitation minière à ciel ouvert. Photo d'illustration : Unsplash",
     gallery: null,
-    keyPoints: ["Plan de 500 M$", "5 000 emplois prévus"],
+    keyPoints: [
+      "Cuivre et cobalt : piliers de l'économie du Haut-Katanga",
+      "Kamoto, TFM et Kipushi parmi les sites majeurs",
+      "Lubumbashi, capitale économique du secteur minier",
+    ],
     isBreaking: true,
     isFeatured: true,
     isSponsored: false,
     isFactCheck: false,
     factCheckVerdict: null,
-    geoZone: "Lubumbashi",
+    geoZone: "Haut-Katanga",
     africaRegion: null,
     intlRegion: null,
     viewCount: 4821,
@@ -45,11 +55,11 @@ export const MOCK_ARTICLES = [
     scheduledAt: null,
     createdAt: now,
     updatedAt: now,
-    categoryId: "1",
+    categoryId: "2",
     authorId: null,
     userId: null,
     sourceId: null,
-    category: cat("lubumbashi"),
+    category: cat("haut-katanga"),
     author: { id: "auth1", name: "Rédaction LUSHIPOST", slug: "redaction", bio: null, avatar: null, email: null, twitter: null, linkedin: null, createdAt: now, updatedAt: now },
     source: { id: "s1", name: "LUSHIPOST", url: null, logo: null, createdAt: now },
     tags: [],
@@ -135,7 +145,7 @@ export const MOCK_ARTICLES = [
 export const MOCK_BREAKING = [
   {
     id: "b1",
-    title: "Lubumbashi : le gouverneur annonce un plan d'investissement de 500 M$",
+    title: "Haut-Katanga : les mines de cuivre et de cobalt en pleine activité autour de Lubumbashi",
     url: null,
     articleId: "a1",
     isActive: true,
@@ -152,7 +162,7 @@ export const MOCK_VIDEOS = [
     title: "Reportage : une journée dans les mines du Haut-Katanga",
     slug: "reportage-mines-haut-katanga",
     description: "Immersion au cœur de l'industrie minière congolaise.",
-    thumbnail: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=640&h=360&fit=crop",
+    thumbnail: MINING_HERO_IMAGE.replace("1200&h=675", "640&h=360"),
     videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     platform: "youtube",
     duration: 720,
