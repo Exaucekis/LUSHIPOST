@@ -15,8 +15,7 @@ export const MOCK_CATEGORIES = [
 
 const cat = (slug: string) => MOCK_CATEGORIES.find((c) => c.slug === slug)!;
 
-const MINING_HERO_IMAGE =
-  "https://images.unsplash.com/photo-1513836279014-a89f7d76ae86?w=1200&h=675&fit=crop&q=80";
+const MINING_HERO_IMAGE = "/images/mine-artisanale-haut-katanga.png";
 
 export const MOCK_ARTICLES = [
   {
@@ -32,8 +31,8 @@ export const MOCK_ARTICLES = [
     contentType: "FAITS" as const,
     status: "PUBLIE" as const,
     featuredImage: MINING_HERO_IMAGE,
-    featuredImageAlt: "Site minier à ciel ouvert — exploitation industrielle",
-    featuredImageCaption: "Exploitation minière à ciel ouvert. Photo d'illustration : Unsplash",
+    featuredImageAlt: "Orpailleur au travail dans une rivière du Haut-Katanga",
+    featuredImageCaption: "Exploitation artisanale minière. Photo : LUSHIPOST",
     gallery: null,
     keyPoints: [
       "Cuivre et cobalt : piliers de l'économie du Haut-Katanga",
@@ -162,7 +161,7 @@ export const MOCK_VIDEOS = [
     title: "Reportage : une journée dans les mines du Haut-Katanga",
     slug: "reportage-mines-haut-katanga",
     description: "Immersion au cœur de l'industrie minière congolaise.",
-    thumbnail: MINING_HERO_IMAGE.replace("1200&h=675", "640&h=360"),
+    thumbnail: MINING_HERO_IMAGE,
     videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     platform: "youtube",
     duration: 720,
