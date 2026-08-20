@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BreakingNewsBar } from "@/components/layout/BreakingNewsBar";
+import { AppProviders } from "@/components/providers/AppProviders";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import { getSiteShellData } from "@/lib/data/articles";
 import { getSiteUrl } from "@/lib/utils";
@@ -66,10 +67,12 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body className={`${fontDisplay.variable} ${fontBody.variable} min-h-screen flex flex-col antialiased`}>
-        <Header />
-        <BreakingNewsBar items={breaking} />
-        <main className="flex-1">{children}</main>
-        <Footer socialLinks={social} tagline={tagline} />
+        <AppProviders>
+          <Header />
+          <BreakingNewsBar items={breaking} />
+          <main className="flex-1">{children}</main>
+          <Footer socialLinks={social} tagline={tagline} />
+        </AppProviders>
       </body>
     </html>
   );

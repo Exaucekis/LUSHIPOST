@@ -1,8 +1,12 @@
 import prisma from "@/lib/prisma";
+import Link from "next/link";
 import { ROLE_LABELS } from "@/lib/constants";
+import { STAFF_ROLES } from "@/lib/roles";
+import { CreateStaffUserForm } from "@/components/admin/CreateStaffUserForm";
 
 export default async function AdminUsersPage() {
   const users = await prisma.user.findMany({
+    where: { role: { in: STAFF_ROLES } },
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -16,7 +20,14 @@ export default async function AdminUsersPage() {
 
   return (
     <div>
-      <h1 className="mb-8 text-3xl font-bold">Utilisateurs</h1>
+      <h1 className="mb-2 text-3xl font-bold">Utilisateurs rédaction</h1>
+      <p className="mb-8 text-sm text-lp-gray">
+        Créez les comptes journalistes et administrateurs. Les abonnés lecteurs
+        se connectent séparément via Google ou e-mail sur{" "}
+        <Link href="/connexion" className="text-lp-accent hover:underline">/connexion</Link>.
+      </p>
+
+      <CreateStaffUserForm />
 
       <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
         <table className="w-full text-sm">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Search, Menu, X, Radio } from "lucide-react";
 import { Logo } from "./Logo";
+import { AccountLink } from "./AccountLink";
 import { MAIN_NAV } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -73,7 +74,8 @@ export function Header() {
             <Logo />
           </div>
 
-          <div className="flex shrink-0 items-center">
+          <div className="flex shrink-0 items-center gap-1">
+            <AccountLink />
             <button
               type="button"
               onClick={() => setSearchOpen(!searchOpen)}

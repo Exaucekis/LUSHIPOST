@@ -81,6 +81,7 @@ export const ROLE_LABELS: Record<string, string> = {
   EDITEUR: "Éditeur",
   MODERATEUR: "Modérateur",
   VIDEOASTE: "Vidéaste",
+  ABONNE: "Abonné",
 };
 
 export const STATUS_LABELS: Record<string, string> = {

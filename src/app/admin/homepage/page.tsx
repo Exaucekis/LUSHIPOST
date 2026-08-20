@@ -19,7 +19,6 @@ const SLOT_CONFIG = [
 ];
 
 export default function HomepageManagementPage() {
-  const [slots, setSlots] = useState<Slot[]>([]);
   const [articles, setArticles] = useState<ArticleOption[]>([]);
   const [selections, setSelections] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -29,7 +28,6 @@ export default function HomepageManagementPage() {
     fetch("/api/admin/homepage")
       .then((r) => r.json())
       .then((data) => {
-        setSlots(data.slots || []);
         setArticles(data.articles || []);
         const sel: Record<string, string> = {};
         (data.slots || []).forEach((s: Slot) => {

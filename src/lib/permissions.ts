@@ -13,6 +13,7 @@ const PERMISSIONS: Record<Role, string[]> = {
     "breaking:manage",
     "media:manage",
     "users:read",
+    "users:create",
     "analytics:read",
     "comments:moderate",
     "settings:manage",
@@ -33,6 +34,7 @@ const PERMISSIONS: Record<Role, string[]> = {
   ],
   MODERATEUR: ["comments:moderate", "articles:read"],
   VIDEOASTE: ["videos:manage", "media:manage", "articles:read"],
+  ABONNE: [],
 };
 
 export function hasPermission(role: Role | string, permission: string): boolean {

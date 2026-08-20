@@ -87,6 +87,12 @@ export async function PATCH(request: Request) {
     const changingPassword = Boolean(data.newPassword);
 
     if (changingEmail || changingPassword) {
+      if (!user.passwordHash) {
+        return NextResponse.json(
+          { error: "Ce compte ne possède pas de mot de passe." },
+          { status: 400 }
+        );
+      }
       const isValid = await bcrypt.compare(
         data.currentPassword || "",
         user.passwordHash

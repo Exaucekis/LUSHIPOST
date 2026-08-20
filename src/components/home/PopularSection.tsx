@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ArticleCard } from "@/components/articles/ArticleCard";
 import { Flame } from "lucide-react";
 
 type Article = {

@@ -9,7 +9,6 @@ import {
   Users,
   Trophy,
   FileSearch,
-  Radio,
   Play,
   Search,
 } from "lucide-react";
