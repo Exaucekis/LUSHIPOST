@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import Image from "next/image";
+import { Logo } from "@/components/layout/Logo";
 
 function LoginForm() {
   const router = useRouter();
@@ -39,18 +39,7 @@ function LoginForm() {
     <div className="flex min-h-screen items-center justify-center bg-lp-anthracite">
       <div className="w-full max-w-md bg-white p-8 shadow-2xl">
         <div className="mb-8 flex flex-col items-center">
-          <div
-            className="relative mx-auto overflow-hidden"
-            style={{ height: "3rem", width: "min(100%, 16rem)" }}
-          >
-            <Image
-              src="/logo/lushipost-brand.png"
-              alt="LUSHIPOST"
-              fill
-              className="object-cover object-top"
-              sizes="256px"
-            />
-          </div>
+          <Logo variant="header" />
           <p className="mt-4 text-xs uppercase tracking-widest text-lp-gray">
             Newsroom — Connexion
           </p>
