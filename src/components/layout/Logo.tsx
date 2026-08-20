@@ -32,7 +32,7 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
         aria-label="LUSHIPOST — Accueil"
         className="inline-flex shrink-0 items-center"
       >
-        {/* Mobile & tablette compacte : monogramme lp */}
+        {/* Mobile : monogramme lp */}
         <Image
           src={MONOGRAM}
           alt="LUSHIPOST"
@@ -42,35 +42,16 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
           className="h-9 w-9 object-contain sm:h-10 sm:w-10 md:hidden"
         />
 
-        {/* Desktop md–lg : wordmark */}
-        <div
-          className="relative hidden overflow-hidden md:block lg:hidden"
-          style={{ height: "2.75rem", width: "clamp(11rem, 28vw, 16rem)" }}
-        >
-          <Image
-            src={BRAND}
-            alt="LUSHIPOST"
-            fill
-            priority
-            sizes="(max-width: 1024px) 220px, 0px"
-            className="object-cover object-top"
-          />
-        </div>
-
-        {/* Grand écran lg+ : wordmark élargi */}
-        <div
-          className="relative hidden overflow-hidden lg:block"
-          style={{ height: "3.25rem", width: "clamp(14rem, 22vw, 20rem)" }}
-        >
-          <Image
-            src={BRAND}
-            alt="LUSHIPOST"
-            fill
-            priority
-            sizes="320px"
-            className="object-cover object-top"
-          />
-        </div>
+        {/* Desktop : wordmark complet (object-contain évite de ne montrer que le fond noir) */}
+        <Image
+          src={BRAND}
+          alt="LUSHIPOST"
+          width={720}
+          height={432}
+          priority
+          sizes="(max-width: 1024px) 200px, 260px"
+          className="hidden h-10 w-auto max-w-[min(220px,42vw)] object-contain object-left md:block lg:h-12 lg:max-w-[260px]"
+        />
       </Link>
     );
   }
