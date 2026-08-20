@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { LIVE_BRAND } from "@/lib/constants";
 import {
   MapPin,
   Globe,
@@ -35,9 +36,9 @@ export function QuickAccess() {
     >
       <div className="lp-container">
         <div className="flex items-center gap-3 overflow-x-auto pb-1 scrollbar-hide">
-          <Link href="/live" className="lp-quick-pill-live">
+          <Link href="/live" className="lp-quick-pill-live shrink-0">
             <span className="h-2 w-2 rounded-full bg-lp-live lp-live-pulse" />
-            Live
+            {LIVE_BRAND}
           </Link>
           {QUICK_LINKS.map((link) => (
             <Link key={link.href} href={link.href} className="lp-quick-pill">

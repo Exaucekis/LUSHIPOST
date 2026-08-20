@@ -203,7 +203,7 @@
   }
 
   .lp-quick-pill-live {
-    @apply flex shrink-0 items-center gap-2 rounded-full border border-red-200 bg-red-50 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-lp-breaking shadow-sm transition-all duration-200 hover:bg-lp-breaking hover:text-white hover:shadow-md;
+    @apply flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-red-200 bg-red-50 px-3 py-2.5 text-[10px] font-bold uppercase tracking-wide text-lp-breaking shadow-sm transition-all duration-200 hover:bg-lp-breaking hover:text-white hover:shadow-md sm:px-4 sm:text-xs sm:tracking-wider;
   }
 
   .lp-rank-number {

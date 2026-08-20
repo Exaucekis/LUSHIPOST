@@ -1,4 +1,5 @@
 export const SITE_NAME = "LUSHIPOST";
+export const LIVE_BRAND = "LUBUMBASHI POST LIVE";
 export const SITE_TAGLINE = "L'information au cœur de Lubumbashi.";
 export const SITE_PHONE = "+243 970 824 872";
 export const SITE_PHONE_HREF = "tel:+243970824872";

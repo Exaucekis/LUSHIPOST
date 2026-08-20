@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Search, Menu, X, Radio } from "lucide-react";
 import { Logo } from "./Logo";
 import { AccountLink } from "./AccountLink";
-import { MAIN_NAV } from "@/lib/constants";
+import { MAIN_NAV, LIVE_BRAND } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -49,10 +49,10 @@ export function Header() {
           </span>
           <Link
             href="/live"
-            className="flex shrink-0 items-center gap-1.5 font-bold uppercase tracking-wider text-lp-live transition-colors hover:text-white"
+            className="flex max-w-[55vw] shrink-0 items-center gap-1.5 font-bold uppercase tracking-wide text-lp-live transition-colors hover:text-white sm:max-w-none sm:tracking-wider"
           >
-            <Radio className="h-3 w-3 lp-live-pulse" />
-            En direct
+            <Radio className="h-3 w-3 shrink-0 lp-live-pulse" />
+            <span className="truncate text-[10px] sm:text-xs">{LIVE_BRAND}</span>
           </Link>
         </div>
       </div>

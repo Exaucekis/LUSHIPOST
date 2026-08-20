@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { formatRelativeDate } from "@/lib/utils";
+import { LIVE_BRAND } from "@/lib/constants";
 import { Clock, ArrowRight } from "lucide-react";
 import type { getHomepageHero } from "@/lib/data/articles";
 
@@ -31,9 +32,9 @@ export function HeroSection({ hero }: HeroSectionProps) {
             })}
           </time>
         </div>
-        <Link href="/live" className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-lp-live transition-colors hover:text-lp-accent">
-          <span className="h-2 w-2 rounded-full bg-lp-live lp-live-pulse" />
-          En direct
+        <Link href="/live" className="flex shrink-0 items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide text-lp-live transition-colors hover:text-lp-accent sm:text-xs">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-lp-live lp-live-pulse" />
+          <span className="max-w-[40vw] truncate sm:max-w-none">{LIVE_BRAND}</span>
         </Link>
       </div>
 
