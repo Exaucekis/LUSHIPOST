@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { SITE_TAGLINE } from "@/lib/constants";
 
-const HEADER_LOGO = "/logo/lushipost-header.png";
+const MONOGRAM_HEADER = "/logo/lushipost-monogram-header.png";
 const MONOGRAM = "/logo/lushipost-monogram.png";
 const BRAND = "/logo/lushipost-brand.png";
 
@@ -34,16 +34,16 @@ export function Logo({ variant = "header", showTagline = false, tagline }: LogoP
       <Link
         href="/"
         aria-label="Lubumbashi Poste — Accueil"
-        className="inline-flex shrink-0 items-center"
+        className="inline-flex shrink-0 items-center justify-center"
       >
         <Image
-          src={HEADER_LOGO}
+          src={MONOGRAM_HEADER}
           alt="Lubumbashi Poste"
-          width={720}
-          height={52}
+          width={512}
+          height={512}
           priority
           unoptimized
-          className="h-9 w-auto max-w-[min(280px,78vw)] object-contain object-left sm:h-10 md:h-11 lg:h-12 lg:max-w-[320px]"
+          className="h-10 w-10 object-contain sm:h-11 sm:w-11 md:h-12 md:w-12"
         />
       </Link>
     );

@@ -14,7 +14,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "db:deploy": "prisma db push",
-    "generate:logo": "node scripts/generate-header-logo.mjs"
+    "generate:logo": "node scripts/generate-header-logo.mjs",
+    "generate:monogram": "node scripts/generate-monogram.mjs"
   },
   "engines": {
     "node": "24.x"
