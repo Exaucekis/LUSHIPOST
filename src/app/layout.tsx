@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { BreakingNewsBar } from "@/components/layout/BreakingNewsBar";
 import { AppProviders } from "@/components/providers/AppProviders";
+import { SiteShell } from "@/components/layout/SiteShell";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 import { getSiteShellData } from "@/lib/data/articles";
 import { getSiteUrl } from "@/lib/utils";
@@ -68,10 +66,9 @@ export default async function RootLayout({
       </head>
       <body className={`${fontDisplay.variable} ${fontBody.variable} min-h-screen flex flex-col antialiased`}>
         <AppProviders>
-          <Header />
-          <BreakingNewsBar items={breaking} />
-          <main className="flex-1">{children}</main>
-          <Footer socialLinks={social} tagline={tagline} />
+          <SiteShell breaking={breaking} social={social} tagline={tagline}>
+            {children}
+          </SiteShell>
         </AppProviders>
       </body>
     </html>

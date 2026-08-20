@@ -8,7 +8,22 @@ import prisma from "@/lib/prisma";
 const socialLinkSchema = z.object({
   id: z.string().optional(),
   platform: z.string().min(2),
-  url: z.string().url(),
+  url: z
+    .string()
+    .min(8, "URL trop courte")
+    .transform((value) => {
+      const trimmed = value.trim();
+      if (/^https?:\/\//i.test(trimmed)) return trimmed;
+      return `https://${trimmed}`;
+    })
+    .refine((value) => {
+      try {
+        new URL(value);
+        return true;
+      } catch {
+        return false;
+      }
+    }, "URL invalide"),
   isActive: z.boolean().default(true),
   order: z.number().int().default(0),
 });

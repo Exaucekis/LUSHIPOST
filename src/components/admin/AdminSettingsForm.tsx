@@ -56,15 +56,27 @@ export function AdminSettingsForm() {
     setMessage(null);
     setError(null);
 
+    const payload = {
+      tagline: tagline.trim(),
+      socialLinks: socialLinks
+        .filter((link) => link.url.trim())
+        .map((link, index) => ({
+          ...link,
+          url: /^https?:\/\//i.test(link.url.trim()) ? link.url.trim() : `https://${link.url.trim()}`,
+          order: index,
+        })),
+    };
+
     try {
       const res = await fetch("/api/admin/settings", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tagline, socialLinks }),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Enregistrement impossible");
-      setMessage("Paramètres enregistrés.");
+      setMessage("Paramètres enregistrés avec succès.");
+      setSocialLinks(payload.socialLinks);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur");
     } finally {
@@ -117,8 +129,7 @@ export function AdminSettingsForm() {
               <input
                 value={link.url}
                 onChange={(e) => updateLink(index, "url", e.target.value)}
-                placeholder="https://..."
-                required
+                placeholder="facebook.com/votre-page ou https://..."
                 className="border px-3 py-2 text-sm focus:border-lp-accent focus:outline-none"
               />
               <label className="flex items-center gap-2 text-sm">
