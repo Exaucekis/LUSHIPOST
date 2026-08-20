@@ -8,6 +8,7 @@ interface CategorySectionProps {
   limit?: number;
   description?: string;
   alternate?: boolean;
+  articles?: Awaited<ReturnType<typeof getPublishedArticles>>;
 }
 
 export async function CategorySection({
@@ -16,8 +17,11 @@ export async function CategorySection({
   limit = 4,
   description,
   alternate = false,
+  articles: prefetchedArticles,
 }: CategorySectionProps) {
-  const articles = await getPublishedArticles({ categorySlug: slug, limit }).catch(() => []);
+  const articles =
+    prefetchedArticles ??
+    (await getPublishedArticles({ categorySlug: slug, limit }).catch(() => []));
 
   if (articles.length === 0) return null;
 

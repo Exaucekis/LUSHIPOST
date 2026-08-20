@@ -4,7 +4,7 @@ import { CategorySection } from "@/components/home/CategorySection";
 import { NewsletterForm } from "@/components/home/NewsletterForm";
 import { PopularSection } from "@/components/home/PopularSection";
 import { VideoSection } from "@/components/home/VideoSection";
-import { getLatestArticles, getPopularArticles, getVideos } from "@/lib/data/articles";
+import { getLatestArticles, getPopularArticles, getVideos, getArticlesGroupedByCategorySlugs } from "@/lib/data/articles";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 
 const CATEGORY_SECTIONS = [
@@ -27,10 +27,13 @@ const CATEGORY_SECTIONS = [
 ];
 
 export default async function HomePage() {
-  const [latest, popular, videos] = await Promise.all([
+  const categorySlugs = CATEGORY_SECTIONS.map((cat) => cat.slug);
+
+  const [latest, popular, videos, categoryArticles] = await Promise.all([
     getLatestArticles(6).catch(() => []),
     getPopularArticles(6).catch(() => []),
     getVideos(4).catch(() => []),
+    getArticlesGroupedByCategorySlugs(categorySlugs, 4).catch(() => new Map()),
   ]);
 
   return (
@@ -61,6 +64,7 @@ export default async function HomePage() {
           slug={cat.slug}
           description={cat.description}
           alternate={i % 2 === 1}
+          articles={categoryArticles.get(cat.slug) ?? []}
         />
       ))}
 

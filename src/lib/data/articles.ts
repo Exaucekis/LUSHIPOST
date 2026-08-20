@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { ArticleStatus } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import {
@@ -15,7 +16,7 @@ const articleInclude = {
   tags: { include: { tag: true } },
 } as const;
 
-export async function getPublishedArticles({
+export const getPublishedArticles = cache(async function getPublishedArticles({
   categorySlug,
   limit = 10,
   offset = 0,
@@ -50,9 +51,47 @@ export async function getPublishedArticles({
     if (categorySlug) filtered = filtered.filter((a) => a.category.slug === categorySlug);
     return filtered.slice(offset, offset + limit);
   }
+});
+
+export async function getArticlesGroupedByCategorySlugs(
+  slugs: string[],
+  limitPerCategory = 4
+) {
+  if (slugs.length === 0) return new Map<string, Awaited<ReturnType<typeof getPublishedArticles>>>();
+
+  try {
+    const articles = await prisma.article.findMany({
+      where: {
+        status: ArticleStatus.PUBLIE,
+        publishedAt: { lte: new Date() },
+        category: { slug: { in: slugs } },
+      },
+      include: articleInclude,
+      orderBy: { publishedAt: "desc" },
+      take: slugs.length * limitPerCategory * 2,
+    });
+
+    const grouped = new Map<string, typeof articles>();
+    for (const slug of slugs) grouped.set(slug, []);
+    for (const article of articles) {
+      const slug = article.category.slug;
+      const bucket = grouped.get(slug);
+      if (bucket && bucket.length < limitPerCategory) bucket.push(article);
+    }
+    return grouped;
+  } catch {
+    const grouped = new Map<string, typeof MOCK_ARTICLES>();
+    for (const slug of slugs) {
+      grouped.set(
+        slug,
+        MOCK_ARTICLES.filter((a) => a.category.slug === slug).slice(0, limitPerCategory)
+      );
+    }
+    return grouped;
+  }
 }
 
-export async function getArticleBySlug(slug: string) {
+export const getArticleBySlug = cache(async function getArticleBySlug(slug: string) {
   try {
     return await prisma.article.findFirst({
       where: {
@@ -65,9 +104,9 @@ export async function getArticleBySlug(slug: string) {
   } catch {
     return MOCK_ARTICLES.find((a) => a.slug === slug) ?? null;
   }
-}
+});
 
-export async function getPopularArticles(limit = 5) {
+export const getPopularArticles = cache(async function getPopularArticles(limit = 5) {
   try {
     return await prisma.article.findMany({
       where: {
@@ -81,7 +120,7 @@ export async function getPopularArticles(limit = 5) {
   } catch {
     return [...MOCK_ARTICLES].sort((a, b) => b.viewCount - a.viewCount).slice(0, limit);
   }
-}
+});
 
 export async function getRelatedArticles(
   articleId: string,
@@ -111,7 +150,7 @@ export async function getRelatedArticles(
   }
 }
 
-export async function getHomepageHero() {
+export const getHomepageHero = cache(async function getHomepageHero() {
   try {
     const slots = await prisma.homepageSlot.findMany({
       where: { slot: { in: ["hero_main", "hero_secondary"] } },
@@ -139,9 +178,9 @@ export async function getHomepageHero() {
       secondary: MOCK_ARTICLES.slice(1, 4),
     };
   }
-}
+});
 
-export async function getBreakingNews() {
+export const getBreakingNews = cache(async function getBreakingNews() {
   try {
     return await prisma.breakingNews.findMany({
       where: {
@@ -155,27 +194,27 @@ export async function getBreakingNews() {
   } catch {
     return MOCK_BREAKING;
   }
-}
+});
 
-export async function getLatestArticles(limit = 8) {
+export const getLatestArticles = cache(async function getLatestArticles(limit = 8) {
   return getPublishedArticles({ limit });
-}
+});
 
-export async function getCategoryBySlug(slug: string) {
+export const getCategoryBySlug = cache(async function getCategoryBySlug(slug: string) {
   try {
     return await prisma.category.findUnique({ where: { slug } });
   } catch {
     return MOCK_CATEGORIES.find((c) => c.slug === slug) ?? null;
   }
-}
+});
 
-export async function getAllCategories() {
+export const getAllCategories = cache(async function getAllCategories() {
   try {
     return await prisma.category.findMany({ orderBy: { order: "asc" } });
   } catch {
     return MOCK_CATEGORIES;
   }
-}
+});
 
 export async function searchArticles(query: string, type?: string, limit = 20) {
   try {
@@ -227,7 +266,7 @@ export async function getLiveEvents() {
   }
 }
 
-export async function getVideos(limit = 12) {
+export const getVideos = cache(async function getVideos(limit = 12) {
   try {
     return await prisma.video.findMany({
       orderBy: { publishedAt: "desc" },
@@ -236,9 +275,9 @@ export async function getVideos(limit = 12) {
   } catch {
     return MOCK_VIDEOS.slice(0, limit);
   }
-}
+});
 
-export async function getSocialLinks() {
+export const getSocialLinks = cache(async function getSocialLinks() {
   try {
     return await prisma.socialLink.findMany({
       where: { isActive: true },
@@ -247,7 +286,7 @@ export async function getSocialLinks() {
   } catch {
     return MOCK_SOCIAL;
   }
-}
+});
 
 export async function incrementArticleViews(articleId: string) {
   try {
