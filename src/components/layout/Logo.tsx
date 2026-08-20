@@ -18,8 +18,8 @@ function HeaderWordmark({ className }: { className?: string }) {
         className
       )}
     >
-      <span className="text-lp-black">LUSHI</span>
-      <span className="text-lp-accent">POST</span>
+      <span className="text-lp-black">Lubumbashi</span>
+      <span className="text-lp-accent">Poste</span>
     </span>
   );
 }
@@ -45,10 +45,10 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
     return (
       <Link
         href="/"
-        aria-label="LUSHIPOST — Accueil"
+        aria-label="Lubumbashi Poste — Accueil"
         className="inline-flex shrink-0 items-center"
       >
-        <HeaderWordmark className="text-[1.65rem] sm:text-3xl md:text-[2rem] lg:text-[2.15rem]" />
+        <HeaderWordmark className="text-xl sm:text-2xl md:text-[1.75rem] lg:text-[1.9rem]" />
       </Link>
     );
   }
