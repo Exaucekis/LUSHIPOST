@@ -1,11 +1,17 @@
 import Link from "next/link";
-import { getHomepageHero } from "@/lib/data/articles";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { formatRelativeDate } from "@/lib/utils";
 import { Clock, ArrowRight } from "lucide-react";
+import type { getHomepageHero } from "@/lib/data/articles";
 
-export async function HeroSection() {
-  const { main, secondary } = await getHomepageHero();
+type HeroData = Awaited<ReturnType<typeof getHomepageHero>>;
+
+interface HeroSectionProps {
+  hero: HeroData;
+}
+
+export function HeroSection({ hero }: HeroSectionProps) {
+  const { main, secondary } = hero;
 
   if (!main) return null;
 

@@ -4,7 +4,7 @@ import { CategorySection } from "@/components/home/CategorySection";
 import { NewsletterForm } from "@/components/home/NewsletterForm";
 import { PopularSection } from "@/components/home/PopularSection";
 import { VideoSection } from "@/components/home/VideoSection";
-import { getLatestArticles, getPopularArticles, getVideos, getArticlesGroupedByCategorySlugs } from "@/lib/data/articles";
+import { getHomepageData } from "@/lib/data/articles";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 
 const CATEGORY_SECTIONS = [
@@ -28,17 +28,12 @@ const CATEGORY_SECTIONS = [
 
 export default async function HomePage() {
   const categorySlugs = CATEGORY_SECTIONS.map((cat) => cat.slug);
-
-  const [latest, popular, videos, categoryArticles] = await Promise.all([
-    getLatestArticles(6).catch(() => []),
-    getPopularArticles(6).catch(() => []),
-    getVideos(4).catch(() => []),
-    getArticlesGroupedByCategorySlugs(categorySlugs, 4).catch(() => new Map()),
-  ]);
+  const { hero, latest, popular, videos, categoryArticles } =
+    await getHomepageData(categorySlugs);
 
   return (
     <>
-      <HeroSection />
+      <HeroSection hero={hero} />
       <QuickAccess />
 
       <section className="border-y border-gray-200 bg-lp-light py-10 sm:py-12">

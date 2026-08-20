@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BreakingNewsBar } from "@/components/layout/BreakingNewsBar";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
+import { getSiteShellData } from "@/lib/data/articles";
 import { getSiteUrl } from "@/lib/utils";
 import { fontDisplay, fontBody } from "@/lib/fonts";
 import "./globals.css";
@@ -50,11 +51,13 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { breaking, social } = await getSiteShellData();
+
   return (
     <html lang="fr">
       <head>
@@ -64,9 +67,9 @@ export default function RootLayout({
       </head>
       <body className={`${fontDisplay.variable} ${fontBody.variable} min-h-screen flex flex-col antialiased`}>
         <Header />
-        <BreakingNewsBar />
+        <BreakingNewsBar items={breaking} />
         <main className="flex-1">{children}</main>
-        <Footer />
+        <Footer socialLinks={social} />
       </body>
     </html>
   );

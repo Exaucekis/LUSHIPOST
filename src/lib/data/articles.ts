@@ -288,6 +288,116 @@ export const getSocialLinks = cache(async function getSocialLinks() {
   }
 });
 
+export const getSiteShellData = cache(async function getSiteShellData() {
+  try {
+    const breaking = await prisma.breakingNews.findMany({
+      where: {
+        isActive: true,
+        OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+      },
+      include: { article: true },
+      orderBy: { order: "asc" },
+      take: 10,
+    });
+    const social = await prisma.socialLink.findMany({
+      where: { isActive: true },
+      orderBy: { order: "asc" },
+    });
+    return { breaking, social };
+  } catch {
+    return { breaking: MOCK_BREAKING, social: MOCK_SOCIAL };
+  }
+});
+
+export const getHomepageData = cache(async function getHomepageData(
+  categorySlugs: string[]
+) {
+  try {
+    const slots = await prisma.homepageSlot.findMany({
+      where: { slot: { in: ["hero_main", "hero_secondary"] } },
+      include: { article: { include: articleInclude } },
+      orderBy: [{ slot: "asc" }, { order: "asc" }],
+    });
+
+    let main = slots.find((s) => s.slot === "hero_main")?.article ?? null;
+    let secondary = slots
+      .filter((s) => s.slot === "hero_secondary")
+      .map((s) => s.article);
+
+    const latest = await prisma.article.findMany({
+      where: {
+        status: ArticleStatus.PUBLIE,
+        publishedAt: { lte: new Date() },
+      },
+      include: articleInclude,
+      orderBy: { publishedAt: "desc" },
+      take: 6,
+    });
+
+    if (!main) {
+      main = latest[0] ?? null;
+      secondary = latest.slice(1, 4);
+    }
+
+    const popular = await prisma.article.findMany({
+      where: {
+        status: ArticleStatus.PUBLIE,
+        publishedAt: { lte: new Date() },
+      },
+      include: articleInclude,
+      orderBy: { viewCount: "desc" },
+      take: 6,
+    });
+
+    const videos = await prisma.video.findMany({
+      orderBy: { publishedAt: "desc" },
+      take: 4,
+    });
+
+    const categoryArticles = await prisma.article.findMany({
+      where: {
+        status: ArticleStatus.PUBLIE,
+        publishedAt: { lte: new Date() },
+        category: { slug: { in: categorySlugs } },
+      },
+      include: articleInclude,
+      orderBy: { publishedAt: "desc" },
+      take: categorySlugs.length * 8,
+    });
+
+    const grouped = new Map<string, typeof categoryArticles>();
+    for (const slug of categorySlugs) grouped.set(slug, []);
+    for (const article of categoryArticles) {
+      const slug = article.category.slug;
+      const bucket = grouped.get(slug);
+      if (bucket && bucket.length < 4) bucket.push(article);
+    }
+
+    return {
+      hero: { main, secondary },
+      latest,
+      popular,
+      videos,
+      categoryArticles: grouped,
+    };
+  } catch {
+    const grouped = new Map<string, typeof MOCK_ARTICLES>();
+    for (const slug of categorySlugs) {
+      grouped.set(
+        slug,
+        MOCK_ARTICLES.filter((a) => a.category.slug === slug).slice(0, 4)
+      );
+    }
+    return {
+      hero: { main: MOCK_ARTICLES[0], secondary: MOCK_ARTICLES.slice(1, 4) },
+      latest: MOCK_ARTICLES.slice(0, 6),
+      popular: [...MOCK_ARTICLES].sort((a, b) => b.viewCount - a.viewCount).slice(0, 6),
+      videos: MOCK_VIDEOS.slice(0, 4),
+      categoryArticles: grouped,
+    };
+  }
+});
+
 export async function incrementArticleViews(articleId: string) {
   try {
     await prisma.article.update({

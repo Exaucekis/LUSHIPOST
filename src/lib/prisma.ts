@@ -4,11 +4,24 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-// En local, utiliser la connexion directe Neon (évite l'épuisement du pool PgBouncer)
-const databaseUrl =
-  process.env.NODE_ENV === "development" && process.env.DIRECT_URL
-    ? process.env.DIRECT_URL
-    : process.env.DATABASE_URL;
+function withPoolSettings(url: string) {
+  try {
+    const parsed = new URL(url);
+    if (!parsed.searchParams.has("connection_limit")) {
+      parsed.searchParams.set("connection_limit", "10");
+    }
+    if (!parsed.searchParams.has("pool_timeout")) {
+      parsed.searchParams.set("pool_timeout", "30");
+    }
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
+
+const databaseUrl = process.env.DATABASE_URL
+  ? withPoolSettings(process.env.DATABASE_URL)
+  : undefined;
 
 export const prisma =
   globalForPrisma.prisma ??

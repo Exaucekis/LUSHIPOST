@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
 import { FOOTER_NAV, SITE_PHONE, SITE_PHONE_HREF } from "@/lib/constants";
-import { getSocialLinks } from "@/lib/data/articles";
 import { SocialIcons } from "@/components/ui/SocialIcons";
 import { Phone } from "lucide-react";
+import type { getSocialLinks } from "@/lib/data/articles";
 
-export async function Footer() {
-  const socialLinks = await getSocialLinks().catch(() => []);
+type SocialLink = Awaited<ReturnType<typeof getSocialLinks>>[number];
 
+interface FooterProps {
+  socialLinks: SocialLink[];
+}
+
+export function Footer({ socialLinks }: FooterProps) {
   return (
     <footer className="bg-lp-anthracite text-white">
       <div className="lp-container py-12">
