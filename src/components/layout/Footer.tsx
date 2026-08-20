@@ -9,14 +9,15 @@ type SocialLink = Awaited<ReturnType<typeof getSocialLinks>>[number];
 
 interface FooterProps {
   socialLinks: SocialLink[];
+  tagline?: string;
 }
 
-export function Footer({ socialLinks }: FooterProps) {
+export function Footer({ socialLinks, tagline }: FooterProps) {
   return (
     <footer className="bg-lp-anthracite text-white">
       <div className="lp-container py-12">
         <div className="mb-10">
-          <Logo variant="footer" showTagline />
+          <Logo variant="footer" showTagline tagline={tagline} />
         </div>
 
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">

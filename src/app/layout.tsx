@@ -56,7 +56,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { breaking, social } = await getSiteShellData();
+  const { breaking, social, tagline } = await getSiteShellData();
 
   return (
     <html lang="fr">
@@ -69,7 +69,7 @@ export default async function RootLayout({
         <Header />
         <BreakingNewsBar items={breaking} />
         <main className="flex-1">{children}</main>
-        <Footer socialLinks={social} />
+        <Footer socialLinks={social} tagline={tagline} />
       </body>
     </html>
   );

@@ -15,6 +15,7 @@ const PERMISSIONS: Record<Role, string[]> = {
     "users:read",
     "analytics:read",
     "comments:moderate",
+    "settings:manage",
   ],
   JOURNALISTE: [
     "articles:read",

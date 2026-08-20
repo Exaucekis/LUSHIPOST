@@ -1,33 +1,21 @@
 import Link from "next/link";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { SITE_TAGLINE } from "@/lib/constants";
 
+const HEADER_LOGO = "/logo/lushipost-header.png";
 const MONOGRAM = "/logo/lushipost-monogram.png";
 const BRAND = "/logo/lushipost-brand.png";
 
 interface LogoProps {
   variant?: "header" | "footer" | "monogram";
   showTagline?: boolean;
+  tagline?: string;
 }
 
-function HeaderWordmark({ className }: { className?: string }) {
-  return (
-    <span
-      className={cn(
-        "inline-flex items-baseline whitespace-nowrap font-display font-bold leading-none tracking-tight",
-        className
-      )}
-    >
-      <span className="text-lp-black">Lubumbashi</span>
-      <span className="text-lp-accent">Poste</span>
-    </span>
-  );
-}
-
-export function Logo({ variant = "header", showTagline = false }: LogoProps) {
+export function Logo({ variant = "header", showTagline = false, tagline }: LogoProps) {
   if (variant === "monogram") {
     return (
-      <Link href="/" aria-label="LUSHIPOST — Accueil" className="inline-flex shrink-0">
+      <Link href="/" aria-label="Lubumbashi Poste — Accueil" className="inline-flex shrink-0">
         <Image
           src={MONOGRAM}
           alt=""
@@ -48,7 +36,15 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
         aria-label="Lubumbashi Poste — Accueil"
         className="inline-flex shrink-0 items-center"
       >
-        <HeaderWordmark className="text-xl sm:text-2xl md:text-[1.75rem] lg:text-[1.9rem]" />
+        <Image
+          src={HEADER_LOGO}
+          alt="Lubumbashi Poste"
+          width={720}
+          height={52}
+          priority
+          unoptimized
+          className="h-9 w-auto max-w-[min(280px,78vw)] object-contain object-left sm:h-10 md:h-11 lg:h-12 lg:max-w-[320px]"
+        />
       </Link>
     );
   }
@@ -57,7 +53,7 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
     <Link
       href="/"
       className="group inline-flex max-w-full flex-col items-start"
-      aria-label="LUSHIPOST — Accueil"
+      aria-label="Lubumbashi Poste — Accueil"
     >
       <div className="relative w-full max-w-[280px] sm:max-w-[320px] md:max-w-[360px]">
         <Image
@@ -72,7 +68,7 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
       </div>
       {showTagline && (
         <span className="mt-2 text-[10px] uppercase tracking-widest text-white/70">
-          L&apos;information au cœur de Lubumbashi.
+          {tagline || SITE_TAGLINE}
         </span>
       )}
     </Link>

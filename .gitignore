@@ -41,3 +41,6 @@ next-env.d.ts
 
 # prisma
 /prisma/*.db
+
+# uploads locaux (fallback sans S3)
+/public/uploads/

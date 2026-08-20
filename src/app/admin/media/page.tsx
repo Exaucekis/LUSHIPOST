@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { MediaUploadPanel } from "@/components/admin/MediaUploadPanel";
 
 export default async function AdminMediaPage() {
   const media = await prisma.media.findMany({
@@ -15,6 +16,8 @@ export default async function AdminMediaPage() {
         </div>
       </div>
 
+      <MediaUploadPanel />
+
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {media.map((item) => (
           <div key={item.id} className="overflow-hidden rounded-lg border border-gray-200 bg-white">
@@ -27,7 +30,10 @@ export default async function AdminMediaPage() {
             <div className="p-3">
               <p className="truncate text-sm font-medium">{item.name}</p>
               <p className="text-xs text-lp-gray">{item.type} · {item.mimeType}</p>
-              {item.altText && <p className="mt-1 text-xs text-lp-gray">Alt: {item.altText}</p>}
+              <p className="mt-1 truncate text-xs text-lp-accent">{item.url}</p>
+              {item.user?.name && (
+                <p className="mt-1 text-xs text-lp-gray">Par {item.user.name}</p>
+              )}
             </div>
           </div>
         ))}
@@ -35,7 +41,7 @@ export default async function AdminMediaPage() {
 
       {media.length === 0 && (
         <div className="rounded-lg border border-dashed border-gray-300 py-16 text-center text-lp-gray">
-          Aucun média uploadé. Utilisez l&apos;object storage pour ajouter des fichiers.
+          Aucun média uploadé. Utilisez le bouton ci-dessus pour ajouter des fichiers.
         </div>
       )}
     </div>

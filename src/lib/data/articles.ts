@@ -8,6 +8,7 @@ import {
   MOCK_VIDEOS,
   MOCK_SOCIAL,
 } from "@/lib/mock-data";
+import { SITE_TAGLINE } from "@/lib/constants";
 
 const articleInclude = {
   category: true,
@@ -290,22 +291,29 @@ export const getSocialLinks = cache(async function getSocialLinks() {
 
 export const getSiteShellData = cache(async function getSiteShellData() {
   try {
-    const breaking = await prisma.breakingNews.findMany({
-      where: {
-        isActive: true,
-        OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
-      },
-      include: { article: true },
-      orderBy: { order: "asc" },
-      take: 10,
-    });
-    const social = await prisma.socialLink.findMany({
-      where: { isActive: true },
-      orderBy: { order: "asc" },
-    });
-    return { breaking, social };
+    const [breaking, social, taglineSetting] = await Promise.all([
+      prisma.breakingNews.findMany({
+        where: {
+          isActive: true,
+          OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }],
+        },
+        include: { article: true },
+        orderBy: { order: "asc" },
+        take: 10,
+      }),
+      prisma.socialLink.findMany({
+        where: { isActive: true },
+        orderBy: { order: "asc" },
+      }),
+      prisma.setting.findUnique({ where: { key: "site_tagline" } }),
+    ]);
+    return {
+      breaking,
+      social,
+      tagline: taglineSetting?.value || SITE_TAGLINE,
+    };
   } catch {
-    return { breaking: MOCK_BREAKING, social: MOCK_SOCIAL };
+    return { breaking: MOCK_BREAKING, social: MOCK_SOCIAL, tagline: SITE_TAGLINE };
   }
 });
 

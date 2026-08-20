@@ -6,18 +6,9 @@ import { hasPermission } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
 import { ArticleStatus, ContentType } from "@prisma/client";
 
-const createSchema = z.object({
-  title: z.string().min(5),
-  slug: z.string().min(3),
-  subtitle: z.string().optional(),
-  excerpt: z.string().optional(),
-  content: z.string().min(10),
-  categoryId: z.string(),
-  status: z.enum(["BROUILLON", "EN_REVISION", "PROGRAMME", "PUBLIE", "ARCHIVE"]).optional(),
-  contentType: z.enum(["FAITS", "ANALYSE", "OPINION"]).optional(),
-  featuredImage: z.string().optional(),
-  geoZone: z.string().optional(),
-});
+import { articleFormSchema } from "@/lib/article-schema";
+
+const createSchema = articleFormSchema;
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -61,7 +52,9 @@ export async function POST(request: Request) {
         status,
         contentType: (data.contentType as ContentType) || ContentType.FAITS,
         featuredImage: data.featuredImage || null,
+        featuredImageAlt: data.featuredImageAlt || null,
         geoZone: data.geoZone || null,
+        scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
         userId: session.user.id,
         publishedAt: status === ArticleStatus.PUBLIE ? new Date() : null,
       },
