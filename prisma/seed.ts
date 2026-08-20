@@ -26,7 +26,7 @@ const categories = [
 ];
 
 async function main() {
-  console.log("🌱 Seeding LUSHIPOST database...");
+  console.log("🌱 Seeding LUBUMBASHIPOST database...");
 
   const passwordHash = await bcrypt.hash("admin123", 12);
 
@@ -36,7 +36,7 @@ async function main() {
     create: {
       email: "admin@lushipost.com",
       passwordHash,
-      name: "Rédaction LUSHIPOST",
+      name: "Rédaction LUBUMBASHIPOST",
       role: Role.SUPER_ADMIN,
     },
   });
@@ -64,16 +64,16 @@ async function main() {
     where: { slug: "redaction-lushipost" },
     update: {},
     create: {
-      name: "Rédaction LUSHIPOST",
+      name: "Rédaction LUBUMBASHIPOST",
       slug: "redaction-lushipost",
-      bio: "La rédaction de LUSHIPOST, média d'information basé à Lubumbashi.",
+      bio: "La rédaction de LUBUMBASHIPOST, média d'information basé à Lubumbashi.",
     },
   });
 
   const sourceLushipost = await prisma.source.upsert({
     where: { id: "source-lushipost" },
     update: {},
-    create: { id: "source-lushipost", name: "LUSHIPOST" },
+    create: { id: "source-lushipost", name: "LUBUMBASHIPOST" },
   });
 
   const catLubumbashi = await prisma.category.findUniqueOrThrow({ where: { slug: "lubumbashi" } });
@@ -95,14 +95,14 @@ async function main() {
 <h2>Une province minière au cœur de l'économie congolaise</h2>
 <p>Autour de Lubumbashi, Likasi et Kipushi, les concessions historiques du Copperbelt — dont Kamoto Copper Company (KCC), Tenke Fungurume Mining (TFM) ou encore les projets de Kipushi — emploient des dizaines de milliers de travailleurs directs et indirects.</p>
 <p>Les autorités provinciales ont présenté un plan de modernisation des infrastructures minières : routes d'accès, alimentation électrique, formation des jeunes aux métiers de l'extraction responsable et renforcement des contrôles environnementaux.</p>
-<blockquote>« Le Haut-Katanga doit tirer profit de ses richesses minières tout en garantissant des retombées concrètes pour les populations de Lubumbashi et de toute la province », insiste la rédaction LUSHIPOST sur place.</blockquote>
+<blockquote>« Le Haut-Katanga doit tirer profit de ses richesses minières tout en garantissant des retombées concrètes pour les populations de Lubumbashi et de toute la province », insiste la rédaction LUBUMBASHIPOST sur place.</blockquote>
 <h2>Cuivre, cobalt et emplois locaux</h2>
 <p>Le cuivre reste le principal levier d'exportation de la province. Le cobalt, lui, place la RDC au premier rang mondial des producteurs — un atout majeur pour Lubumbashi, où transitent une large part des activités logistiques et commerciales liées au secteur minier.</p>
 <p>Les observateurs économiques saluent la relance, tout en appelant à une meilleure transparence sur les revenus miniers et à un développement équilibré des communes riveraines des sites d'exploitation.</p>`,
       categoryId: catHautKatanga.id,
       featuredImage: "/images/mine-artisanale-haut-katanga.png",
       featuredImageAlt: "Orpailleur au travail dans une rivière du Haut-Katanga",
-      featuredImageCaption: "Exploitation artisanale minière. Photo : LUSHIPOST",
+      featuredImageCaption: "Exploitation artisanale minière. Photo : LUBUMBASHIPOST",
       geoZone: "Haut-Katanga",
       viewCount: 4821,
       isFeatured: true,

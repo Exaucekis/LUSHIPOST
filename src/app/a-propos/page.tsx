@@ -1,17 +1,18 @@
 import type { Metadata } from "next";
+import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "À propos",
-  description: "LUSHIPOST — Média d'information numérique basé à Lubumbashi.",
+  description: SITE_DESCRIPTION,
 };
 
 export default function AboutPage() {
   return (
     <div className="lp-container max-w-3xl py-12">
-      <h1 className="mb-6 text-4xl font-bold">À propos de LUSHIPOST</h1>
+      <h1 className="mb-6 text-4xl font-bold">À propos de {SITE_NAME}</h1>
       <div className="lp-prose">
         <p>
-          <strong>LUSHIPOST</strong> est un média d&apos;information numérique basé à Lubumbashi,
+          <strong>{SITE_NAME}</strong> est un média d&apos;information numérique basé à Lubumbashi,
           orienté vers le Haut-Katanga, la République démocratique du Congo, l&apos;Afrique et le monde.
         </p>
         <p>

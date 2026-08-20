@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { FACT_CHECK_LABELS, FACT_CHECK_COLORS } from "@/lib/constants";
+import { FACT_CHECK_LABELS, FACT_CHECK_COLORS, SITE_NAME } from "@/lib/constants";
 
 export const metadata: Metadata = {
   title: "Vérification des faits",
-  description: "LUSHIPOST Vérification — Fact-checking et démystification des rumeurs.",
+  description: `${SITE_NAME} Vérification — Fact-checking et démystification des rumeurs.`,
 };
 
 export default function VerificationPage() {

@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { authOptions } from "@/lib/auth";
 import { AdminProviders } from "@/components/admin/AdminProviders";
+import { SITE_NAME } from "@/lib/constants";
 import {
   LayoutDashboard,
   FileText,
@@ -50,7 +51,7 @@ export default async function AdminLayout({
           <Link href="/admin" className="block">
             <Image
               src="/logo/lushipost-monogram.png"
-              alt="LUSHIPOST Newsroom"
+              alt={`${SITE_NAME} Newsroom`}
               width={48}
               height={48}
               className="object-contain"

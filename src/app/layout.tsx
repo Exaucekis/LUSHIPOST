@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "LUSHIPOST",
+    "LUBUMBASHIPOST",
     "Lubumbashi actualité",
     "Actualité Lubumbashi",
     "Haut-Katanga",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fr_FR",
     siteName: SITE_NAME,
-    images: [{ url: "/logo/lushipost-brand.png", alt: "LUSHIPOST" }],
+    images: [{ url: "/logo/lushipost-brand.png", alt: SITE_NAME }],
   },
   twitter: {
     card: "summary_large_image",

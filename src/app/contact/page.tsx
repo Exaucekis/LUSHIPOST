@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE_PHONE, SITE_PHONE_HREF } from "@/lib/constants";
+import { SITE_NAME, SITE_PHONE, SITE_PHONE_HREF } from "@/lib/constants";
 import { Phone, Mail, MapPin } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export default function ContactPage() {
       <div className="lp-prose">
         <p>
           Pour toute demande éditoriale, commerciale ou technique, contactez la
-          rédaction LUSHIPOST.
+          rédaction {SITE_NAME}.
         </p>
 
         <ul className="mt-8 space-y-4 list-none ml-0">

@@ -1,6 +1,6 @@
-# Déploiement LUSHIPOST sur Vercel
+# Déploiement LUBUMBASHIPOST sur Vercel
 
-Guide pas à pas pour mettre LUSHIPOST en production sur [Vercel](https://vercel.com).
+Guide pas à pas pour mettre LUBUMBASHIPOST en production sur [Vercel](https://vercel.com).
 
 ---
 
@@ -66,7 +66,7 @@ Dans **Project Settings → Environment Variables**, ajoutez :
 | `NEXTAUTH_URL` | `https://votre-projet.vercel.app` | Production |
 | `NEXTAUTH_URL` | `https://votre-projet-git-branche.vercel.app` | Preview |
 | `NEXT_PUBLIC_SITE_URL` | Même valeur que `NEXTAUTH_URL` | Production / Preview |
-| `NEXT_PUBLIC_SITE_NAME` | `LUSHIPOST` | Tous |
+| `NEXT_PUBLIC_SITE_NAME` | `LUBUMBASHIPOST` | Tous |
 
 ### Générer NEXTAUTH_SECRET
 
@@ -163,4 +163,4 @@ package.json         → build: prisma generate && next build
 
 ---
 
-© LUSHIPOST — Déploiement Vercel
+© LUBUMBASHIPOST — Déploiement Vercel

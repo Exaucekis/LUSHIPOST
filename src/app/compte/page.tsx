@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { authOptions } from "@/lib/auth";
 import { isStaffRole } from "@/lib/roles";
+import { SITE_NAME } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 import { User, Mail, Bell, LogOut } from "lucide-react";
 
@@ -26,7 +27,7 @@ export default async function ComptePage() {
       <div className="mx-auto max-w-lg">
         <h1 className="mb-2 text-3xl font-bold">Mon espace abonné</h1>
         <p className="mb-8 text-lp-gray">
-          Bienvenue sur LUSHIPOST. Votre compte reste connecté sur cet appareil.
+          Bienvenue sur {SITE_NAME}. Votre compte reste connecté sur cet appareil.
         </p>
 
         <div className="space-y-4">

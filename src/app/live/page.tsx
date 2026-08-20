@@ -5,7 +5,7 @@ import { ArticleCard } from "@/components/articles/ArticleCard";
 import { LIVE_BRAND } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Lubumbashi Post Live",
+  title: LIVE_BRAND,
   description: "Couverture en direct des événements majeurs depuis Lubumbashi et la RDC.",
 };
 

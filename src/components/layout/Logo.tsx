@@ -1,21 +1,27 @@
 import Link from "next/link";
 import Image from "next/image";
-import { SITE_TAGLINE } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { SITE_NAME, SITE_TAGLINE } from "@/lib/constants";
 
 const MONOGRAM_HEADER = "/logo/lushipost-monogram-header.png";
 const MONOGRAM = "/logo/lushipost-monogram.png";
-const BRAND = "/logo/lushipost-brand.png";
 
 interface LogoProps {
   variant?: "header" | "footer" | "monogram";
   showTagline?: boolean;
   tagline?: string;
+  centered?: boolean;
 }
 
-export function Logo({ variant = "header", showTagline = false, tagline }: LogoProps) {
+export function Logo({
+  variant = "header",
+  showTagline = false,
+  tagline,
+  centered = false,
+}: LogoProps) {
   if (variant === "monogram") {
     return (
-      <Link href="/" aria-label="Lubumbashi Poste — Accueil" className="inline-flex shrink-0">
+      <Link href="/" aria-label={`${SITE_NAME} — Accueil`} className="inline-flex shrink-0">
         <Image
           src={MONOGRAM}
           alt=""
@@ -33,12 +39,12 @@ export function Logo({ variant = "header", showTagline = false, tagline }: LogoP
     return (
       <Link
         href="/"
-        aria-label="Lubumbashi Poste — Accueil"
+        aria-label={`${SITE_NAME} — Accueil`}
         className="inline-flex shrink-0 items-center justify-center"
       >
         <Image
           src={MONOGRAM_HEADER}
-          alt="Lubumbashi Poste"
+          alt={SITE_NAME}
           width={512}
           height={512}
           priority
@@ -52,20 +58,15 @@ export function Logo({ variant = "header", showTagline = false, tagline }: LogoP
   return (
     <Link
       href="/"
-      className="group inline-flex max-w-full flex-col items-start"
-      aria-label="Lubumbashi Poste — Accueil"
+      className={cn(
+        "group inline-flex max-w-full flex-col",
+        centered ? "items-center text-center" : "items-start"
+      )}
+      aria-label={`${SITE_NAME} — Accueil`}
     >
-      <div className="relative w-full max-w-[280px] sm:max-w-[320px] md:max-w-[360px]">
-        <Image
-          src={BRAND}
-          alt=""
-          width={720}
-          height={432}
-          unoptimized
-          className="h-auto w-full object-contain object-left"
-          sizes="(max-width: 640px) 280px, (max-width: 768px) 320px, 360px"
-        />
-      </div>
+      <span className="font-display text-2xl font-bold uppercase tracking-tight text-white sm:text-3xl">
+        {SITE_NAME}
+      </span>
       {showTagline && (
         <span className="mt-2 text-[10px] uppercase tracking-widest text-white/70">
           {tagline || SITE_TAGLINE}

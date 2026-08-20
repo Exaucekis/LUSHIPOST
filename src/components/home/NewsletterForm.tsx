@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Mail, CheckCircle2, AlertCircle } from "lucide-react";
+import { SITE_NAME } from "@/lib/constants";
 
 export function NewsletterForm() {
   const [email, setEmail] = useState("");
@@ -48,7 +49,7 @@ export function NewsletterForm() {
             <Mail className="h-7 w-7 text-red-300" aria-hidden="true" />
           </div>
           <h2 id="newsletter-title" className="text-2xl font-bold sm:text-3xl">
-            La newsletter LUSHIPOST
+            La newsletter {SITE_NAME}
           </h2>
           <p className="mt-3 text-base leading-relaxed text-white/75">
             Recevez l&apos;essentiel de l&apos;actualité de Lubumbashi, de la RDC,

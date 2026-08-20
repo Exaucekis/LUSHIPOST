@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Play } from "lucide-react";
+import { SITE_NAME } from "@/lib/constants";
 
 type Video = {
   id: string;
@@ -23,7 +24,7 @@ export function VideoSection({ videos }: { videos: Video[] }) {
         <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-red-400">
-              LUSHIPOST Vidéo
+              {SITE_NAME} Vidéo
             </p>
             <h2 id="videos-section" className="text-2xl font-bold sm:text-3xl">
               Reportages &amp; interviews

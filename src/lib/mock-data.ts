@@ -1,5 +1,7 @@
 const now = new Date();
 
+const SITE = "LUBUMBASHIPOST";
+
 export const MOCK_CATEGORIES = [
   { id: "1", name: "Lubumbashi", slug: "lubumbashi", order: 1, description: null, color: null, parentId: null, createdAt: now, updatedAt: now },
   { id: "2", name: "Haut-Katanga", slug: "haut-katanga", order: 2, description: null, color: null, parentId: null, createdAt: now, updatedAt: now },
@@ -33,7 +35,7 @@ export const MOCK_ARTICLES = [
     status: "PUBLIE" as const,
     featuredImage: MINING_HERO_IMAGE,
     featuredImageAlt: "Orpailleur au travail dans une rivière du Haut-Katanga",
-    featuredImageCaption: "Exploitation artisanale minière. Photo : LUSHIPOST",
+    featuredImageCaption: `Exploitation artisanale minière. Photo : ${SITE}`,
     gallery: null,
     keyPoints: [
       "Cuivre et cobalt : piliers de l'économie du Haut-Katanga",
@@ -60,8 +62,8 @@ export const MOCK_ARTICLES = [
     userId: null,
     sourceId: null,
     category: cat("haut-katanga"),
-    author: { id: "auth1", name: "Rédaction LUSHIPOST", slug: "redaction", bio: null, avatar: null, email: null, twitter: null, linkedin: null, createdAt: now, updatedAt: now },
-    source: { id: "s1", name: "LUSHIPOST", url: null, logo: null, createdAt: now },
+    author: { id: "auth1", name: `Rédaction ${SITE}`, slug: "redaction", bio: null, avatar: null, email: null, twitter: null, linkedin: null, createdAt: now, updatedAt: now },
+    source: { id: "s1", name: SITE, url: null, logo: null, createdAt: now },
     tags: [],
   },
   {

@@ -1,4 +1,4 @@
-# LUSHIPOST
+# LUBUMBASHIPOST
 
 **L'information au cœur de Lubumbashi.**
 
@@ -57,7 +57,7 @@ Remplacez ou mettez à jour les fichiers officiels dans :
 
 ```
 public/logo/lushipost-monogram.png  → Symbole lp (favicon, mobile)
-public/logo/lushipost-brand.png     → Logo complet LUSHIPOST
+public/logo/lushipost-brand.png     → Logo complet LUBUMBASHIPOST
 ```
 
 ## Architecture
@@ -68,7 +68,7 @@ src/
 │   ├── [slug]/             # Pages catégories
 │   ├── article/[slug]/     # Pages articles
 │   ├── video/              # Rubrique vidéo
-│   ├── live/               # LUSHIPOST Live
+│   ├── live/               # LUBUMBASHIPOST LIVE
 │   ├── recherche/          # Recherche full-text
 │   ├── admin/              # Back-office newsroom
 │   └── api/                # API REST
@@ -156,4 +156,4 @@ Consultez **[DEPLOYMENT.md](./DEPLOYMENT.md)** pour le guide complet.
 
 ## Licence
 
-© LUSHIPOST — Tous droits réservés.
+© LUBUMBASHIPOST — Tous droits réservés.

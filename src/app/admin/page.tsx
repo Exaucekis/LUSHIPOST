@@ -1,7 +1,7 @@
 import { getAdminStats } from "@/lib/data/articles";
 import prisma from "@/lib/prisma";
 import { formatRelativeDate } from "@/lib/utils";
-import { STATUS_LABELS } from "@/lib/constants";
+import { STATUS_LABELS, SITE_NAME } from "@/lib/constants";
 
 export default async function AdminDashboard() {
   const stats = await getAdminStats().catch(() => ({
@@ -37,7 +37,7 @@ export default async function AdminDashboard() {
   return (
     <div>
       <header className="mb-8">
-        <h1 className="text-3xl font-bold">LUSHIPOST Newsroom</h1>
+        <h1 className="text-3xl font-bold">{SITE_NAME} Newsroom</h1>
         <p className="mt-1 text-lp-gray">Tableau de bord éditorial</p>
       </header>
 

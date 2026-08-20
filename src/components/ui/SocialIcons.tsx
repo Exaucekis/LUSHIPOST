@@ -1,5 +1,6 @@
 import { Facebook, Instagram, Linkedin, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SITE_NAME } from "@/lib/constants";
 
 type SocialLink = { platform: string; url: string };
 
@@ -31,13 +32,14 @@ interface SocialIconsProps {
   links: SocialLink[];
   variant?: "light" | "dark";
   size?: "sm" | "md";
+  className?: string;
 }
 
-export function SocialIcons({ links, variant = "dark", size = "md" }: SocialIconsProps) {
+export function SocialIcons({ links, variant = "dark", size = "md", className }: SocialIconsProps) {
   const iconSize = size === "sm" ? "h-8 w-8" : "h-10 w-10";
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className={cn("flex flex-wrap gap-2", className)}>
       {links.map((link) => {
         const Icon = ICONS[link.platform] || ExternalLink;
         const label = LABELS[link.platform] || link.platform;
@@ -48,7 +50,7 @@ export function SocialIcons({ links, variant = "dark", size = "md" }: SocialIcon
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`LUSHIPOST sur ${label}`}
+            aria-label={`${SITE_NAME} sur ${label}`}
             className={cn(
               "flex items-center justify-center rounded-full transition-colors",
               iconSize,
