@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 const MONOGRAM = "/logo/lushipost-monogram.png";
 const BRAND = "/logo/lushipost-brand.png";
@@ -9,38 +10,17 @@ interface LogoProps {
   showTagline?: boolean;
 }
 
-function LogoWordmark({ className }: { className?: string }) {
+function HeaderWordmark({ className }: { className?: string }) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 252 52"
-      fill="none"
-      aria-hidden="true"
-      className={className}
+    <span
+      className={cn(
+        "inline-flex items-baseline whitespace-nowrap font-display font-bold leading-none tracking-tight",
+        className
+      )}
     >
-      <text
-        x="0"
-        y="42"
-        fontFamily="Georgia, 'Times New Roman', Times, serif"
-        fontSize="44"
-        fontWeight="700"
-        letterSpacing="-0.02em"
-        fill="#0a0a0a"
-      >
-        LUSHI
-      </text>
-      <text
-        x="144"
-        y="42"
-        fontFamily="Georgia, 'Times New Roman', Times, serif"
-        fontSize="44"
-        fontWeight="700"
-        letterSpacing="-0.02em"
-        fill="#c41e3a"
-      >
-        POST
-      </text>
-    </svg>
+      <span className="text-lp-black">LUSHI</span>
+      <span className="text-lp-accent">POST</span>
+    </span>
   );
 }
 
@@ -54,6 +34,7 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
           width={512}
           height={512}
           priority
+          unoptimized
           className="h-9 w-9 object-contain sm:h-10 sm:w-10"
         />
       </Link>
@@ -67,7 +48,7 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
         aria-label="LUSHIPOST — Accueil"
         className="inline-flex shrink-0 items-center"
       >
-        <LogoWordmark className="h-8 w-auto sm:h-9 md:h-10 lg:h-11" />
+        <HeaderWordmark className="text-[1.65rem] sm:text-3xl md:text-[2rem] lg:text-[2.15rem]" />
       </Link>
     );
   }
@@ -84,6 +65,7 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
           alt=""
           width={720}
           height={432}
+          unoptimized
           className="h-auto w-full object-contain object-left"
           sizes="(max-width: 640px) 280px, (max-width: 768px) 320px, 360px"
         />

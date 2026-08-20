@@ -50,13 +50,14 @@ export function truncate(text: string, length: number): string {
 }
 
 export function getSiteUrl() {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "");
+  if (configured && !configured.includes("localhost")) {
+    return configured;
   }
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
   }
-  return "http://localhost:3000";
+  return configured || "http://localhost:3000";
 }
 
 export function estimateReadTime(content: string): number {

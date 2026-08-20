@@ -47,8 +47,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.role = (user as { role: string }).role;
         token.id = user.id;
-        token.email = user.email;
-        token.name = user.name;
+        token.email = user.email ?? undefined;
+        token.name = user.name ?? undefined;
       }
       if (trigger === "update" && session?.user) {
         token.name = session.user.name ?? token.name;
