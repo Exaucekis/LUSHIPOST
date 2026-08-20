@@ -44,3 +44,9 @@ next-env.d.ts
 
 # uploads locaux (fallback sans S3)
 /public/uploads/
+
+# fichiers temporaires shell
+.git-cmd-out.txt
+.build-out.txt
+.*-out.txt
+.*-findstr*.txt
