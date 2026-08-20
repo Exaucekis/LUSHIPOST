@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { authOptions } from "@/lib/auth";
+import { AdminProviders } from "@/components/admin/AdminProviders";
 import {
   LayoutDashboard,
   FileText,
@@ -15,6 +16,7 @@ import {
   Radio,
   Settings,
   LogOut,
+  UserCircle,
 } from "lucide-react";
 
 const NAV = [
@@ -27,6 +29,7 @@ const NAV = [
   { href: "/admin/comments", label: "Commentaires", icon: MessageSquare },
   { href: "/admin/users", label: "Utilisateurs", icon: Users },
   { href: "/admin/analytics", label: "Statistiques", icon: BarChart3 },
+  { href: "/admin/account", label: "Mon compte", icon: UserCircle },
   { href: "/admin/settings", label: "Paramètres", icon: Settings },
 ];
 
@@ -76,7 +79,12 @@ export default async function AdminLayout({
         </nav>
 
         <div className="absolute bottom-0 left-0 right-0 border-t border-white/10 p-4">
-          <p className="mb-2 truncate text-xs text-white/50">{session.user.email}</p>
+          <Link
+            href="/admin/account"
+            className="mb-2 block truncate text-xs text-white/70 hover:text-white"
+          >
+            {session.user.email}
+          </Link>
           <p className="mb-3 text-[10px] uppercase tracking-wider text-lp-accent">
             {session.user.role.replace(/_/g, " ")}
           </p>
@@ -96,7 +104,9 @@ export default async function AdminLayout({
         </div>
       </aside>
 
-      <main className="ml-64 flex-1 p-8">{children}</main>
+      <main className="ml-64 flex-1 p-8">
+        <AdminProviders>{children}</AdminProviders>
+      </main>
     </div>
   );
 }
