@@ -23,6 +23,8 @@ const CATEGORY_DESCRIPTIONS: Record<string, string> = {
     "Europe, Amériques, Moyen-Orient, Asie, géopolitique, diplomatie et économie internationale.",
   verification:
     "Vérification des faits : rumeurs, fausses informations, images trompeuses et contenus viraux.",
+  enquete:
+    "Enquêtes et investigations : reportages de fond, révélations, corruption, mines, gouvernance et affaires d'intérêt public.",
 };
 
 interface PageProps {

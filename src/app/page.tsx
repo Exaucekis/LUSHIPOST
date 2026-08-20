@@ -19,6 +19,7 @@ const CATEGORY_SECTIONS = [
   { title: "Politique", slug: "politique" },
   { title: "Économie", slug: "economie" },
   { title: "Société", slug: "societe" },
+  { title: "Enquête", slug: "enquete", description: "Investigations, reportages de fond et révélations." },
   { title: "Sport", slug: "sport" },
   { title: "Afrique", slug: "afrique" },
   { title: "International", slug: "international" },

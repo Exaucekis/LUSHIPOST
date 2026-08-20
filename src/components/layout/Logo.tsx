@@ -49,7 +49,7 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
         >
           <Image
             src={BRAND}
-            alt="LUSHIPOST — Lubumbashi Post"
+            alt="LUSHIPOST"
             fill
             priority
             sizes="(max-width: 1024px) 220px, 0px"
@@ -64,7 +64,7 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
         >
           <Image
             src={BRAND}
-            alt="LUSHIPOST — Lubumbashi Post"
+            alt="LUSHIPOST"
             fill
             priority
             sizes="320px"
@@ -85,7 +85,7 @@ export function Logo({ variant = "header", showTagline = false }: LogoProps) {
       <div className="relative w-full max-w-[280px] sm:max-w-[320px] md:max-w-[360px]">
         <Image
           src={BRAND}
-          alt="LUSHIPOST — Lubumbashi Post"
+          alt="LUSHIPOST"
           width={720}
           height={432}
           className="h-auto w-full object-contain object-left"

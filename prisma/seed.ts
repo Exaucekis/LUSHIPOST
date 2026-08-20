@@ -20,8 +20,9 @@ const categories = [
   { name: "Afrique", slug: "afrique", order: 14 },
   { name: "International", slug: "international", order: 15 },
   { name: "Opinion", slug: "opinion", order: 16 },
-  { name: "Vérification", slug: "verification", order: 17 },
-  { name: "Vidéo", slug: "video", order: 18 },
+  { name: "Enquête", slug: "enquete", order: 17 },
+  { name: "Vérification", slug: "verification", order: 18 },
+  { name: "Vidéo", slug: "video", order: 19 },
 ];
 
 async function main() {
@@ -54,7 +55,7 @@ async function main() {
   for (const cat of categories) {
     await prisma.category.upsert({
       where: { slug: cat.slug },
-      update: {},
+      update: { name: cat.name, order: cat.order },
       create: cat,
     });
   }

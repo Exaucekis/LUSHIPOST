@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   keywords: [
-    "Lushipost",
+    "LUSHIPOST",
     "Lubumbashi actualité",
     "Actualité Lubumbashi",
     "Haut-Katanga",

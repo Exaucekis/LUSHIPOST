@@ -57,7 +57,7 @@ Remplacez ou mettez à jour les fichiers officiels dans :
 
 ```
 public/logo/lushipost-monogram.png  → Symbole lp (favicon, mobile)
-public/logo/lushipost-brand.png     → Logo complet Lubumbashi Post
+public/logo/lushipost-brand.png     → Logo complet LUSHIPOST
 ```
 
 ## Architecture
@@ -86,7 +86,7 @@ src/
 
 ### Site public
 - Homepage éditoriale avec UNE configurable
-- 18 rubriques (Lubumbashi, RDC, Afrique, International...)
+- 19 rubriques (Lubumbashi, RDC, Enquête, Afrique, International...)
 - Pages articles professionnelles (Schema.org, partage social)
 - Barre breaking news
 - Recherche avec filtres

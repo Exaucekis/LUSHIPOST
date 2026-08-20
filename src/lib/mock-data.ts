@@ -11,6 +11,7 @@ export const MOCK_CATEGORIES = [
   { id: "8", name: "International", slug: "international", order: 8, description: null, color: null, parentId: null, createdAt: now, updatedAt: now },
   { id: "9", name: "Technologie", slug: "tech", order: 9, description: null, color: null, parentId: null, createdAt: now, updatedAt: now },
   { id: "10", name: "Société", slug: "societe", order: 10, description: null, color: null, parentId: null, createdAt: now, updatedAt: now },
+  { id: "11", name: "Enquête", slug: "enquete", order: 11, description: null, color: null, parentId: null, createdAt: now, updatedAt: now },
 ];
 
 const cat = (slug: string) => MOCK_CATEGORIES.find((c) => c.slug === slug)!;
