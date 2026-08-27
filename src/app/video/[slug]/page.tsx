@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function VideoDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const video = await prisma.video.findUnique({ where: { slug } }).catch(() => null);
-  if (!video) notFound();
+  if (!video || !video.publishedAt || video.publishedAt > new Date()) notFound();
 
   return (
     <div className="lp-container py-8">

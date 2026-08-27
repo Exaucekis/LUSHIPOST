@@ -270,6 +270,7 @@ export async function getLiveEvents() {
 export const getVideos = cache(async function getVideos(limit = 12) {
   try {
     return await prisma.video.findMany({
+      where: { publishedAt: { not: null, lte: new Date() } },
       orderBy: { publishedAt: "desc" },
       take: limit,
     });

@@ -89,7 +89,10 @@ export async function POST(request: Request) {
       name: media.name,
       storage: uploaded.storage,
     });
-  } catch {
-    return NextResponse.json({ error: "Erreur lors de l'upload" }, { status: 500 });
+  } catch (error) {
+    console.error("Media upload failed", error);
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : "Erreur lors de l'upload",
+    }, { status: 500 });
   }
 }

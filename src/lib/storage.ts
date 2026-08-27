@@ -6,6 +6,7 @@ import {
   S3Client,
   type PutObjectCommandInput,
 } from "@aws-sdk/client-s3";
+import { put } from "@vercel/blob";
 
 const LOCAL_UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 
@@ -15,6 +16,10 @@ export function isS3Configured() {
       process.env.S3_ACCESS_KEY &&
       process.env.S3_SECRET_KEY
   );
+}
+
+export function isBlobConfigured() {
+  return Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 }
 
 function getS3Client() {
@@ -59,6 +64,15 @@ export async function uploadMediaFile(
     };
     await client.send(new PutObjectCommand(input));
     return { url: getPublicUrl(key), key, storage: "s3" };
+  }
+
+  if (isBlobConfigured()) {
+    const blob = await put(key, buffer, { access: "public", contentType: mimeType });
+    return { url: blob.url, key: blob.pathname, storage: "s3" };
+  }
+
+  if (process.env.VERCEL) {
+    throw new Error("Stockage non configuré : ajoutez BLOB_READ_WRITE_TOKEN ou les variables S3 dans Vercel.");
   }
 
   const localDir = LOCAL_UPLOAD_DIR;

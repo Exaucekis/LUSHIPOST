@@ -4,6 +4,7 @@ import { ArticleStatus } from "@prisma/client";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { STATUS_LABELS } from "@/lib/constants";
+import { VideoSubmissionForm } from "@/components/admin/VideoSubmissionForm";
 
 export default async function JournalistDashboard() {
   const session = await getServerSession(authOptions);
@@ -35,6 +36,7 @@ export default async function JournalistDashboard() {
         </section>
         <aside className="lp-panel"><div className="lp-panel-heading"><h2 className="font-bold">Notifications</h2></div><div className="divide-y divide-gray-100">{notifications.length === 0 ? <p className="p-5 text-sm text-lp-gray">Aucune notification.</p> : notifications.map((notification) => <div key={notification.id} className="p-4"><p className="text-sm font-semibold">{notification.title}</p><p className="mt-1 text-xs text-lp-gray">{notification.body}</p></div>)}</div></aside>
       </div></div>
+      <div className="mt-8"><VideoSubmissionForm endpoint="/api/journaliste/videos" /></div>
     </div>
   );
 }

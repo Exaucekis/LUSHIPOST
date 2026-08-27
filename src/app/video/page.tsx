@@ -5,7 +5,7 @@ import Image from "next/image";
 import { SITE_NAME } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: `${SITE_NAME} Vidéo`,
+  title: `${SITE_NAME} Reportages vidéo`,
   description: `Vidéos d'actualité, interviews, reportages et analyses de ${SITE_NAME}.`,
 };
 
@@ -15,7 +15,7 @@ export default async function VideoPage() {
   return (
     <div className="lp-container py-8">
       <header className="mb-8 border-b-2 border-lp-black pb-6">
-        <h1 className="text-4xl font-bold">{SITE_NAME} Vidéo</h1>
+        <h1 className="text-4xl font-bold">{SITE_NAME} Reportages vidéo</h1>
         <p className="mt-3 text-lp-gray">
           Reportages, interviews, conférences et formats courts depuis Lubumbashi et au-delà.
         </p>
