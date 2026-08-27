@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
-import { hasPermission } from "@/lib/permissions";
+import { canPublish, hasPermission } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
 import { ArticleStatus, ContentType } from "@prisma/client";
 import { articleFormSchema } from "@/lib/article-schema";
@@ -63,7 +63,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     const body = await request.json();
     const data = articleFormSchema.parse(body);
     const status = (data.status as ArticleStatus) || existing.status;
-    const canPublishNow = hasPermission(session.user.role, "articles:publish");
+    const canPublishNow = canPublish(session.user.role);
 
     if (status === ArticleStatus.PUBLIE && !canPublishNow) {
       return NextResponse.json({ error: "Permission de publication requise" }, { status: 403 });

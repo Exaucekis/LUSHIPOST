@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ImagePlus, Library } from "lucide-react";
+import { Eye, ImagePlus, Library, X } from "lucide-react";
 import type { ArticleFormValues } from "@/lib/article-schema";
 
 type Category = { id: string; name: string; slug: string };
@@ -53,6 +53,8 @@ export function ArticleForm({
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  const [hasPreviewed, setHasPreviewed] = useState(false);
   const [form, setForm] = useState<ArticleFormValues>({
     ...EMPTY_FORM,
     ...initialValues,
@@ -104,6 +106,10 @@ export function ArticleForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (form.status === "PUBLIE" && !hasPreviewed) {
+      setError("Prévisualisez l’article avant de le publier.");
+      return;
+    }
     setLoading(true);
     setError(null);
 
@@ -169,13 +175,14 @@ export function ArticleForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-bold uppercase">Chapô</label>
+          <label className="mb-1 block text-xs font-bold uppercase">Introduction / résumé (chapô)</label>
           <textarea
             value={form.excerpt || ""}
             onChange={(e) => update("excerpt", e.target.value)}
             rows={2}
             className="lp-form-input"
           />
+          <p className="mt-1 text-xs text-lp-gray">Le chapô est le court résumé affiché sous le titre : il donne envie de lire l’article.</p>
         </div>
         <div>
           <label className="mb-1 block text-xs font-bold uppercase">Contenu *</label>
@@ -297,13 +304,27 @@ export function ArticleForm({
       </div>
 
       <div className="flex flex-wrap gap-3">
+        <button type="button" onClick={() => { setHasPreviewed(true); setShowPreview(true); }} className="lp-btn-outline">
+          <Eye className="h-4 w-4" /> Prévisualiser
+        </button>
         <button type="submit" disabled={loading} className="lp-btn-accent disabled:opacity-50">
-          {loading ? "Enregistrement..." : form.status === "EN_REVISION" ? "Soumettre pour validation" : form.status === "PROGRAMME" ? "Programmer et soumettre" : mode === "create" ? "Enregistrer le brouillon" : "Enregistrer les modifications"}
+          {loading ? "Enregistrement..." : form.status === "PUBLIE" ? "Publier immédiatement" : form.status === "EN_REVISION" ? "Soumettre pour validation" : form.status === "PROGRAMME" ? "Programmer la publication" : mode === "create" ? "Enregistrer le brouillon" : "Enregistrer les modifications"}
         </button>
         <button type="button" onClick={() => router.back()} className="lp-btn-outline">
           Annuler
         </button>
       </div>
+      {form.status === "PUBLIE" && !hasPreviewed && <p className="text-xs font-medium text-amber-800">La prévisualisation est requise avant la publication immédiate.</p>}
+
+      {showPreview && (
+        <div className="fixed inset-0 z-[70] overflow-y-auto bg-[#101828]/70 p-4 backdrop-blur-sm">
+          <div className="mx-auto my-6 max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4"><div><p className="lp-dashboard-eyebrow mb-0">Aperçu avant publication</p><p className="text-sm text-lp-gray">Rendu éditorial de votre article</p></div><button type="button" onClick={() => setShowPreview(false)} className="rounded-xl p-2 hover:bg-gray-100" aria-label="Fermer"><X className="h-5 w-5" /></button></div>
+            <article className="mx-auto max-w-3xl p-6 sm:p-10"><p className="lp-category-badge">{categories.find((category) => category.id === form.categoryId)?.name || "Catégorie"}</p><h1 className="mt-4 text-3xl font-bold sm:text-5xl">{form.title || "Titre de l’article"}</h1>{form.subtitle && <p className="mt-4 text-xl text-lp-gray">{form.subtitle}</p>}{form.excerpt && <p className="mt-6 border-l-4 border-lp-accent bg-lp-accent-soft px-5 py-4 text-lg font-medium text-lp-dark">{form.excerpt}</p>}{form.featuredImage && <><span className="sr-only">Image principale</span>{/* eslint-disable-next-line @next/next/no-img-element */}<img src={form.featuredImage} alt={form.featuredImageAlt || ""} className="mt-7 aspect-video w-full rounded-2xl object-cover" /></>}{form.content && <div className="lp-prose mt-8" dangerouslySetInnerHTML={{ __html: form.content }} />}</article>
+            <div className="flex justify-end border-t border-gray-100 p-4"><button type="button" onClick={() => setShowPreview(false)} className="lp-btn-accent">Revenir à l’édition</button></div>
+          </div>
+        </div>
+      )}
     </form>
   );
 }

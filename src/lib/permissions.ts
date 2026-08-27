@@ -10,7 +10,6 @@ const PERMISSIONS: Record<Role, string[]> = {
     "articles:delete",
     "homepage:manage",
     "categories:manage",
-    "breaking:manage",
     "media:manage",
     "users:read",
     "users:create",
@@ -47,7 +46,11 @@ export function hasPermission(role: Role | string, permission: string): boolean 
 }
 
 export function canPublish(role: Role | string): boolean {
-  return hasPermission(role, "articles:publish");
+  return role === Role.SUPER_ADMIN;
+}
+
+export function canManageBreaking(role: Role | string): boolean {
+  return role === Role.SUPER_ADMIN;
 }
 
 export function canManageHomepage(role: Role | string): boolean {

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { ArticleStatus } from "@prisma/client";
 import { authOptions } from "@/lib/auth";
-import { hasPermission } from "@/lib/permissions";
+import { canPublish } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
 import { notifyJournalist } from "@/lib/editorial-workflow";
 import { statusHistoryEntry } from "@/lib/article-status-history";
@@ -22,7 +22,7 @@ const schema = z.object({
 export async function PATCH(request: Request, context: RouteContext) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  if (!hasPermission(session.user.role, "articles:publish")) {
+  if (!canPublish(session.user.role)) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
