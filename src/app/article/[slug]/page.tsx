@@ -10,6 +10,7 @@ import {
   incrementArticleViews,
 } from "@/lib/data/articles";
 import { ShareButtons } from "@/components/articles/ShareButtons";
+import { sanitizeArticleHtml } from "@/lib/content-sanitizer";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { formatDate, formatTime, getSiteUrl } from "@/lib/utils";
 import {
@@ -69,6 +70,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
   const articleUrl = `${getSiteUrl()}/article/${article.slug}`;
   const keyPoints = article.keyPoints as string[] | null;
+  const safeArticleContent = sanitizeArticleHtml(article.content);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -193,7 +195,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
             <div
               className="lp-prose"
-              dangerouslySetInnerHTML={{ __html: article.content }}
+              dangerouslySetInnerHTML={{ __html: safeArticleContent }}
             />
 
             {article.source && (

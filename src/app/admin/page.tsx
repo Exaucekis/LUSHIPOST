@@ -17,6 +17,10 @@ export default async function AdminDashboard() {
       scheduled: 0,
       published: 0,
       videos: 0,
+      users: 0,
+      journalists: 0,
+      refused: 0,
+      featured: 0,
     };
   });
 
@@ -29,17 +33,17 @@ export default async function AdminDashboard() {
     .catch(() => []);
 
   const overviewCards = [
-    { label: "Articles publiés aujourd'hui", value: stats.articlesToday, accent: true },
-    { label: "Vues totales", value: stats.totalViews.toLocaleString("fr-FR") },
-    { label: "Abonnés newsletter", value: stats.subscribers },
-    { label: "Vidéos", value: stats.videos },
+    { label: "Utilisateurs", value: stats.users, accent: true },
+    { label: "Journalistes", value: stats.journalists },
+    { label: "Publications", value: stats.published + stats.pending + stats.drafts + stats.refused },
+    { label: "À la une", value: stats.featured },
   ];
 
   const workflowCards = [
     { label: "Brouillons", value: stats.drafts, href: "/admin/articles?status=BROUILLON" },
-    { label: "En révision", value: stats.pending, href: "/admin/articles?status=EN_REVISION" },
-    { label: "Programmés", value: stats.scheduled, href: "/admin/articles?status=PROGRAMME" },
-    { label: "Publiés", value: stats.published, href: "/admin/articles?status=PUBLIE" },
+    { label: "À valider", value: stats.pending, href: "/admin/articles?status=EN_REVISION" },
+    { label: "Refusées", value: stats.refused, href: "/admin/articles?status=REFUSE" },
+    { label: "Publiées", value: stats.published, href: "/admin/articles?status=PUBLIE" },
   ];
 
   return (

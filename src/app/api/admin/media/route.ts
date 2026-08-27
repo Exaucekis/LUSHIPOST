@@ -7,6 +7,10 @@ import { uploadMediaFile } from "@/lib/storage";
 import { MediaType } from "@prisma/client";
 
 const MAX_SIZE = 10 * 1024 * 1024;
+const ALLOWED_MIME_TYPES = new Set([
+  "image/jpeg", "image/png", "image/webp", "image/gif",
+  "video/mp4", "video/webm", "audio/mpeg", "audio/wav", "application/pdf",
+]);
 
 function detectMediaType(mimeType: string): MediaType {
   if (mimeType.startsWith("video/")) return MediaType.VIDEO;
@@ -49,6 +53,10 @@ export async function POST(request: Request) {
 
     if (file.size > MAX_SIZE) {
       return NextResponse.json({ error: "Fichier trop volumineux (max 10 Mo)" }, { status: 400 });
+    }
+
+    if (!ALLOWED_MIME_TYPES.has(file.type)) {
+      return NextResponse.json({ error: "Type de fichier non autorisé" }, { status: 400 });
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());

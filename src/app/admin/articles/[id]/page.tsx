@@ -7,12 +7,13 @@ import { ArticleForm } from "@/components/admin/ArticleForm";
 import { canPublish } from "@/lib/permissions";
 import { STATUS_LABELS } from "@/lib/constants";
 import type { ArticleFormValues } from "@/lib/article-schema";
+import { ModerationPanel } from "@/components/admin/ModerationPanel";
 
 export default function EditArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const { data: session } = useSession();
   const [articleId, setArticleId] = useState<string | null>(null);
   const [initialValues, setInitialValues] = useState<Partial<ArticleFormValues> | null>(null);
-  const [meta, setMeta] = useState<{ viewCount: number; status: string; slug: string } | null>(null);
+  const [meta, setMeta] = useState<{ viewCount: number; status: string; slug: string; rejectionReason?: string | null } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,6 +45,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
             viewCount: article.viewCount,
             status: article.status,
             slug: article.slug,
+            rejectionReason: article.rejectionReason,
           });
         })
         .catch((e) => setError(e instanceof Error ? e.message : "Erreur"))
@@ -87,6 +89,13 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
           </Link>
         )}
       </div>
+
+      {userCanPublish && meta?.status === "EN_REVISION" && <ModerationPanel articleId={articleId} />}
+      {meta?.status === "REFUSE" && meta.rejectionReason && (
+        <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">
+          <strong>Motif du refus :</strong> {meta.rejectionReason}
+        </div>
+      )}
 
       <ArticleForm
         mode="edit"

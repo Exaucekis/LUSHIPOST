@@ -1,0 +1,40 @@
+import { getServerSession } from "next-auth";
+import Link from "next/link";
+import { ArticleStatus } from "@prisma/client";
+import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { STATUS_LABELS } from "@/lib/constants";
+
+export default async function JournalistDashboard() {
+  const session = await getServerSession(authOptions);
+  if (!session) return null;
+  const userId = session.user.id;
+  const [articles, notifications] = await Promise.all([
+    prisma.article.findMany({ where: { userId }, include: { category: true }, orderBy: { updatedAt: "desc" }, take: 20 }),
+    prisma.notification.findMany({ where: { userId }, orderBy: { createdAt: "desc" }, take: 10 }),
+  ]);
+  const count = (status: ArticleStatus) => articles.filter((article) => article.status === status).length;
+
+  return (
+    <div className="lp-container max-w-6xl py-10">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div><h1 className="text-3xl font-bold">Espace journaliste</h1><p className="mt-1 text-lp-gray">Créez, soumettez et suivez vos publications.</p></div>
+        <Link href="/journaliste/articles/new" className="lp-btn-accent">+ Nouvelle publication</Link>
+      </div>
+      <div className="mb-8 grid gap-4 sm:grid-cols-4">
+        {[ ["Brouillons", count(ArticleStatus.BROUILLON)], ["En attente", count(ArticleStatus.EN_REVISION)], ["Publiées", count(ArticleStatus.PUBLIE)], ["Refusées", count(ArticleStatus.REFUSE)] ].map(([label, value]) => (
+          <div key={String(label)} className="border border-gray-200 bg-white p-5"><p className="text-xs font-bold uppercase text-lp-gray">{label}</p><p className="mt-2 text-3xl font-black">{value}</p></div>
+        ))}
+      </div>
+      <div className="grid gap-8 lg:grid-cols-3">
+        <section className="lg:col-span-2 overflow-hidden border border-gray-200 bg-white">
+          <div className="border-b border-gray-200 px-5 py-4"><h2 className="font-bold">Mes publications</h2></div>
+          {articles.length === 0 ? <p className="p-6 text-sm text-lp-gray">Aucune publication pour le moment.</p> : (
+            <div className="divide-y divide-gray-100">{articles.map((article) => <Link key={article.id} href={`/journaliste/articles/${article.id}`} className="block px-5 py-4 hover:bg-gray-50"><div className="flex justify-between gap-4"><div><p className="font-semibold">{article.title}</p><p className="mt-1 text-xs text-lp-gray">{article.category.name} · modifié le {article.updatedAt.toLocaleDateString("fr-FR")}</p></div><span className="h-fit rounded bg-gray-100 px-2 py-1 text-xs font-semibold">{STATUS_LABELS[article.status]}</span></div>{article.status === ArticleStatus.REFUSE && article.rejectionReason && <p className="mt-2 text-sm text-red-700">Motif : {article.rejectionReason}</p>}</Link>)}</div>
+          )}
+        </section>
+        <aside className="border border-gray-200 bg-white"><div className="border-b border-gray-200 px-5 py-4"><h2 className="font-bold">Notifications</h2></div><div className="divide-y divide-gray-100">{notifications.length === 0 ? <p className="p-5 text-sm text-lp-gray">Aucune notification.</p> : notifications.map((notification) => <div key={notification.id} className="p-4"><p className="text-sm font-semibold">{notification.title}</p><p className="mt-1 text-xs text-lp-gray">{notification.body}</p></div>)}</div></aside>
+      </div>
+    </div>
+  );
+}

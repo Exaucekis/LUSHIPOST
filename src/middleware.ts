@@ -1,20 +1,45 @@
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
-import { isStaffRole } from "@/lib/roles";
+import { isJournalistRole, isStaffRole } from "@/lib/roles";
 
 export default withAuth(
   function middleware(req) {
     const token = req.nextauth.token;
     const path = req.nextUrl.pathname;
 
+    if (path.startsWith("/connexion") && token?.role) {
+      return NextResponse.redirect(
+        new URL(
+          isJournalistRole(token.role as string)
+            ? "/journaliste"
+            : isStaffRole(token.role as string)
+              ? "/admin"
+              : "/compte",
+          req.url
+        )
+      );
+    }
+
     if (path.startsWith("/admin") && token?.role === "ABONNE") {
       return NextResponse.redirect(
-        new URL("/connexion?mode=staff&error=staff-use-password", req.url)
+        new URL("/compte?error=staff-only", req.url)
+      );
+    }
+
+    if (path.startsWith("/admin") && token?.role === "JOURNALISTE") {
+      return NextResponse.redirect(new URL("/journaliste", req.url));
+    }
+
+    if (path.startsWith("/journaliste") && token?.role !== "JOURNALISTE") {
+      return NextResponse.redirect(
+        new URL(token?.role && isStaffRole(token.role as string) ? "/admin" : "/compte", req.url)
       );
     }
 
     if (path.startsWith("/compte") && token?.role && isStaffRole(token.role as string)) {
-      return NextResponse.redirect(new URL("/admin", req.url));
+      return NextResponse.redirect(
+        new URL(isJournalistRole(token.role as string) ? "/journaliste" : "/admin", req.url)
+      );
     }
 
     return NextResponse.next();
@@ -37,6 +62,10 @@ export default withAuth(
           return !!token;
         }
 
+        if (path.startsWith("/journaliste")) {
+          return !!token && token.role === "JOURNALISTE";
+        }
+
         return true;
       },
     },
@@ -44,5 +73,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ["/admin/:path*", "/compte/:path*"],
+  matcher: ["/admin/:path*", "/journaliste/:path*", "/compte/:path*", "/connexion/:path*"],
 };

@@ -14,6 +14,8 @@ const PERMISSIONS: Record<Role, string[]> = {
     "media:manage",
     "users:read",
     "users:create",
+    "users:update",
+    "users:delete",
     "analytics:read",
     "comments:moderate",
     "settings:manage",
@@ -41,9 +43,7 @@ export function hasPermission(role: Role | string, permission: string): boolean 
   const perms = PERMISSIONS[role as Role];
   if (!perms) return false;
   if (perms.includes("*")) return true;
-  return perms.some(
-    (p) => p === permission || permission.startsWith(p.replace(":own", ""))
-  );
+  return perms.some((p) => p === permission);
 }
 
 export function canPublish(role: Role | string): boolean {

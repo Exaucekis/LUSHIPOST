@@ -17,5 +17,9 @@ export function isSubscriberRole(role: Role | string): boolean {
   return role === Role.ABONNE;
 }
 
+export function isJournalistRole(role: Role | string): boolean {
+  return role === Role.JOURNALISTE;
+}
+
 export const STAFF_SESSION_MAX_AGE = 8 * 60 * 60;
 export const SUBSCRIBER_SESSION_MAX_AGE = 30 * 24 * 60 * 60;

@@ -1,12 +1,13 @@
 "use client";
 
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { Logo } from "@/components/layout/Logo";
 import { Mail, Lock, ArrowLeft } from "lucide-react";
 import { ROLE_LABELS } from "@/lib/constants";
+import { getSafeCallbackUrl } from "@/lib/navigation";
 
 type Mode = "subscriber" | "staff";
 type StaffStep = "email" | "password";
@@ -17,6 +18,7 @@ function ConnexionForm() {
   const initialMode = searchParams.get("mode") === "staff" ? "staff" : "subscriber";
   const errorParam = searchParams.get("error");
   const callbackUrl = searchParams.get("callbackUrl") || undefined;
+  const { data: session, status: sessionStatus } = useSession();
 
   const [mode, setMode] = useState<Mode>(initialMode);
   const [staffStep, setStaffStep] = useState<StaffStep>("email");
@@ -50,6 +52,12 @@ function ConnexionForm() {
       .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    if (sessionStatus === "authenticated" && session?.user?.role) {
+      router.replace(getSafeCallbackUrl(callbackUrl ?? null, session.user.role));
+    }
+  }, [callbackUrl, router, session?.user?.role, sessionStatus]);
+
   const handleSubscriberEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -78,7 +86,7 @@ function ConnexionForm() {
     const result = await signIn("email", {
       email: email.toLowerCase().trim(),
       redirect: false,
-      callbackUrl: callbackUrl || "/compte",
+      callbackUrl: getSafeCallbackUrl(callbackUrl ?? null),
     });
 
     if (result?.error) {
@@ -132,13 +140,13 @@ function ConnexionForm() {
       setError("Mot de passe incorrect.");
       setLoading(false);
     } else {
-      router.push(callbackUrl || "/admin");
+      router.replace(getSafeCallbackUrl(callbackUrl ?? null, staffRole ?? undefined));
       router.refresh();
     }
   };
 
   const handleGoogle = () => {
-    signIn("google", { callbackUrl: callbackUrl || "/compte" });
+    signIn("google", { callbackUrl: getSafeCallbackUrl(callbackUrl ?? null) });
   };
 
   return (

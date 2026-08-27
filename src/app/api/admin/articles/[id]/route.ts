@@ -6,6 +6,7 @@ import { hasPermission } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
 import { ArticleStatus, ContentType } from "@prisma/client";
 import { articleFormSchema } from "@/lib/article-schema";
+import { statusHistoryEntry } from "@/lib/article-status-history";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -89,6 +90,12 @@ export async function PATCH(request: Request, context: RouteContext) {
           : existing.publishedAt,
       },
     });
+
+    if (existing.status !== status) {
+      await prisma.articleStatusHistory.create({
+        data: statusHistoryEntry(article.id, existing.status, status, session.user.id),
+      });
+    }
 
     await prisma.auditLog.create({
       data: {

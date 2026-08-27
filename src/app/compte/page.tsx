@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { authOptions } from "@/lib/auth";
-import { isStaffRole } from "@/lib/roles";
+import { isJournalistRole, isStaffRole } from "@/lib/roles";
 import { SITE_NAME } from "@/lib/constants";
 import prisma from "@/lib/prisma";
 import { User, Mail, Bell, LogOut } from "lucide-react";
@@ -12,6 +12,10 @@ export default async function ComptePage() {
 
   if (!session) {
     redirect("/connexion?callbackUrl=/compte");
+  }
+
+  if (isJournalistRole(session.user.role)) {
+    redirect("/journaliste");
   }
 
   if (isStaffRole(session.user.role)) {

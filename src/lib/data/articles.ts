@@ -430,6 +430,10 @@ export async function getAdminStats() {
     scheduled,
     published,
     videos,
+    users,
+    journalists,
+    refused,
+    featured,
   ] = await Promise.all([
     prisma.article.count({
       where: { createdAt: { gte: today }, status: ArticleStatus.PUBLIE },
@@ -441,6 +445,10 @@ export async function getAdminStats() {
     prisma.article.count({ where: { status: ArticleStatus.PROGRAMME } }),
     prisma.article.count({ where: { status: ArticleStatus.PUBLIE } }),
     prisma.video.count(),
+    prisma.user.count(),
+    prisma.user.count({ where: { role: "JOURNALISTE" } }),
+    prisma.article.count({ where: { status: ArticleStatus.REFUSE } }),
+    prisma.article.count({ where: { isFeatured: true, status: ArticleStatus.PUBLIE } }),
   ]);
 
   return {
@@ -452,5 +460,9 @@ export async function getAdminStats() {
     scheduled,
     published,
     videos,
+    users,
+    journalists,
+    refused,
+    featured,
   };
 }

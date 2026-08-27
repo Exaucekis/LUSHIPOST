@@ -8,7 +8,7 @@ export const articleFormSchema = z.object({
   content: z.string().min(10),
   categoryId: z.string(),
   status: z
-    .enum(["BROUILLON", "EN_REVISION", "PROGRAMME", "PUBLIE", "ARCHIVE"])
+    .enum(["BROUILLON", "EN_REVISION", "APPROUVE", "PROGRAMME", "PUBLIE", "REFUSE", "ARCHIVE"])
     .optional(),
   contentType: z.enum(["FAITS", "ANALYSE", "OPINION"]).optional(),
   featuredImage: z.string().optional(),

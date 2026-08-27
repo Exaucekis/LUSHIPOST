@@ -18,11 +18,16 @@ const createUserSchema = z.object({
     Role.EDITEUR,
     Role.MODERATEUR,
     Role.VIDEOASTE,
+    Role.ABONNE,
   ] as [string, ...string[]]),
-  password: z.string().min(8, "Mot de passe minimum 8 caractères"),
+  password: z.string().min(8, "Mot de passe minimum 8 caractères").optional(),
+}).superRefine((data, ctx) => {
+  if (data.role !== Role.ABONNE && !data.password) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["password"], message: "Un mot de passe est requis pour la rédaction" });
+  }
 });
 
-export async function GET() {
+export async function GET(request: Request) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
@@ -30,8 +35,9 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
+  const scope = new URL(request.url).searchParams.get("scope");
   const users = await prisma.user.findMany({
-    where: { role: { in: STAFF_ROLES } },
+    where: scope === "staff" ? { role: { in: STAFF_ROLES } } : undefined,
     orderBy: { createdAt: "desc" },
     select: {
       id: true,
@@ -40,6 +46,7 @@ export async function GET() {
       role: true,
       isActive: true,
       createdAt: true,
+      _count: { select: { articles: true } },
     },
   });
 
@@ -57,6 +64,9 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const data = createUserSchema.parse(body);
+    if (data.role === Role.SUPER_ADMIN && session.user.role !== Role.SUPER_ADMIN) {
+      return NextResponse.json({ error: "Seul un Super Admin peut créer ce rôle." }, { status: 403 });
+    }
     const email = data.email.toLowerCase().trim();
 
     const existing = await prisma.user.findUnique({ where: { email } });
@@ -67,7 +77,7 @@ export async function POST(request: Request) {
           { status: 409 }
         );
       }
-      const passwordHash = await bcrypt.hash(data.password, 12);
+      const passwordHash = data.password ? await bcrypt.hash(data.password, 12) : null;
       const user = await prisma.user.update({
         where: { email },
         data: {
@@ -88,7 +98,7 @@ export async function POST(request: Request) {
       return NextResponse.json(user, { status: 200 });
     }
 
-    const passwordHash = await bcrypt.hash(data.password, 12);
+    const passwordHash = data.password ? await bcrypt.hash(data.password, 12) : null;
     const user = await prisma.user.create({
       data: {
         email,

@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { AdminProviders } from "@/components/admin/AdminProviders";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
+import { redirect } from "next/navigation";
 
 export default async function AdminLayout({
   children,
@@ -11,7 +12,7 @@ export default async function AdminLayout({
   const session = await getServerSession(authOptions);
 
   if (!session) {
-    return <>{children}</>;
+    redirect("/connexion?mode=staff&callbackUrl=/admin");
   }
 
   return (

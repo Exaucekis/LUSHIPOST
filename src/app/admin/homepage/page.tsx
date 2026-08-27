@@ -64,6 +64,14 @@ export default function HomepageManagementPage() {
           });
           const data = await res.json();
           if (!res.ok) throw new Error(data.error || "Enregistrement impossible");
+        } else {
+          const res = await fetch("/api/admin/homepage", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ slot: config.slot, order: config.order }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw new Error(data.error || "Suppression impossible");
         }
       }
       setMessage("Mise à jour réussie.");

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { randomBytes } from "crypto";
+import nodemailer from "nodemailer";
+import { getSiteUrl } from "@/lib/utils";
 
 const schema = z.object({
   email: z.string().email("Adresse e-mail invalide"),
@@ -10,7 +12,15 @@ const schema = z.object({
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email } = schema.parse(body);
+    const { email: rawEmail } = schema.parse(body);
+    const email = rawEmail.toLowerCase().trim();
+
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASSWORD) {
+      return NextResponse.json(
+        { error: "La newsletter n'est pas encore configurée." },
+        { status: 503 }
+      );
+    }
 
     const existing = await prisma.newsletterSubscriber.findUnique({
       where: { email },
@@ -31,7 +41,21 @@ export async function POST(request: Request) {
       create: { email, confirmToken },
     });
 
-    // TODO: envoyer e-mail de confirmation via SMTP
+    const confirmationUrl = `${getSiteUrl()}/api/newsletter/confirm?token=${confirmToken}`;
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT || 587),
+      secure: Number(process.env.SMTP_PORT || 587) === 465,
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD },
+    });
+
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || "noreply@lushipost.com",
+      to: email,
+      subject: "Confirmez votre inscription à la newsletter LUSHIPOST",
+      text: `Confirmez votre inscription : ${confirmationUrl}`,
+      html: `<p>Confirmez votre inscription à la newsletter LUSHIPOST :</p><p><a href="${confirmationUrl}">Confirmer mon inscription</a></p>`,
+    });
 
     return NextResponse.json({
       message: "Merci ! Un e-mail de confirmation vous a été envoyé.",

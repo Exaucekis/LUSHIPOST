@@ -21,8 +21,10 @@ enum Role {
 enum ArticleStatus {
   BROUILLON
   EN_REVISION
+  APPROUVE
   PROGRAMME
   PUBLIE
+  REFUSE
   ARCHIVE
 }
 
@@ -58,6 +60,7 @@ enum NotificationType {
   PUSH
   NEWSLETTER
   BREAKING
+  MODERATION
 }
 
 model User {
@@ -77,6 +80,9 @@ model User {
   media         Media[]
   comments      Comment[]
   auditLogs     AuditLog[]
+  reviewedArticles Article[] @relation("ArticleReviewer")
+  articleStatusChanges ArticleStatusHistory[] @relation("ArticleStatusChangedBy")
+  notifications Notification[]
   accounts      Account[]
   sessions      Session[]
 }
@@ -193,17 +199,22 @@ model Article {
   readTimeMinutes Int           @default(5)
   publishedAt     DateTime?
   scheduledAt     DateTime?
+  submittedAt     DateTime?
+  reviewedAt      DateTime?
+  rejectionReason String?       @db.Text
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
   categoryId      String
   authorId        String?
   userId          String?
+  reviewedById    String?
   sourceId        String?
 
   category        Category      @relation(fields: [categoryId], references: [id])
   author          Author?       @relation(fields: [authorId], references: [id])
   user            User?         @relation(fields: [userId], references: [id])
+  reviewedBy      User?         @relation("ArticleReviewer", fields: [reviewedById], references: [id])
   source          Source?       @relation(fields: [sourceId], references: [id])
   tags            ArticleTag[]
   comments        Comment[]
@@ -211,11 +222,15 @@ model Article {
   homepageSlots   HomepageSlot[]
   breakingNews    BreakingNews[]
   liveEvents      LiveEvent[]
+  statusHistory   ArticleStatusHistory[]
+  notifications   Notification[]
 
   @@index([status, publishedAt])
   @@index([categoryId])
   @@index([slug])
   @@index([isFeatured])
+  @@index([userId, status])
+  @@index([reviewedById])
 }
 
 model ArticleTag {
@@ -353,8 +368,33 @@ model Notification {
   body      String
   type      NotificationType
   url       String?
+  isRead    Boolean          @default(false)
+  userId    String?
+  articleId String?
   sentAt    DateTime?
   createdAt DateTime         @default(now())
+
+  user      User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  article   Article?         @relation(fields: [articleId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead, createdAt])
+}
+
+// Journal immuable du workflow éditorial. Il rend chaque décision traçable.
+model ArticleStatusHistory {
+  id          String        @id @default(cuid())
+  articleId   String
+  fromStatus  ArticleStatus?
+  toStatus    ArticleStatus
+  reason      String?       @db.Text
+  changedById String?
+  createdAt   DateTime      @default(now())
+
+  article     Article       @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  changedBy   User?         @relation("ArticleStatusChangedBy", fields: [changedById], references: [id], onDelete: SetNull)
+
+  @@index([articleId, createdAt])
+  @@index([changedById])
 }
 
 model SocialLink {

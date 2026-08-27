@@ -3,6 +3,7 @@ import { getLiveEvents } from "@/lib/data/articles";
 import Link from "next/link";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { LIVE_BRAND } from "@/lib/constants";
+import { getSafeEmbedUrl, sanitizeLiveEmbedHtml } from "@/lib/content-sanitizer";
 
 export const metadata: Metadata = {
   title: LIVE_BRAND,
@@ -45,13 +46,13 @@ export default async function LivePage() {
                       Début : {event.startedAt.toLocaleString("fr-FR")}
                     </p>
                   )}
-                  {(event.embedCode || event.streamUrl) && (
+                  {(event.embedCode || getSafeEmbedUrl(event.streamUrl)) && (
                     <div className="relative aspect-video overflow-hidden bg-black">
                       {event.embedCode ? (
-                        <div dangerouslySetInnerHTML={{ __html: event.embedCode }} />
+                        <div dangerouslySetInnerHTML={{ __html: sanitizeLiveEmbedHtml(event.embedCode) }} />
                       ) : (
                         <iframe
-                          src={event.streamUrl!}
+                          src={getSafeEmbedUrl(event.streamUrl)!}
                           title={event.title}
                           className="absolute inset-0 h-full w-full"
                           allowFullScreen

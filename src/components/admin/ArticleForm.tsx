@@ -35,6 +35,8 @@ interface ArticleFormProps {
   articleId?: string;
   initialValues?: Partial<ArticleFormValues>;
   canPublish?: boolean;
+  apiBase?: string;
+  returnPath?: string;
 }
 
 export function ArticleForm({
@@ -42,6 +44,8 @@ export function ArticleForm({
   articleId,
   initialValues,
   canPublish = false,
+  apiBase = "/api/admin/articles",
+  returnPath = "/admin/articles",
 }: ArticleFormProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -123,7 +127,7 @@ export function ArticleForm({
 
     try {
       const url =
-        mode === "create" ? "/api/admin/articles" : `/api/admin/articles/${articleId}`;
+        mode === "create" ? apiBase : `${apiBase}/${articleId}`;
       const method = mode === "create" ? "POST" : "PATCH";
       const res = await fetch(url, {
         method,
@@ -133,7 +137,7 @@ export function ArticleForm({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de l'enregistrement");
 
-      router.push(`/admin/articles/${data.id || articleId}`);
+      router.push(`${returnPath}/${data.id || articleId}`);
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur lors de l'enregistrement");
@@ -222,7 +226,7 @@ export function ArticleForm({
             className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
           >
             <option value="BROUILLON">Brouillon</option>
-            <option value="EN_REVISION">En révision</option>
+            <option value="EN_REVISION">Soumettre pour validation</option>
             <option value="PROGRAMME">Programmé</option>
             {canPublish && <option value="PUBLIE">Publié</option>}
             <option value="ARCHIVE">Archivé</option>

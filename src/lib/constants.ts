@@ -90,9 +90,11 @@ export const ROLE_LABELS: Record<string, string> = {
 
 export const STATUS_LABELS: Record<string, string> = {
   BROUILLON: "Brouillon",
-  EN_REVISION: "En révision",
+  EN_REVISION: "En attente de validation",
+  APPROUVE: "Approuvée",
   PROGRAMME: "Programmé",
   PUBLIE: "Publié",
+  REFUSE: "Refusée",
   ARCHIVE: "Archivé",
 };
 

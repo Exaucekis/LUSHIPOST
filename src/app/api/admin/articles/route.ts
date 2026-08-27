@@ -7,6 +7,7 @@ import prisma from "@/lib/prisma";
 import { ArticleStatus, ContentType } from "@prisma/client";
 
 import { articleFormSchema } from "@/lib/article-schema";
+import { statusHistoryEntry } from "@/lib/article-status-history";
 
 const createSchema = articleFormSchema;
 
@@ -58,6 +59,9 @@ export async function POST(request: Request) {
         userId: session.user.id,
         publishedAt: status === ArticleStatus.PUBLIE ? new Date() : null,
       },
+    });
+    await prisma.articleStatusHistory.create({
+      data: statusHistoryEntry(article.id, null, article.status, session.user.id),
     });
 
     await prisma.auditLog.create({
