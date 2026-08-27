@@ -6,6 +6,7 @@ import { hasPermission } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
 import { ArticleStatus, ContentType } from "@prisma/client";
 import { articleFormSchema } from "@/lib/article-schema";
+import { slugifyTitle } from "@/lib/article-schema";
 import { statusHistoryEntry } from "@/lib/article-status-history";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -74,7 +75,7 @@ export async function PATCH(request: Request, context: RouteContext) {
       where: { id },
       data: {
         title: data.title,
-        slug: data.slug,
+        slug: data.slug || existing.slug || slugifyTitle(data.title),
         subtitle: data.subtitle || null,
         excerpt: data.excerpt || null,
         content: data.content,

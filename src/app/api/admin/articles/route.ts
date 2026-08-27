@@ -7,6 +7,7 @@ import prisma from "@/lib/prisma";
 import { ArticleStatus, ContentType } from "@prisma/client";
 
 import { articleFormSchema } from "@/lib/article-schema";
+import { slugifyTitle } from "@/lib/article-schema";
 import { statusHistoryEntry } from "@/lib/article-status-history";
 
 const createSchema = articleFormSchema;
@@ -45,7 +46,7 @@ export async function POST(request: Request) {
     const article = await prisma.article.create({
       data: {
         title: data.title,
-        slug: data.slug,
+        slug: data.slug || slugifyTitle(data.title),
         subtitle: data.subtitle,
         excerpt: data.excerpt,
         content: data.content,

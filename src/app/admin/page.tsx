@@ -35,22 +35,23 @@ export default async function AdminDashboard() {
   const overviewCards = [
     { label: "Utilisateurs", value: stats.users, accent: true },
     { label: "Journalistes", value: stats.journalists },
-    { label: "Publications", value: stats.published + stats.pending + stats.drafts + stats.refused },
+    { label: "Publications", value: stats.published + stats.pending + stats.drafts + stats.refused + stats.scheduled },
     { label: "À la une", value: stats.featured },
   ];
 
   const workflowCards = [
     { label: "Brouillons", value: stats.drafts, href: "/admin/articles?status=BROUILLON" },
     { label: "À valider", value: stats.pending, href: "/admin/articles?status=EN_REVISION" },
+    { label: "Programmées", value: stats.scheduled, href: "/admin/articles?status=PROGRAMME" },
     { label: "Refusées", value: stats.refused, href: "/admin/articles?status=REFUSE" },
     { label: "Publiées", value: stats.published, href: "/admin/articles?status=PUBLIE" },
   ];
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <header className="mb-8">
-        <h1 className="text-2xl font-bold sm:text-3xl">{SITE_NAME} Newsroom</h1>
-        <p className="mt-1 text-sm text-lp-gray sm:text-base">Tableau de bord éditorial</p>
+    <div className="lp-dashboard mx-auto max-w-7xl">
+      <header className="lp-dashboard-header">
+        <div><p className="lp-dashboard-eyebrow">Centre de contrôle</p><h1 className="text-3xl font-bold sm:text-4xl">{SITE_NAME} Newsroom</h1><p className="mt-2 text-sm text-lp-gray sm:text-base">Pilotez la rédaction, les publications et la visibilité du site.</p></div>
+        <Link href="/admin/articles/new" className="lp-btn-accent">+ Nouvel article</Link>
       </header>
 
       {dbError && (
@@ -61,13 +62,11 @@ export default async function AdminDashboard() {
 
       <section className="mb-8">
         <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-lp-gray">Vue d&apos;ensemble</h2>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
           {overviewCards.map((card) => (
             <div
               key={card.label}
-              className={`rounded-lg border bg-white p-5 ${
-                card.accent ? "border-lp-accent" : "border-gray-200"
-              }`}
+              className={`lp-kpi-card ${card.accent ? "border-lp-accent/30" : ""}`}
             >
               <p className="text-xs font-bold uppercase tracking-wider text-lp-gray">{card.label}</p>
               <p className={`mt-2 text-3xl font-black ${card.accent ? "text-lp-accent" : ""}`}>
@@ -78,6 +77,13 @@ export default async function AdminDashboard() {
         </div>
       </section>
 
+      <section className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <Link href="/admin/articles?status=EN_REVISION" className="lp-action-card border-amber-200 bg-amber-50"><p className="relative font-bold text-amber-950">Modération</p><p className="relative mt-1 text-sm text-amber-900">Examiner les publications en attente</p></Link>
+        <Link href="/admin/users?scope=staff" className="lp-action-card"><p className="relative font-bold">Journalistes</p><p className="relative mt-1 text-sm text-lp-gray">Créer et gérer la rédaction</p></Link>
+        <Link href="/admin/homepage" className="lp-action-card"><p className="relative font-bold">À la une</p><p className="relative mt-1 text-sm text-lp-gray">Choisir les contenus mis en avant</p></Link>
+        <Link href="/admin/categories" className="lp-action-card"><p className="relative font-bold">Rubriques</p><p className="relative mt-1 text-sm text-lp-gray">Organiser les catégories du site</p></Link>
+      </section>
+
       <section className="mb-8">
         <h2 className="mb-4 text-xs font-bold uppercase tracking-wider text-lp-gray">Production éditoriale</h2>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -85,7 +91,7 @@ export default async function AdminDashboard() {
             <Link
               key={card.label}
               href={card.href}
-              className="rounded-lg border border-gray-200 bg-white p-5 transition-colors hover:border-lp-accent/40 hover:bg-gray-50"
+              className="lp-kpi-card"
             >
               <p className="text-xs font-bold uppercase tracking-wider text-lp-gray">{card.label}</p>
               <p className="mt-2 text-3xl font-black">{card.value}</p>
@@ -94,8 +100,8 @@ export default async function AdminDashboard() {
         </div>
       </section>
 
-      <section className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-        <div className="flex flex-col gap-2 border-b border-gray-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+      <section className="lp-panel">
+        <div className="lp-panel-heading">
           <h2 className="font-bold">Dernières activités</h2>
           <Link href="/admin/articles" className="text-sm font-semibold text-lp-accent hover:underline">
             Voir tous les articles

@@ -61,7 +61,7 @@ export function AdminSidebar() {
 
   const sidebarContent = (
     <>
-      <div className="shrink-0 border-b border-white/10 p-5">
+      <div className="shrink-0 border-b border-white/10 bg-white/[0.03] p-5">
         <Link href="/admin" className="block" onClick={() => setMobileOpen(false)}>
           <Image
             src="/logo/lushipost-monogram.png"
@@ -86,10 +86,10 @@ export function AdminSidebar() {
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
                   className={cn(
-                    "flex items-center gap-3 rounded px-3 py-2.5 text-sm transition-colors",
+                    "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-300",
                     active
-                      ? "bg-white/15 font-semibold text-white"
-                      : "text-white/75 hover:bg-white/10 hover:text-white"
+                      ? "bg-lp-accent font-semibold text-white shadow-lg shadow-black/20"
+                      : "text-white/75 hover:translate-x-1 hover:bg-white/10 hover:text-white"
                   )}
                 >
                   <item.icon className="h-4 w-4 shrink-0" />
@@ -149,7 +149,7 @@ export function AdminSidebar() {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-[60] flex w-64 flex-col bg-lp-anthracite text-white transition-transform md:translate-x-0",
+          "fixed inset-y-0 left-0 z-[60] flex w-64 flex-col bg-[linear-gradient(160deg,#111827_0%,#1a1a1a_52%,#33111a_100%)] text-white shadow-2xl shadow-black/20 transition-transform md:translate-x-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
       >

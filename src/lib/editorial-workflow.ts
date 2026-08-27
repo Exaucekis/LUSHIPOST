@@ -32,7 +32,8 @@ export async function notifyJournalist(
   articleId: string,
   title: string,
   approved: boolean,
-  reason?: string
+  reason?: string,
+  scheduledAt?: Date | null
 ) {
   if (!userId) return;
 
@@ -43,7 +44,9 @@ export async function notifyJournalist(
       type: "MODERATION",
       title: approved ? "Publication approuvée" : "Publication refusée",
       body: approved
-        ? `« ${title} » est approuvée et visible sur le site.`
+        ? scheduledAt
+          ? `« ${title} » est approuvée et sera publiée le ${scheduledAt.toLocaleString("fr-FR")}.`
+          : `« ${title} » est approuvée et visible sur le site.`
         : `« ${title} » a été refusée : ${reason}`,
       url: `/journaliste/articles/${articleId}`,
     },

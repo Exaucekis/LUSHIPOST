@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { ImagePlus } from "lucide-react";
 
 export function MediaUploadPanel() {
+  const router = useRouter();
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export function MediaUploadPanel() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Upload échoué");
       setMessage(`Fichier uploadé (${data.storage === "s3" ? "cloud S3" : "local"}) : ${data.url}`);
-      window.location.reload();
+      router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload échoué");
     } finally {
@@ -29,7 +31,7 @@ export function MediaUploadPanel() {
   };
 
   return (
-    <div className="mb-6 rounded-lg border bg-white p-4">
+    <div className="lp-panel mb-6 p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="font-semibold">Uploader un média</p>
@@ -37,7 +39,7 @@ export function MediaUploadPanel() {
             S3 cloud si variables S3_* configurées, sinon stockage local (/uploads).
           </p>
         </div>
-        <label className="inline-flex cursor-pointer items-center gap-2 border px-4 py-2 text-sm font-semibold hover:bg-lp-light">
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold transition hover:-translate-y-0.5 hover:border-lp-accent hover:bg-lp-accent-soft">
           <ImagePlus className="h-4 w-4" />
           {uploading ? "Upload..." : "Choisir un fichier"}
           <input

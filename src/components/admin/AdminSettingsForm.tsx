@@ -95,19 +95,19 @@ export function AdminSettingsForm() {
         <p className="rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
       )}
 
-      <section className="rounded-lg border bg-white p-6">
+      <section className="lp-form-shell">
         <h2 className="mb-4 font-bold">Identité du site</h2>
         <label className="mb-1 block text-xs font-bold uppercase">Signature éditoriale</label>
         <input
           value={tagline}
           onChange={(e) => setTagline(e.target.value)}
           required
-          className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
+          className="lp-form-input"
           placeholder="L'information au cœur de Lubumbashi."
         />
       </section>
 
-      <section className="rounded-lg border bg-white p-6">
+      <section className="lp-form-shell">
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-bold">Réseaux sociaux</h2>
           <button type="button" onClick={addLink} className="inline-flex items-center gap-1 text-sm font-semibold text-lp-accent">
@@ -116,11 +116,11 @@ export function AdminSettingsForm() {
         </div>
         <div className="space-y-4">
           {socialLinks.map((link, index) => (
-            <div key={link.id || `new-${index}`} className="grid gap-3 rounded border p-4 sm:grid-cols-[140px_1fr_auto_auto] sm:items-center">
+            <div key={link.id || `new-${index}`} className="grid gap-3 rounded-xl border border-gray-100 bg-gray-50/70 p-4 transition hover:border-lp-accent/20 sm:grid-cols-[140px_1fr_auto_auto] sm:items-center">
               <select
                 value={link.platform}
                 onChange={(e) => updateLink(index, "platform", e.target.value)}
-                className="border px-3 py-2 text-sm focus:border-lp-accent focus:outline-none"
+                className="lp-form-input py-2 text-sm"
               >
                 {PLATFORMS.map((p) => (
                   <option key={p} value={p}>{p}</option>
@@ -130,7 +130,7 @@ export function AdminSettingsForm() {
                 value={link.url}
                 onChange={(e) => updateLink(index, "url", e.target.value)}
                 placeholder="facebook.com/votre-page ou https://..."
-                className="border px-3 py-2 text-sm focus:border-lp-accent focus:outline-none"
+                className="lp-form-input py-2 text-sm"
               />
               <label className="flex items-center gap-2 text-sm">
                 <input

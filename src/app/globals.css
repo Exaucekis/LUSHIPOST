@@ -236,6 +236,109 @@
       rgb(0 0 0 / 0.15) 100%
     );
   }
+
+  /* Espaces de gestion : lisibles, réactifs et cohérents sur tous les écrans. */
+  .lp-dashboard {
+    @apply min-h-full rounded-3xl bg-[#f5f6f8] p-4 sm:p-6 lg:p-8;
+    background-image: radial-gradient(circle at 100% 0%, rgb(196 30 58 / .08), transparent 30rem);
+  }
+
+  .lp-dashboard-header {
+    @apply mb-8 flex flex-wrap items-end justify-between gap-4;
+  }
+
+  .lp-dashboard-eyebrow {
+    @apply mb-2 text-[11px] font-black uppercase tracking-[0.2em] text-lp-accent;
+  }
+
+  .lp-kpi-card {
+    @apply relative overflow-hidden rounded-2xl border border-white/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
+    animation: dashboardEnter .45s ease-out both;
+  }
+
+  .lp-kpi-card::after {
+    content: "";
+    @apply absolute inset-x-0 bottom-0 h-1 bg-lp-accent/80;
+  }
+
+  .lp-action-card {
+    @apply group relative overflow-hidden rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-lp-accent/30 hover:shadow-xl;
+  }
+
+  .lp-action-card::before {
+    content: "";
+    @apply absolute -right-8 -top-8 h-24 w-24 rounded-full bg-lp-accent/5 transition-transform duration-500 group-hover:scale-[2.5];
+  }
+
+  .lp-panel {
+    @apply overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm;
+    animation: dashboardEnter .55s ease-out both;
+  }
+
+  .lp-panel-heading {
+    @apply flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-5 py-4 sm:px-6;
+  }
+
+  .lp-form-shell {
+    @apply rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-7;
+  }
+
+  .lp-form-input {
+    @apply w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 transition-all outline-none placeholder:text-gray-400 focus:border-lp-accent focus:bg-white focus:ring-4 focus:ring-lp-accent/10;
+  }
+
+  .lp-admin-page > :not(.lp-dashboard) {
+    @apply mx-auto max-w-7xl rounded-3xl bg-[#f8f9fb] p-5 sm:p-7 lg:p-8;
+    min-height: calc(100vh - 3.5rem);
+    background-image: radial-gradient(circle at 100% 0%, rgb(196 30 58 / .07), transparent 28rem);
+    animation: dashboardEnter .45s ease-out both;
+  }
+
+  .lp-admin-page h1 {
+    @apply tracking-tight text-[#172033];
+  }
+
+  .lp-admin-page input:not([type="checkbox"]):not([type="file"]),
+  .lp-admin-page select,
+  .lp-admin-page textarea {
+    @apply rounded-xl border-gray-200 bg-white transition-all duration-200;
+  }
+
+  .lp-admin-page input:not([type="checkbox"]):not([type="file"]):focus,
+  .lp-admin-page select:focus,
+  .lp-admin-page textarea:focus {
+    @apply border-lp-accent ring-4 ring-lp-accent/10 outline-none;
+  }
+
+  .lp-admin-page table {
+    @apply overflow-hidden;
+  }
+
+  .lp-admin-page tbody tr {
+    @apply transition-colors duration-200 hover:bg-lp-accent/[0.035];
+  }
+
+  .lp-admin-page button:not(:disabled) {
+    @apply transition-all duration-200;
+  }
+
+  .lp-admin-page button:not(:disabled):active {
+    transform: scale(.98);
+  }
+
+  .lp-admin-page .rounded-lg.border.bg-white,
+  .lp-admin-page .rounded-lg.border.border-gray-200.bg-white,
+  .lp-admin-page .overflow-hidden.rounded-lg.border.bg-white,
+  .lp-admin-page .overflow-hidden.rounded-lg.border.border-gray-200.bg-white {
+    @apply rounded-2xl border-gray-200/80 shadow-sm;
+  }
+
+  .lp-status-dot { @apply mr-2 inline-block h-2 w-2 rounded-full bg-current; }
+
+  @keyframes dashboardEnter {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 }
 
 @layer utilities {

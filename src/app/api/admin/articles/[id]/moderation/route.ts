@@ -36,15 +36,16 @@ export async function PATCH(request: Request, context: RouteContext) {
     }
 
     const approved = action === "approve";
+    const willBeScheduled = approved && !!existing.scheduledAt && existing.scheduledAt > new Date();
     const article = await prisma.$transaction(async (tx) => {
       const updated = await tx.article.update({
         where: { id },
         data: {
-        status: approved ? ArticleStatus.PUBLIE : ArticleStatus.REFUSE,
+        status: approved ? (willBeScheduled ? ArticleStatus.PROGRAMME : ArticleStatus.PUBLIE) : ArticleStatus.REFUSE,
         reviewedAt: new Date(),
         reviewedById: session.user.id,
         rejectionReason: approved ? null : reason!,
-        publishedAt: approved ? new Date() : null,
+        publishedAt: approved && !willBeScheduled ? new Date() : null,
         },
       });
       // L'approbation est enregistrée explicitement, puis la publication
@@ -53,7 +54,7 @@ export async function PATCH(request: Request, context: RouteContext) {
         await tx.articleStatusHistory.createMany({
           data: [
             statusHistoryEntry(id, existing.status, ArticleStatus.APPROUVE, session.user.id),
-            statusHistoryEntry(id, ArticleStatus.APPROUVE, ArticleStatus.PUBLIE, session.user.id),
+            statusHistoryEntry(id, ArticleStatus.APPROUVE, willBeScheduled ? ArticleStatus.PROGRAMME : ArticleStatus.PUBLIE, session.user.id),
           ],
         });
       } else {
@@ -74,7 +75,7 @@ export async function PATCH(request: Request, context: RouteContext) {
           details: { title: article.title, reason: approved ? undefined : reason },
         },
       }),
-      notifyJournalist(article.userId, article.id, article.title, approved, reason),
+      notifyJournalist(article.userId, article.id, article.title, approved, reason, article.scheduledAt),
     ]);
 
     return NextResponse.json({ article });

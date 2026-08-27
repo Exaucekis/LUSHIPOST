@@ -24,8 +24,8 @@ export default function EditJournalistArticlePage({ params }: { params: Promise<
       setReason(article.rejectionReason);
       setInitialValues({
         title: article.title, slug: article.slug, subtitle: article.subtitle || "", excerpt: article.excerpt || "", content: article.content,
-        categoryId: article.categoryId, status: article.status, contentType: article.contentType, featuredImage: article.featuredImage || "",
-        featuredImageAlt: article.featuredImageAlt || "", geoZone: article.geoZone || "", scheduledAt: "",
+        categoryId: article.categoryId, status: article.scheduledAt && article.status !== "PUBLIE" ? "PROGRAMME" : article.status, contentType: article.contentType, featuredImage: article.featuredImage || "",
+        featuredImageAlt: article.featuredImageAlt || "", geoZone: article.geoZone || "", scheduledAt: article.scheduledAt ? new Date(article.scheduledAt).toISOString().slice(0, 16) : "",
       });
     }).catch(() => setError("Chargement impossible"));
   }, [params]);

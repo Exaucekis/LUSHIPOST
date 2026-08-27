@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ImagePlus, Library } from "lucide-react";
 import type { ArticleFormValues } from "@/lib/article-schema";
-import { slugifyTitle } from "@/lib/article-schema";
 
 type Category = { id: string; name: string; slug: string };
 
@@ -80,9 +79,6 @@ export function ArticleForm({
   const update = (field: keyof ArticleFormValues, value: string) => {
     setForm((prev) => {
       const next = { ...prev, [field]: value };
-      if (field === "title" && mode === "create" && !prev.slug) {
-        next.slug = slugifyTitle(value);
-      }
       return next;
     });
   };
@@ -147,30 +143,21 @@ export function ArticleForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl space-y-6">
+    <form onSubmit={handleSubmit} className="max-w-4xl space-y-6 lp-fade-in">
       {error && (
         <p className="rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           {error}
         </p>
       )}
 
-      <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-6">
+      <div className="lp-form-shell space-y-5">
         <div>
           <label className="mb-1 block text-xs font-bold uppercase">Titre *</label>
           <input
             value={form.title}
             onChange={(e) => update("title", e.target.value)}
             required
-            className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-bold uppercase">Slug *</label>
-          <input
-            value={form.slug}
-            onChange={(e) => update("slug", e.target.value)}
-            required
-            className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
+            className="lp-form-input"
           />
         </div>
         <div>
@@ -178,7 +165,7 @@ export function ArticleForm({
           <input
             value={form.subtitle || ""}
             onChange={(e) => update("subtitle", e.target.value)}
-            className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
+            className="lp-form-input"
           />
         </div>
         <div>
@@ -187,7 +174,7 @@ export function ArticleForm({
             value={form.excerpt || ""}
             onChange={(e) => update("excerpt", e.target.value)}
             rows={2}
-            className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
+            className="lp-form-input"
           />
         </div>
         <div>
@@ -197,7 +184,7 @@ export function ArticleForm({
             onChange={(e) => update("content", e.target.value)}
             required
             rows={14}
-            className="w-full border px-4 py-2 font-mono text-sm focus:border-lp-accent focus:outline-none"
+            className="lp-form-input min-h-72 font-mono text-sm leading-relaxed"
             placeholder="HTML autorisé : <p>, <h2>, <blockquote>..."
           />
         </div>
@@ -210,7 +197,7 @@ export function ArticleForm({
             value={form.categoryId}
             onChange={(e) => update("categoryId", e.target.value)}
             required
-            className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
+            className="lp-form-input"
           >
             <option value="">Sélectionner...</option>
             {categories.map((c) => (
@@ -219,62 +206,43 @@ export function ArticleForm({
           </select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-bold uppercase">Statut</label>
+          <label className="mb-1 block text-xs font-bold uppercase">Décision éditoriale</label>
           <select
             value={form.status}
             onChange={(e) => update("status", e.target.value)}
-            className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
+            className="lp-form-input"
           >
             <option value="BROUILLON">Brouillon</option>
             <option value="EN_REVISION">Soumettre pour validation</option>
-            <option value="PROGRAMME">Programmé</option>
-            {canPublish && <option value="PUBLIE">Publié</option>}
-            <option value="ARCHIVE">Archivé</option>
+            {!canPublish && <option value="PROGRAMME">Programmer et soumettre pour validation</option>}
+            {canPublish && <option value="PROGRAMME">Programmer la publication</option>}
+            {canPublish && <option value="PUBLIE">Publier immédiatement</option>}
           </select>
           {!canPublish && (
             <p className="mt-1 text-xs text-lp-gray">
-              La publication directe nécessite un rôle éditorial supérieur.
+              Toute publication soumise est examinée par l&apos;administration avant diffusion.
             </p>
           )}
         </div>
-        <div>
-          <label className="mb-1 block text-xs font-bold uppercase">Type de contenu</label>
-          <select
-            value={form.contentType}
-            onChange={(e) => update("contentType", e.target.value)}
-            className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
-          >
-            <option value="FAITS">Faits</option>
-            <option value="ANALYSE">Analyse</option>
-            <option value="OPINION">Opinion</option>
-          </select>
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-bold uppercase">Zone géographique</label>
-          <input
-            value={form.geoZone || ""}
-            onChange={(e) => update("geoZone", e.target.value)}
-            placeholder="Lubumbashi, Likasi..."
-            className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
-          />
-        </div>
         {form.status === "PROGRAMME" && (
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs font-bold uppercase">Date de publication programmée</label>
+            <label className="mb-1 block text-xs font-bold uppercase">Date et heure de publication</label>
             <input
               type="datetime-local"
               value={form.scheduledAt || ""}
               onChange={(e) => update("scheduledAt", e.target.value)}
-              className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
+              required
+              className="lp-form-input"
             />
+            {!canPublish && <p className="mt-1 text-xs text-lp-gray">L&apos;article sera envoyé à l&apos;administrateur pour validation avant cette date.</p>}
           </div>
         )}
       </div>
 
-      <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-6">
+      <div className="lp-form-shell space-y-4">
         <h2 className="text-sm font-bold uppercase tracking-wider">Image principale</h2>
         <div className="flex flex-wrap gap-3">
-          <label className="inline-flex cursor-pointer items-center gap-2 border px-4 py-2 text-sm font-semibold hover:bg-lp-light">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition hover:border-lp-accent hover:bg-lp-accent-soft">
             <ImagePlus className="h-4 w-4" />
             {uploading ? "Upload..." : "Uploader"}
             <input
@@ -291,27 +259,11 @@ export function ArticleForm({
           <button
             type="button"
             onClick={() => setShowMediaPicker((v) => !v)}
-            className="inline-flex items-center gap-2 border px-4 py-2 text-sm font-semibold hover:bg-lp-light"
+            className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition hover:border-lp-accent hover:bg-lp-accent-soft"
           >
             <Library className="h-4 w-4" />
             Médiathèque
           </button>
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-bold uppercase">URL de l&apos;image</label>
-          <input
-            value={form.featuredImage || ""}
-            onChange={(e) => update("featuredImage", e.target.value)}
-            className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
-          />
-        </div>
-        <div>
-          <label className="mb-1 block text-xs font-bold uppercase">Texte alternatif</label>
-          <input
-            value={form.featuredImageAlt || ""}
-            onChange={(e) => update("featuredImageAlt", e.target.value)}
-            className="w-full border px-4 py-2 focus:border-lp-accent focus:outline-none"
-          />
         </div>
         {form.featuredImage && (
           <div className="overflow-hidden rounded border">
@@ -346,7 +298,7 @@ export function ArticleForm({
 
       <div className="flex flex-wrap gap-3">
         <button type="submit" disabled={loading} className="lp-btn-accent disabled:opacity-50">
-          {loading ? "Enregistrement..." : mode === "create" ? "Créer l'article" : "Enregistrer les modifications"}
+          {loading ? "Enregistrement..." : form.status === "EN_REVISION" ? "Soumettre pour validation" : form.status === "PROGRAMME" ? "Programmer et soumettre" : mode === "create" ? "Enregistrer le brouillon" : "Enregistrer les modifications"}
         </button>
         <button type="button" onClick={() => router.back()} className="lp-btn-outline">
           Annuler

@@ -65,7 +65,7 @@ export function CreateStaffUserForm() {
       ) : (
         <form
           onSubmit={handleSubmit}
-          className="rounded-lg border border-gray-200 bg-white p-6"
+          className="lp-form-shell"
         >
           <h2 className="mb-4 text-lg font-bold">Nouveau compte rédaction</h2>
           <p className="mb-4 text-sm text-lp-gray">
@@ -83,7 +83,7 @@ export function CreateStaffUserForm() {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 required
-                className="w-full border border-gray-300 px-3 py-2 focus:border-lp-accent focus:outline-none"
+                className="lp-form-input"
               />
             </div>
             <div>
@@ -95,7 +95,7 @@ export function CreateStaffUserForm() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 required
-                className="w-full border border-gray-300 px-3 py-2 focus:border-lp-accent focus:outline-none"
+                className="lp-form-input"
               />
             </div>
             <div>
@@ -105,7 +105,7 @@ export function CreateStaffUserForm() {
               <select
                 value={form.role}
                 onChange={(e) => setForm({ ...form, role: e.target.value })}
-                className="w-full border border-gray-300 px-3 py-2 focus:border-lp-accent focus:outline-none"
+                className="lp-form-input"
               >
                 {STAFF_ROLE_OPTIONS.map((role) => (
                   <option key={role} value={role}>
@@ -124,7 +124,7 @@ export function CreateStaffUserForm() {
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 required
                 minLength={8}
-                className="w-full border border-gray-300 px-3 py-2 focus:border-lp-accent focus:outline-none"
+                className="lp-form-input"
               />
             </div>
           </div>
@@ -142,7 +142,7 @@ export function CreateStaffUserForm() {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="border border-gray-300 px-6 py-2 text-sm font-semibold hover:bg-gray-50"
+              className="rounded-xl border border-gray-300 px-6 py-2 text-sm font-semibold transition hover:bg-gray-50"
             >
               Annuler
             </button>

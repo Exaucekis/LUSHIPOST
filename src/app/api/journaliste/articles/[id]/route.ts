@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/auth";
 import { isJournalistRole } from "@/lib/roles";
 import prisma from "@/lib/prisma";
 import { articleFormSchema } from "@/lib/article-schema";
+import { slugifyTitle } from "@/lib/article-schema";
 import { notifyModerators } from "@/lib/editorial-workflow";
 import { statusHistoryEntry } from "@/lib/article-status-history";
 
@@ -37,14 +38,17 @@ export async function PATCH(request: Request, context: RouteContext) {
     }
 
     const data = articleFormSchema.parse(await request.json());
-    const submitted = data.status === "EN_REVISION";
+    const scheduled = data.status === "PROGRAMME";
+    const submitted = data.status === "EN_REVISION" || scheduled;
+    const scheduledAt = scheduled && data.scheduledAt ? new Date(data.scheduledAt) : null;
+    if (scheduled && (!scheduledAt || scheduledAt <= new Date())) return NextResponse.json({ error: "Choisissez une date et une heure futures pour programmer la publication." }, { status: 400 });
     const nextStatus = submitted ? ArticleStatus.EN_REVISION : ArticleStatus.BROUILLON;
     const article = await prisma.$transaction(async (tx) => {
       const updated = await tx.article.update({
         where: { id },
         data: {
         title: data.title,
-        slug: data.slug,
+        slug: data.slug || existing.slug || slugifyTitle(data.title),
         subtitle: data.subtitle || null,
         excerpt: data.excerpt || null,
         content: data.content,
@@ -55,6 +59,7 @@ export async function PATCH(request: Request, context: RouteContext) {
         geoZone: data.geoZone || null,
         status: nextStatus,
         submittedAt: submitted ? new Date() : existing.submittedAt,
+        scheduledAt,
         rejectionReason: submitted ? null : existing.rejectionReason,
         reviewedAt: submitted ? null : existing.reviewedAt,
         reviewedById: submitted ? null : existing.reviewedById,

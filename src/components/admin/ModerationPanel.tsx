@@ -28,21 +28,20 @@ export function ModerationPanel({ articleId }: { articleId: string }) {
       return;
     }
     router.refresh();
-    window.location.reload();
   };
 
   return (
-    <section className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-5">
+    <section className="lp-panel mb-6 border-amber-200 bg-amber-50 p-5">
       <h2 className="font-bold text-amber-950">Validation éditoriale</h2>
       <p className="mt-1 text-sm text-amber-900">Cette publication est en attente. Son auteur sera notifié de votre décision.</p>
       <label className="mt-4 block text-xs font-bold uppercase tracking-wider text-amber-950">Motif en cas de refus</label>
-      <textarea value={reason} onChange={(event) => setReason(event.target.value)} rows={3} className="mt-1 w-full border border-amber-200 bg-white px-3 py-2 text-sm" placeholder="Expliquez clairement les corrections attendues…" />
+      <textarea value={reason} onChange={(event) => setReason(event.target.value)} rows={3} className="lp-form-input mt-1 border-amber-200 text-sm" placeholder="Expliquez clairement les corrections attendues…" />
       {error && <p className="mt-2 text-sm text-red-700">{error}</p>}
       <div className="mt-4 flex flex-wrap gap-3">
-        <button type="button" onClick={() => moderate("approve")} disabled={loading !== null} className="bg-green-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
+        <button type="button" onClick={() => moderate("approve")} disabled={loading !== null} className="rounded-xl bg-green-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-green-800 disabled:opacity-60">
           {loading === "approve" ? "Publication…" : "Approuver et publier"}
         </button>
-        <button type="button" onClick={() => moderate("reject")} disabled={loading !== null} className="bg-red-700 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60">
+        <button type="button" onClick={() => moderate("reject")} disabled={loading !== null} className="rounded-xl bg-red-700 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-red-800 disabled:opacity-60">
           {loading === "reject" ? "Refus…" : "Refuser avec motif"}
         </button>
       </div>

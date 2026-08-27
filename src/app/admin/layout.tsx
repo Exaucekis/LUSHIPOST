@@ -17,10 +17,12 @@ export default async function AdminLayout({
 
   return (
     <AdminProviders>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-[#edf0f5]">
         <AdminSidebar />
         <div className="md:pl-64">
-          <main className="min-h-screen p-4 sm:p-6 lg:p-8">{children}</main>
+          <main className="min-h-screen p-3 sm:p-5 lg:p-7">
+            <div className="lp-admin-page">{children}</div>
+          </main>
         </div>
       </div>
     </AdminProviders>

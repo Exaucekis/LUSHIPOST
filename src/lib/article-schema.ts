@@ -2,7 +2,9 @@ import { z } from "zod";
 
 export const articleFormSchema = z.object({
   title: z.string().min(5),
-  slug: z.string().min(3),
+  // Généré depuis le titre côté serveur : ce détail technique reste invisible
+  // au journaliste.
+  slug: z.string().min(3).optional(),
   subtitle: z.string().optional(),
   excerpt: z.string().optional(),
   content: z.string().min(10),
