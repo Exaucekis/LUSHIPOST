@@ -18,8 +18,8 @@ export function HeroSection({ hero }: HeroSectionProps) {
 
   return (
     <section className="lp-container py-6 sm:py-8" aria-label="À la une">
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
+      <div className="mb-4 flex min-w-0 items-center justify-between gap-3">
+        <div className="min-w-0 flex items-center gap-3">
           <span className="text-xs font-bold uppercase tracking-[0.2em] text-lp-accent">
             Édition du jour
           </span>
@@ -61,7 +61,7 @@ export function HeroSection({ hero }: HeroSectionProps) {
           {secondary.map((article, i) => (
             <div
               key={article.id}
-              className={`lp-fade-in lp-stagger-${Math.min(i + 1, 4)}`}
+              className={`min-w-0 lp-fade-in lp-stagger-${Math.min(i + 1, 4)}`}
             >
               <ArticleCard article={article} variant="horizontal" />
             </div>

@@ -409,10 +409,15 @@ export const getHomepageData = cache(async function getHomepageData(
 
 export async function incrementArticleViews(articleId: string) {
   try {
-    await prisma.article.update({
-      where: { id: articleId },
-      data: { viewCount: { increment: 1 } },
-    });
+    // Keep the global counter fast for article cards and retain each reading event
+    // so the dashboard can display the real daily traffic trend.
+    await prisma.$transaction([
+      prisma.article.update({
+        where: { id: articleId },
+        data: { viewCount: { increment: 1 } },
+      }),
+      prisma.articleView.create({ data: { articleId } }),
+    ]);
   } catch {
     /* mock mode */
   }

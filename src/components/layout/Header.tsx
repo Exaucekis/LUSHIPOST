@@ -58,8 +58,8 @@ export function Header() {
       </div>
 
       <div className="lp-container">
-        <div className="relative flex h-16 items-center justify-between gap-3 md:h-[4.5rem]">
-          <div className="flex w-9 shrink-0 items-center lg:hidden">
+        <div className="grid min-h-16 grid-cols-[2.25rem_minmax(0,1fr)_auto] items-center gap-2 md:flex md:h-[4.5rem] md:gap-3">
+          <div className="flex shrink-0 items-center lg:hidden">
             <button
               type="button"
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -70,7 +70,7 @@ export function Header() {
             </button>
           </div>
 
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0 md:flex-1">
+          <div className="min-w-0 justify-self-center md:flex-1 md:justify-self-auto">
             <Logo />
           </div>
 
@@ -93,7 +93,7 @@ export function Header() {
             onSubmit={handleSearch}
             className="animate-[fadeInUp_0.2s_ease-out] border-t border-gray-100 py-4"
           >
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <input
                 type="search"
                 value={query}

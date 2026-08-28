@@ -126,7 +126,7 @@ export function AdminSidebar() {
 
   return (
     <>
-      <div className="sticky top-0 z-50 flex items-center gap-3 border-b border-gray-200 bg-white px-4 py-3 md:hidden">
+      <div className="sticky top-0 z-50 flex min-w-0 items-center gap-3 border-b border-gray-200 bg-white px-4 py-3 md:hidden">
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
@@ -135,7 +135,7 @@ export function AdminSidebar() {
         >
           <Menu className="h-5 w-5" />
         </button>
-        <span className="text-sm font-bold">{SITE_NAME} Newsroom</span>
+        <span className="truncate text-sm font-bold">{SITE_NAME} Newsroom</span>
       </div>
 
       {mobileOpen && (
@@ -149,7 +149,7 @@ export function AdminSidebar() {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-[60] flex w-64 flex-col bg-[linear-gradient(160deg,#111827_0%,#1a1a1a_52%,#33111a_100%)] text-white shadow-2xl shadow-black/20 transition-transform md:translate-x-0",
+          "fixed inset-y-0 left-0 z-[60] flex w-[min(16rem,calc(100vw-2rem))] flex-col bg-[linear-gradient(160deg,#111827_0%,#1a1a1a_52%,#33111a_100%)] text-white shadow-2xl shadow-black/20 transition-transform md:w-64 md:translate-x-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
       >

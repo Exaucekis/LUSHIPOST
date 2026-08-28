@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { Eye, ImagePlus, Library, X } from "lucide-react";
 import type { ArticleFormValues } from "@/lib/article-schema";
 
@@ -274,8 +275,7 @@ export function ArticleForm({
         </div>
         {form.featuredImage && (
           <div className="overflow-hidden rounded border">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={form.featuredImage} alt={form.featuredImageAlt || ""} className="max-h-48 w-full object-cover" />
+            <Image src={form.featuredImage} alt={form.featuredImageAlt || "Aperçu de l’image principale"} width={1600} height={900} className="max-h-48 w-full object-cover" />
           </div>
         )}
         {showMediaPicker && (
@@ -291,8 +291,7 @@ export function ArticleForm({
                 }}
                 className="overflow-hidden rounded border text-left hover:ring-2 hover:ring-lp-accent"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={item.url} alt={item.name} className="aspect-video w-full object-cover" />
+                <Image src={item.url} alt={item.name} width={640} height={360} className="aspect-video w-full object-cover" />
                 <span className="block truncate px-2 py-1 text-xs">{item.name}</span>
               </button>
             ))}
@@ -303,14 +302,14 @@ export function ArticleForm({
         )}
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <button type="button" onClick={() => { setHasPreviewed(true); setShowPreview(true); }} className="lp-btn-outline">
+      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+        <button type="button" onClick={() => { setHasPreviewed(true); setShowPreview(true); }} className="lp-btn-outline sm:w-auto">
           <Eye className="h-4 w-4" /> Prévisualiser
         </button>
-        <button type="submit" disabled={loading} className="lp-btn-accent disabled:opacity-50">
+        <button type="submit" disabled={loading} className="lp-btn-accent disabled:opacity-50 sm:w-auto">
           {loading ? "Enregistrement..." : form.status === "PUBLIE" ? "Publier immédiatement" : form.status === "EN_REVISION" ? "Soumettre pour validation" : form.status === "PROGRAMME" ? "Programmer la publication" : mode === "create" ? "Enregistrer le brouillon" : "Enregistrer les modifications"}
         </button>
-        <button type="button" onClick={() => router.back()} className="lp-btn-outline">
+        <button type="button" onClick={() => router.back()} className="lp-btn-outline sm:w-auto">
           Annuler
         </button>
       </div>
@@ -319,9 +318,9 @@ export function ArticleForm({
       {showPreview && (
         <div className="fixed inset-0 z-[70] overflow-y-auto bg-[#101828]/70 p-4 backdrop-blur-sm">
           <div className="mx-auto my-6 max-w-4xl overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4"><div><p className="lp-dashboard-eyebrow mb-0">Aperçu avant publication</p><p className="text-sm text-lp-gray">Rendu éditorial de votre article</p></div><button type="button" onClick={() => setShowPreview(false)} className="rounded-xl p-2 hover:bg-gray-100" aria-label="Fermer"><X className="h-5 w-5" /></button></div>
-            <article className="mx-auto max-w-3xl p-6 sm:p-10"><p className="lp-category-badge">{categories.find((category) => category.id === form.categoryId)?.name || "Catégorie"}</p><h1 className="mt-4 text-3xl font-bold sm:text-5xl">{form.title || "Titre de l’article"}</h1>{form.subtitle && <p className="mt-4 text-xl text-lp-gray">{form.subtitle}</p>}{form.excerpt && <p className="mt-6 border-l-4 border-lp-accent bg-lp-accent-soft px-5 py-4 text-lg font-medium text-lp-dark">{form.excerpt}</p>}{form.featuredImage && <><span className="sr-only">Image principale</span>{/* eslint-disable-next-line @next/next/no-img-element */}<img src={form.featuredImage} alt={form.featuredImageAlt || ""} className="mt-7 aspect-video w-full rounded-2xl object-cover" /></>}{form.content && <div className="lp-prose mt-8" dangerouslySetInnerHTML={{ __html: form.content }} />}</article>
-            <div className="flex justify-end border-t border-gray-100 p-4"><button type="button" onClick={() => setShowPreview(false)} className="lp-btn-accent">Revenir à l’édition</button></div>
+            <div className="flex min-w-0 items-center justify-between gap-3 border-b border-gray-100 px-4 py-4 sm:px-5"><div className="min-w-0"><p className="lp-dashboard-eyebrow mb-0">Aperçu avant publication</p><p className="truncate text-sm text-lp-gray">Rendu éditorial de votre article</p></div><button type="button" onClick={() => setShowPreview(false)} className="shrink-0 rounded-xl p-2 hover:bg-gray-100" aria-label="Fermer"><X className="h-5 w-5" /></button></div>
+            <article className="mx-auto max-w-3xl break-words p-5 sm:p-10"><p className="lp-category-badge">{categories.find((category) => category.id === form.categoryId)?.name || "Catégorie"}</p><h1 className="mt-4 text-3xl font-bold sm:text-5xl">{form.title || "Titre de l’article"}</h1>{form.subtitle && <p className="mt-4 text-xl text-lp-gray">{form.subtitle}</p>}{form.excerpt && <p className="mt-6 border-l-4 border-lp-accent bg-lp-accent-soft px-5 py-4 text-lg font-medium text-lp-dark">{form.excerpt}</p>}{form.featuredImage && <><span className="sr-only">Image principale</span><Image src={form.featuredImage} alt={form.featuredImageAlt || "Aperçu de l’image principale"} width={1600} height={900} className="mt-7 aspect-video w-full rounded-2xl object-cover" /></>}{form.content && <div className="lp-prose mt-8" dangerouslySetInnerHTML={{ __html: form.content }} />}</article>
+            <div className="flex border-t border-gray-100 p-4"><button type="button" onClick={() => setShowPreview(false)} className="lp-btn-accent w-full sm:ml-auto sm:w-auto">Revenir à l’édition</button></div>
           </div>
         </div>
       )}

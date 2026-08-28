@@ -1,6 +1,35 @@
 import { getAdminStats } from "@/lib/data/articles";
 import prisma from "@/lib/prisma";
 import { ArticleStatus } from "@prisma/client";
+import { AnalyticsTrendChart } from "@/components/admin/AnalyticsTrendChart";
+
+const ANALYTICS_TIME_ZONE = "Africa/Lubumbashi";
+
+function makeTrendData(views: { createdAt: Date }[]) {
+  const formatter = new Intl.DateTimeFormat("fr-FR", {
+    timeZone: ANALYTICS_TIME_ZONE,
+    day: "2-digit",
+    month: "short",
+  });
+  const keyFormatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: ANALYTICS_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const counts = new Map<string, number>();
+  for (const view of views) {
+    const key = keyFormatter.format(view.createdAt);
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+
+  return Array.from({ length: 14 }, (_, offset) => {
+    const date = new Date();
+    date.setDate(date.getDate() - (13 - offset));
+    const key = keyFormatter.format(date);
+    return { label: formatter.format(date).replace(".", ""), value: counts.get(key) ?? 0 };
+  });
+}
 
 export default async function AdminAnalyticsPage() {
   let dbError = false;
@@ -34,6 +63,14 @@ export default async function AdminAnalyticsPage() {
   const categories = await prisma.category.findMany().catch(() => []);
   const catMap = Object.fromEntries(categories.map((c) => [c.id, c.name]));
 
+  const periodStart = new Date();
+  periodStart.setDate(periodStart.getDate() - 13);
+  periodStart.setHours(0, 0, 0, 0);
+  const recentViews = await prisma.articleView
+    .findMany({ where: { createdAt: { gte: periodStart } }, select: { createdAt: true } })
+    .catch(() => []);
+  const trendData = makeTrendData(recentViews);
+
   return (
     <div className="mx-auto max-w-6xl">
       <h1 className="mb-2 text-2xl font-bold sm:text-3xl">Statistiques</h1>
@@ -65,6 +102,10 @@ export default async function AdminAnalyticsPage() {
           </div>
         </div>
       )}
+
+      <div className="mb-6">
+        <AnalyticsTrendChart data={trendData} />
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="rounded-lg border border-gray-200 bg-white p-5 sm:p-6">

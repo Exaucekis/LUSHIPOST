@@ -35,7 +35,7 @@ export function ArticleCard({
 
   if (variant === "horizontal") {
     return (
-      <article className="lp-card-flat group flex gap-4 py-4">
+      <article className="lp-card-flat group flex min-w-0 gap-3 py-4 sm:gap-4">
         {article.featuredImage && (
           <Link
             href={href}
@@ -163,8 +163,8 @@ export function ArticleCard({
               {article.excerpt}
             </p>
           )}
-          <div className="mt-3 flex items-center gap-2 text-xs text-lp-muted">
-            {region && <span className="uppercase">{region}</span>}
+          <div className="mt-3 flex min-w-0 items-center gap-2 text-xs text-lp-muted">
+            {region && <span className="truncate uppercase">{region}</span>}
             {region && article.publishedAt && <span>·</span>}
             {article.publishedAt && (
               <time>{formatRelativeDate(article.publishedAt)}</time>

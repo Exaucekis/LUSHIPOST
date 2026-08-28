@@ -78,7 +78,7 @@ Dans **Project Settings → Environment Variables**, ajoutez :
 openssl rand -base64 32
 ```
 
-> **Important** : après le premier déploiement, mettez à jour `NEXTAUTH_URL` et `NEXT_PUBLIC_SITE_URL` avec l'URL réelle Vercel (ex. `https://lushipost.vercel.app`).
+> **Important** : après le premier déploiement, mettez à jour `NEXTAUTH_URL` et `NEXT_PUBLIC_SITE_URL` avec l'URL réelle Vercel (ex. `https://lubumbashipost.vercel.app`).
 
 ---
 
@@ -97,7 +97,7 @@ Cliquez **Deploy**. Vercel va :
 
 ### Mettre à jour les URLs de production
 
-Une fois l'URL connue (ex. `https://lushipost.vercel.app`) :
+Une fois l'URL connue (ex. `https://lubumbashipost.vercel.app`) :
 
 1. Vercel → Settings → Environment Variables
 2. Mettez à jour `NEXTAUTH_URL` et `NEXT_PUBLIC_SITE_URL`

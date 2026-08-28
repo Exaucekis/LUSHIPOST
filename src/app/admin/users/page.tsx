@@ -34,14 +34,14 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
 
       <CreateStaffUserForm />
 
-      <form className="mb-5 flex flex-wrap gap-2" action="/admin/users">
-        <input name="q" defaultValue={q} placeholder="Rechercher un nom ou e-mail" className="border px-3 py-2 text-sm" />
+      <form className="mb-5 grid gap-2 sm:flex sm:flex-wrap" action="/admin/users">
+        <input name="q" defaultValue={q} placeholder="Rechercher un nom ou e-mail" className="min-w-0 border px-3 py-2 text-sm sm:min-w-64" />
         <select name="scope" defaultValue={scope || ""} className="border px-3 py-2 text-sm"><option value="">Tous les comptes</option><option value="subscribers">Abonnés</option><option value="staff">Rédaction</option></select>
         <button className="border px-4 py-2 text-sm font-semibold hover:bg-gray-50">Filtrer</button>
       </form>
 
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+        <table className="min-w-[760px] text-sm">
           <thead>
             <tr className="border-b bg-gray-50 text-left text-xs uppercase tracking-wider text-lp-gray">
               <th className="px-4 py-3">Nom</th>

@@ -15,12 +15,12 @@ export default async function AdminArticlesPage({ searchParams }: { searchParams
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
-        <div>
+      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h1 className="text-3xl font-bold">Articles</h1>
           <p className="text-lp-gray">{articles.length} publication{articles.length > 1 ? "s" : ""}{validStatus ? ` · ${STATUS_LABELS[validStatus]}` : ""}</p>
         </div>
-        <Link href="/admin/articles/new" className="lp-btn-accent">
+        <Link href="/admin/articles/new" className="lp-btn-accent w-full sm:w-auto">
           + Nouvel article
         </Link>
       </div>
@@ -32,8 +32,8 @@ export default async function AdminArticlesPage({ searchParams }: { searchParams
         <Link href="/admin/articles?status=REFUSE" className="border px-3 py-1.5 hover:border-lp-accent">Refusées</Link>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+        <table className="min-w-[720px] text-sm">
           <thead>
             <tr className="border-b bg-gray-50 text-left text-xs uppercase tracking-wider text-lp-gray">
               <th className="px-4 py-3">Titre</th>

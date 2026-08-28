@@ -82,6 +82,64 @@ src/
     └── permissions.ts      # RBAC éditorial
 ```
 
+## Guide d’utilisation
+
+LUBUMBASHIPOST distingue clairement le site public, l’espace journaliste et le back-office. Toutes les interfaces sont conçues pour mobile, tablette et ordinateur.
+
+### Lecteur / utilisateur
+
+Un visiteur peut :
+
+- parcourir la Une, les rubriques locales et internationales, les vidéos et les directs ;
+- lire les articles, les partager et consulter les contenus associés ;
+- utiliser la recherche par mots-clés ;
+- s’inscrire à la newsletter puis confirmer son adresse e-mail ;
+- créer ou utiliser un compte lecteur avec Google ou un lien de connexion par e-mail, selon la configuration ;
+- consulter les pages éditoriales : charte, corrections, fact-checking, sources, confidentialité et mentions légales.
+
+Les compteurs de lecture sont enregistrés à chaque consultation. La rubrique publique reste utilisable sans compte.
+
+### Journaliste
+
+Après connexion, un journaliste accède à `/journaliste` et peut :
+
+1. créer un article et l’enregistrer comme brouillon ;
+2. choisir la rubrique, le sous-titre, le chapô, la zone géographique, l’image et le contenu ;
+3. importer une image ou en choisir une dans la médiathèque ;
+4. prévisualiser son article avant publication ;
+5. soumettre un article à validation ou proposer une programmation ;
+6. suivre le statut de ses publications (brouillon, en attente, programmé, publié ou refusé) et lire le motif d’un refus ;
+7. recevoir les notifications éditoriales ;
+8. proposer une vidéo depuis son espace.
+
+Un journaliste ne publie pas directement sans permission éditoriale : son contenu suit le workflow de validation.
+
+### Administrateur et rédaction
+
+Le back-office `/admin` est protégé par authentification et permissions. Selon son rôle, le membre de la rédaction peut :
+
+- gérer les articles, les statuts, les corrections, la modération et les publications programmées ;
+- prévisualiser puis publier immédiatement les contenus autorisés ;
+- organiser les rubriques, la Une et les alertes « dernières informations » ;
+- gérer la médiathèque, les vidéos et les directs ;
+- modérer les commentaires ;
+- créer, modifier, activer ou désactiver les comptes de la rédaction ;
+- paramétrer l’identité du site, les liens sociaux et les réglages éditoriaux ;
+- consulter le tableau de bord, les contenus les plus lus et l’évolution journalière des lectures ;
+- consulter les éléments de traçabilité du workflow éditorial.
+
+### Rôles et accès
+
+| Rôle | Accès principal |
+|---|---|
+| Abonné | Lecture, newsletter et compte personnel |
+| Journaliste | Création et suivi de ses contenus, soumission à validation |
+| Éditeur | Correction et publication selon permissions |
+| Rédacteur en chef | Validation éditoriale, UNE, rubriques et publication |
+| Modérateur | Modération des commentaires |
+| Vidéaste | Gestion des vidéos et médias autorisés |
+| Super Admin | Accès complet, utilisateurs et paramètres |
+
 ## Fonctionnalités
 
 ### Site public
@@ -97,6 +155,7 @@ src/
 
 ### Back-office (/admin)
 - Dashboard newsroom avec statistiques
+- Courbe des lectures quotidiennes sur 14 jours, alimentée par les consultations enregistrées
 - Gestion articles (CRUD, statuts, programmation)
 - Gestion de la UNE
 - Médiathèque
@@ -134,6 +193,8 @@ Consultez **[DEPLOYMENT.md](./DEPLOYMENT.md)** pour le guide complet.
 
 4. Initialisez la base en local : `npm run db:push && npm run db:seed`
 5. Deploy → chaque push sur `main` redéploie automatiquement
+
+Après le déploiement, testez : la page d’accueil, une page article, la connexion, la newsletter et les espaces `/journaliste` et `/admin`. Vérifiez également que `NEXTAUTH_URL` et `NEXT_PUBLIC_SITE_URL` correspondent exactement à l’URL publique Vercel.
 
 ## SEO
 
