@@ -69,7 +69,9 @@ model User {
   passwordHash  String?
   name          String
   role          Role      @default(ABONNE)
-  avatar        String?
+  // NextAuth PrismaAdapter utilise le nom standard `image` pour la photo de profil.
+  // La colonne existante est conservée afin de ne pas perdre les données déjà stockées.
+  image         String?   @map("avatar")
   bio           String?
   twoFactorEnabled Boolean @default(false)
   isActive      Boolean   @default(true)
