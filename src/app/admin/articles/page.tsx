@@ -32,7 +32,7 @@ export default async function AdminArticlesPage({ searchParams }: { searchParams
         <Link href="/admin/articles?status=REFUSE" className="border px-3 py-1.5 hover:border-lp-accent">Refusées</Link>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+      <div className="lp-table-scroll rounded-lg border border-gray-200 bg-white">
         <table className="min-w-[720px] text-sm">
           <thead>
             <tr className="border-b bg-gray-50 text-left text-xs uppercase tracking-wider text-lp-gray">

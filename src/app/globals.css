@@ -24,6 +24,17 @@
 }
 
 @layer base {
+  :root {
+    /* A small, documented stacking scale prevents components fighting for space. */
+    --lp-layer-content: 0;
+    --lp-layer-sticky: 10;
+    --lp-layer-header: 20;
+    --lp-layer-dropdown: 30;
+    --lp-layer-overlay: 40;
+    --lp-layer-modal: 50;
+    --lp-layer-drawer: 60;
+  }
+
   html {
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
@@ -37,6 +48,10 @@
     font-size: 16px;
     line-height: 1.65;
     overflow-x: clip;
+  }
+
+  body[data-lp-drawer-open="true"] {
+    overflow: hidden;
   }
 
   img, svg, video, iframe, canvas {
@@ -73,6 +88,22 @@
 
   .lp-container > * {
     min-width: 0;
+  }
+
+  .lp-page-content {
+    min-width: 0;
+  }
+
+  .lp-table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .lp-table-scroll > table {
+    width: max-content;
+    min-width: 100%;
   }
 
   .lp-section-title {
@@ -366,6 +397,10 @@
     .lp-prose h2 { @apply mt-8 text-xl; }
     .lp-prose h3 { @apply mt-6 text-lg; }
     .lp-prose blockquote { @apply my-6 pl-4 text-base; }
+
+    .lp-admin-page > :not(.lp-dashboard) {
+      border-radius: 1rem;
+    }
   }
 
   @keyframes dashboardEnter {

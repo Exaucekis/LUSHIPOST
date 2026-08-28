@@ -116,7 +116,7 @@ export default async function AdminDashboard() {
             </Link>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="lp-table-scroll">
             <table className="w-full min-w-[640px] text-sm">
               <thead>
                 <tr className="border-b border-gray-100 bg-gray-50 text-left text-xs uppercase tracking-wider text-lp-gray">

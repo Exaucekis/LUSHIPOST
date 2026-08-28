@@ -30,7 +30,7 @@ export function Header() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 bg-lp-white transition-shadow duration-300",
+        "sticky top-0 z-[var(--lp-layer-header)] bg-lp-white transition-shadow duration-300",
         scrolled ? "shadow-[var(--shadow-lp-nav)]" : "shadow-sm"
       )}
     >

@@ -40,7 +40,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: P
         <button className="border px-4 py-2 text-sm font-semibold hover:bg-gray-50">Filtrer</button>
       </form>
 
-      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+      <div className="lp-table-scroll rounded-lg border border-gray-200 bg-white">
         <table className="min-w-[760px] text-sm">
           <thead>
             <tr className="border-b bg-gray-50 text-left text-xs uppercase tracking-wider text-lp-gray">

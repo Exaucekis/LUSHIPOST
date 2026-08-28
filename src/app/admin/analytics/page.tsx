@@ -115,10 +115,10 @@ export default async function AdminAnalyticsPage() {
           ) : (
             <ol className="space-y-3">
               {popular.map((article, i) => (
-                <li key={article.id} className="flex gap-3">
+                <li key={article.id} className="flex min-w-0 gap-3">
                   <span className="font-black text-lp-accent/30">{String(i + 1).padStart(2, "0")}</span>
-                  <div>
-                    <p className="text-sm font-medium">{article.title}</p>
+                  <div className="min-w-0">
+                    <p className="break-words text-sm font-medium">{article.title}</p>
                     <p className="text-xs text-lp-gray">
                       {article.viewCount.toLocaleString("fr-FR")} vues
                     </p>
@@ -138,8 +138,8 @@ export default async function AdminAnalyticsPage() {
               {categoryStats
                 .sort((a, b) => (b._sum.viewCount ?? 0) - (a._sum.viewCount ?? 0))
                 .map((stat) => (
-                  <li key={stat.categoryId} className="flex justify-between gap-4 text-sm">
-                    <span>{catMap[stat.categoryId] || "—"}</span>
+                  <li key={stat.categoryId} className="flex min-w-0 flex-wrap justify-between gap-x-4 gap-y-1 text-sm">
+                    <span className="min-w-0 break-words">{catMap[stat.categoryId] || "—"}</span>
                     <span className="text-right text-lp-gray">
                       {stat._count.id} articles · {(stat._sum.viewCount ?? 0).toLocaleString("fr-FR")} vues
                     </span>

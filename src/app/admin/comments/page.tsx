@@ -23,8 +23,8 @@ export default async function AdminCommentsPage() {
       <div className="space-y-4">
         {comments.map((comment) => (
           <div key={comment.id} className="rounded-lg border bg-white p-4">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-sm font-medium">
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+              <span className="min-w-0 break-words text-sm font-medium">
                 {comment.user?.name || comment.authorName || "Anonyme"}
               </span>
               <span className="rounded bg-gray-100 px-2 py-0.5 text-xs">

@@ -21,7 +21,7 @@ import {
   Menu,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { hasPermission } from "@/lib/permissions";
 import { SITE_NAME } from "@/lib/constants";
@@ -51,6 +51,18 @@ export function AdminSidebar() {
   const pathname = usePathname();
   const { data: session } = useSession();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.dataset.lpDrawerOpen = mobileOpen ? "true" : "false";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      delete document.body.dataset.lpDrawerOpen;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [mobileOpen]);
 
   const role = session?.user?.role as Role | undefined;
   const visibleItems = NAV_ITEMS.filter(
@@ -126,7 +138,7 @@ export function AdminSidebar() {
 
   return (
     <>
-      <div className="sticky top-0 z-50 flex min-w-0 items-center gap-3 border-b border-gray-200 bg-white px-4 py-3 md:hidden">
+      <div className="sticky top-0 z-[var(--lp-layer-header)] flex min-w-0 items-center gap-3 border-b border-gray-200 bg-white px-4 py-3 md:hidden">
         <button
           type="button"
           onClick={() => setMobileOpen(true)}
@@ -141,7 +153,7 @@ export function AdminSidebar() {
       {mobileOpen && (
         <button
           type="button"
-          className="fixed inset-0 z-50 bg-black/50 md:hidden"
+          className="fixed inset-0 z-[var(--lp-layer-overlay)] bg-black/50 backdrop-blur-[1px] md:hidden"
           aria-label="Fermer le menu"
           onClick={() => setMobileOpen(false)}
         />
@@ -149,7 +161,7 @@ export function AdminSidebar() {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-[60] flex w-[min(16rem,calc(100vw-2rem))] flex-col bg-[linear-gradient(160deg,#111827_0%,#1a1a1a_52%,#33111a_100%)] text-white shadow-2xl shadow-black/20 transition-transform md:w-64 md:translate-x-0",
+          "fixed inset-y-0 left-0 z-[var(--lp-layer-drawer)] flex w-[min(17rem,calc(100vw-2rem))] flex-col bg-[linear-gradient(160deg,#111827_0%,#1a1a1a_52%,#33111a_100%)] text-white shadow-2xl shadow-black/20 transition-transform duration-300 ease-out md:w-56 md:translate-x-0 lg:w-64",
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
         )}
       >
