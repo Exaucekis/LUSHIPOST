@@ -57,8 +57,11 @@ function ConnexionForm() {
   }, []);
 
   useEffect(() => {
-    if (sessionStatus === "authenticated" && session?.user?.role) {
-      router.replace(getSafeCallbackUrl(callbackUrl ?? null, session.user.role));
+    // Une session valide suffit pour quitter cette page. Le rôle peut arriver
+    // après le premier rendu du SessionProvider ; dans ce cas, /compte est la
+    // destination sûre pour un lecteur.
+    if (sessionStatus === "authenticated") {
+      router.replace(getSafeCallbackUrl(callbackUrl ?? null, session?.user?.role));
     }
   }, [callbackUrl, router, session?.user?.role, sessionStatus]);
 
