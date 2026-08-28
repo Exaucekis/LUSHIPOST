@@ -36,8 +36,10 @@ function buildProviders() {
           where: { email: credentials.email.toLowerCase().trim() },
         });
 
+        // Les comptes de la rédaction et les abonnés qui ont créé un mot de
+        // passe utilisent tous deux ce provider. Les abonnés par lien magique
+        // n'ont pas de mot de passe et ne peuvent donc pas s'y connecter.
         if (!user || !user.isActive || !user.passwordHash) return null;
-        if (!isStaffRole(user.role)) return null;
 
         const isValid = await bcrypt.compare(
           credentials.password,
@@ -60,7 +62,10 @@ function buildProviders() {
       GoogleProvider({
         clientId: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        allowDangerousEmailAccountLinking: false,
+        // Google fournit une adresse e-mail vérifiée. Cela permet à un lecteur
+        // ayant d'abord créé son compte avec e-mail/mot de passe de retrouver
+        // le même compte avec Google, sans créer de doublon.
+        allowDangerousEmailAccountLinking: true,
       })
     );
   }
@@ -100,7 +105,7 @@ export const authOptions: NextAuthOptions = {
 
       if (account?.provider === "credentials") {
         const dbUser = await prisma.user.findUnique({ where: { email } });
-        return !!dbUser && isStaffRole(dbUser.role);
+        return !!dbUser && dbUser.isActive && !!dbUser.passwordHash;
       }
 
       if (account?.provider === "google" || account?.provider === "email") {

@@ -1,12 +1,12 @@
-import { Role } from "@prisma/client";
+import type { Role } from "@prisma/client";
 
 export const STAFF_ROLES: Role[] = [
-  Role.SUPER_ADMIN,
-  Role.REDACTEUR_EN_CHEF,
-  Role.JOURNALISTE,
-  Role.EDITEUR,
-  Role.MODERATEUR,
-  Role.VIDEOASTE,
+  "SUPER_ADMIN",
+  "REDACTEUR_EN_CHEF",
+  "JOURNALISTE",
+  "EDITEUR",
+  "MODERATEUR",
+  "VIDEOASTE",
 ];
 
 export function isStaffRole(role: Role | string): boolean {
@@ -14,11 +14,11 @@ export function isStaffRole(role: Role | string): boolean {
 }
 
 export function isSubscriberRole(role: Role | string): boolean {
-  return role === Role.ABONNE;
+  return role === "ABONNE";
 }
 
 export function isJournalistRole(role: Role | string): boolean {
-  return role === Role.JOURNALISTE;
+  return role === "JOURNALISTE";
 }
 
 export const STAFF_SESSION_MAX_AGE = 8 * 60 * 60;

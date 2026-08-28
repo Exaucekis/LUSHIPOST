@@ -6,6 +6,11 @@ import { PopularSection } from "@/components/home/PopularSection";
 import { VideoSection } from "@/components/home/VideoSection";
 import { getHomepageData } from "@/lib/data/articles";
 import { ArticleCard } from "@/components/articles/ArticleCard";
+import { HomePreferences } from "@/components/home/HomePreferences";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { normalizePreferences } from "@/lib/account-preferences";
 
 const CATEGORY_SECTIONS = [
   {
@@ -27,7 +32,15 @@ const CATEGORY_SECTIONS = [
 ];
 
 export default async function HomePage() {
-  const categorySlugs = CATEGORY_SECTIONS.map((cat) => cat.slug);
+  const session = await getServerSession(authOptions);
+  const preferences = session?.user?.id
+    ? normalizePreferences((await prisma.user.findUnique({ where: { id: session.user.id }, select: { preferences: true } }))?.preferences)
+    : [];
+  const personalizedSections = [
+    ...CATEGORY_SECTIONS.filter((section) => preferences.includes(section.slug)),
+    ...CATEGORY_SECTIONS.filter((section) => !preferences.includes(section.slug)),
+  ];
+  const categorySlugs = personalizedSections.map((cat) => cat.slug);
   const { hero, latest, popular, videos, categoryArticles } =
     await getHomepageData(categorySlugs);
 
@@ -35,6 +48,7 @@ export default async function HomePage() {
     <>
       <HeroSection hero={hero} />
       <QuickAccess />
+      <HomePreferences />
 
       <section className="border-y border-gray-200 bg-lp-light py-10 sm:py-12">
         <div className="lp-container">
@@ -52,7 +66,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {CATEGORY_SECTIONS.map((cat, i) => (
+      {personalizedSections.map((cat, i) => (
         <CategorySection
           key={cat.slug}
           title={cat.title}

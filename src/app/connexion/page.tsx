@@ -11,6 +11,7 @@ import { getSafeCallbackUrl } from "@/lib/navigation";
 
 type Mode = "subscriber" | "staff";
 type StaffStep = "email" | "password";
+type SubscriberView = "sign-in" | "register";
 
 function ConnexionForm() {
   const router = useRouter();
@@ -21,9 +22,12 @@ function ConnexionForm() {
   const { data: session, status: sessionStatus } = useSession();
 
   const [mode, setMode] = useState<Mode>(initialMode);
+  const [subscriberView, setSubscriberView] = useState<SubscriberView>("sign-in");
   const [staffStep, setStaffStep] = useState<StaffStep>("email");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
   const [staffRole, setStaffRole] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [info, setInfo] = useState("");
@@ -157,6 +161,51 @@ function ConnexionForm() {
     });
   };
 
+  const finishPasswordSignIn = async () => {
+    const result = await signIn("credentials", {
+      email: email.toLowerCase().trim(),
+      password,
+      redirect: false,
+    });
+    if (result?.error) {
+      setError("Adresse e-mail ou mot de passe incorrect.");
+      setLoading(false);
+      return;
+    }
+    router.replace(getSafeCallbackUrl(callbackUrl ?? null));
+    router.refresh();
+  };
+
+  const handleSubscriberPassword = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setLoading(true);
+    setError("");
+    await finishPasswordSignIn();
+  };
+
+  const handleRegistration = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError("");
+    if (password !== passwordConfirmation) {
+      setError("Les mots de passe ne correspondent pas.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "Impossible de créer le compte.");
+      await finishPasswordSignIn();
+    } catch (caught) {
+      setError(caught instanceof Error ? caught.message : "Impossible de créer le compte.");
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-[80vh] items-center justify-center bg-lp-light px-4 py-12">
       <div className="w-full max-w-md bg-white p-8 shadow-xl">
@@ -204,10 +253,39 @@ function ConnexionForm() {
 
         {mode === "subscriber" ? (
           <div className="space-y-4">
-            <p className="text-sm text-lp-gray">
-              Abonnez-vous gratuitement pour suivre l&apos;actualité de Lubumbashi.
-              Pas de mot de passe — connexion via Google ou lien magique par e-mail.
-            </p>
+            {subscriberView === "register" ? (
+              <>
+                <div>
+                  <p className="text-sm text-lp-gray">Créez votre compte gratuitement. Vous serez connecté dès la création du compte.</p>
+                  <button type="button" onClick={() => { setSubscriberView("sign-in"); setError(""); }} className="mt-2 text-sm font-semibold text-lp-accent hover:underline">J&apos;ai déjà un compte</button>
+                </div>
+                <form onSubmit={handleRegistration} className="space-y-4">
+                  <div>
+                    <label htmlFor="register-name" className="mb-1 block text-xs font-bold uppercase tracking-wider">Nom affiché</label>
+                    <input id="register-name" value={name} onChange={(event) => setName(event.target.value)} required minLength={2} maxLength={100} autoComplete="name" className="w-full border border-gray-300 px-4 py-3 focus:border-lp-accent focus:outline-none" />
+                  </div>
+                  <div>
+                    <label htmlFor="register-email" className="mb-1 block text-xs font-bold uppercase tracking-wider">Votre e-mail</label>
+                    <input id="register-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" className="w-full border border-gray-300 px-4 py-3 focus:border-lp-accent focus:outline-none" />
+                  </div>
+                  <div>
+                    <label htmlFor="register-password" className="mb-1 block text-xs font-bold uppercase tracking-wider">Mot de passe</label>
+                    <input id="register-password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required minLength={8} autoComplete="new-password" className="w-full border border-gray-300 px-4 py-3 focus:border-lp-accent focus:outline-none" />
+                  </div>
+                  <div>
+                    <label htmlFor="register-password-confirmation" className="mb-1 block text-xs font-bold uppercase tracking-wider">Confirmer le mot de passe</label>
+                    <input id="register-password-confirmation" type="password" value={passwordConfirmation} onChange={(event) => setPasswordConfirmation(event.target.value)} required minLength={8} autoComplete="new-password" className="w-full border border-gray-300 px-4 py-3 focus:border-lp-accent focus:outline-none" />
+                  </div>
+                  <button type="submit" disabled={loading} className="lp-btn-primary w-full py-3 disabled:opacity-50">{loading ? "Création..." : "Créer mon compte"}</button>
+                </form>
+              </>
+            ) : <>
+            <p className="text-sm text-lp-gray">Connectez-vous pour suivre l&apos;actualité de Lubumbashi et personnaliser votre expérience.</p>
+
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <button type="button" onClick={() => { setSubscriberView("register"); setError(""); }} className="font-semibold text-lp-accent hover:underline">Créer un compte</button>
+              <span className="text-lp-gray">ou utilisez Google / e-mail</span>
+            </div>
 
             {googleEnabled && (
               <button
@@ -274,11 +352,27 @@ function ConnexionForm() {
               </button>
             </form>
 
+            <details className="border-t border-gray-100 pt-4">
+              <summary className="cursor-pointer text-sm font-semibold text-lp-anthracite">Se connecter avec un mot de passe</summary>
+              <form onSubmit={handleSubscriberPassword} className="mt-4 space-y-4">
+                <div>
+                  <label htmlFor="password-email" className="mb-1 block text-xs font-bold uppercase tracking-wider">Votre e-mail</label>
+                  <input id="password-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} required autoComplete="email" className="w-full border border-gray-300 px-4 py-3 focus:border-lp-accent focus:outline-none" />
+                </div>
+                <div>
+                  <label htmlFor="subscriber-password" className="mb-1 block text-xs font-bold uppercase tracking-wider">Mot de passe</label>
+                  <input id="subscriber-password" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required autoComplete="current-password" className="w-full border border-gray-300 px-4 py-3 focus:border-lp-accent focus:outline-none" />
+                </div>
+                <button type="submit" disabled={loading} className="lp-btn-primary w-full py-3 disabled:opacity-50">{loading ? "Connexion..." : "Se connecter"}</button>
+              </form>
+            </details>
+
             {!googleEnabled && !emailMagicEnabled && (
               <p className="rounded bg-amber-50 p-3 text-xs text-amber-800">
                 La connexion Google n&apos;est pas encore configurée sur ce site.
               </p>
             )}
+            </>}
           </div>
         ) : (
           <div className="space-y-4">

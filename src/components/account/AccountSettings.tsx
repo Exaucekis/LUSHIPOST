@@ -29,7 +29,8 @@ export function AccountSettings({ initialUser }: { initialUser: AccountUser }) {
   const save = async (data: Record<string, unknown>, kind: "profile" | "preferences") => {
     setError("");
     setMessage("");
-    kind === "profile" ? setSavingProfile(true) : setSavingPreferences(true);
+    if (kind === "profile") setSavingProfile(true);
+    else setSavingPreferences(true);
     try {
       const response = await fetch("/api/account", {
         method: "PATCH",
@@ -47,7 +48,8 @@ export function AccountSettings({ initialUser }: { initialUser: AccountUser }) {
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "Enregistrement impossible.");
     } finally {
-      kind === "profile" ? setSavingProfile(false) : setSavingPreferences(false);
+      if (kind === "profile") setSavingProfile(false);
+      else setSavingPreferences(false);
     }
   };
 
