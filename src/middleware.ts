@@ -7,7 +7,7 @@ export default withAuth(
     const token = req.nextauth.token;
     const path = req.nextUrl.pathname;
 
-    if (path.startsWith("/connexion") && token?.role) {
+    if (path.startsWith("/connexion") && token?.sub) {
       return NextResponse.redirect(
         new URL(
           isJournalistRole(token.role as string)

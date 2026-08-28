@@ -5,7 +5,9 @@ import { authOptions } from "@/lib/auth";
 import { isJournalistRole, isStaffRole } from "@/lib/roles";
 import { SITE_NAME } from "@/lib/constants";
 import prisma from "@/lib/prisma";
-import { User, Mail, Bell, LogOut } from "lucide-react";
+import { Bell, LogOut } from "lucide-react";
+import { AccountSettings } from "@/components/account/AccountSettings";
+import { normalizePreferences } from "@/lib/account-preferences";
 
 export default async function ComptePage() {
   const session = await getServerSession(authOptions);
@@ -22,9 +24,23 @@ export default async function ComptePage() {
     redirect("/admin");
   }
 
-  const subscriber = await prisma.newsletterSubscriber.findUnique({
-    where: { email: session.user.email },
-  }).catch(() => null);
+  const [subscriber, user] = await Promise.all([
+    prisma.newsletterSubscriber.findUnique({ where: { email: session.user.email } }).catch(() => null),
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        name: true,
+        email: true,
+        username: true,
+        image: true,
+        preferences: true,
+        createdAt: true,
+        accounts: { where: { provider: "google" }, select: { provider: true } },
+      },
+    }),
+  ]);
+
+  if (!user) redirect("/api/auth/signout?callbackUrl=/connexion");
 
   return (
     <div className="lp-container py-12">
@@ -35,14 +51,15 @@ export default async function ComptePage() {
         </p>
 
         <div className="space-y-4">
-          <div className="flex items-start gap-4 border border-gray-200 bg-white p-5">
-            <User className="mt-0.5 h-5 w-5 shrink-0 text-lp-accent" />
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-lp-gray">Profil</p>
-              <p className="mt-1 font-semibold">{session.user.name}</p>
-              <p className="text-sm text-lp-gray">{session.user.email}</p>
-            </div>
-          </div>
+          <AccountSettings initialUser={{
+            name: user.name,
+            email: user.email,
+            username: user.username,
+            image: user.image,
+            preferences: normalizePreferences(user.preferences),
+            createdAt: user.createdAt,
+            googleConnected: user.accounts.length > 0,
+          }} />
 
           <div className="flex items-start gap-4 border border-gray-200 bg-white p-5">
             <Bell className="mt-0.5 h-5 w-5 shrink-0 text-lp-accent" />
@@ -56,15 +73,6 @@ export default async function ComptePage() {
             </div>
           </div>
 
-          <div className="flex items-start gap-4 border border-gray-200 bg-white p-5">
-            <Mail className="mt-0.5 h-5 w-5 shrink-0 text-lp-accent" />
-            <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-lp-gray">Connexion</p>
-              <p className="mt-1 text-sm text-lp-gray">
-                Authentification sans mot de passe via Google ou lien magique.
-              </p>
-            </div>
-          </div>
         </div>
 
         <div className="mt-8 flex flex-wrap gap-4">

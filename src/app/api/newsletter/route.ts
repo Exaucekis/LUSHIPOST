@@ -52,9 +52,9 @@ export async function POST(request: Request) {
     await transporter.sendMail({
       from: process.env.SMTP_FROM || "noreply@lushipost.com",
       to: email,
-      subject: "Confirmez votre inscription à la newsletter LUSHIPOST",
+      subject: "Confirmez votre inscription à la newsletter LUBUMBASHIPOST",
       text: `Confirmez votre inscription : ${confirmationUrl}`,
-      html: `<p>Confirmez votre inscription à la newsletter LUSHIPOST :</p><p><a href="${confirmationUrl}">Confirmer mon inscription</a></p>`,
+      html: `<p>Confirmez votre inscription à la newsletter LUBUMBASHIPOST :</p><p><a href="${confirmationUrl}">Confirmer mon inscription</a></p>`,
     });
 
     return NextResponse.json({

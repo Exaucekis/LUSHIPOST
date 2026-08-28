@@ -1,0 +1,126 @@
+
+> lushipost@1.0.0 dev
+> next dev
+
+ ⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
+   ▲ Next.js 15.5.23
+   - Local:        http://localhost:3001
+   - Network:      http://10.183.188.116:3001
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 7.7s
+ ○ Compiling / ...
+ ✓ Compiled / in 15.4s (861 modules)
+prisma:error 
+Invalid `prisma.breakingNews.findMany()` invocation:
+
+
+Can't reach database server at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`
+
+Please make sure your database server is running at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`.
+prisma:error 
+Invalid `prisma.socialLink.findMany()` invocation:
+
+
+Can't reach database server at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`
+
+Please make sure your database server is running at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`.
+prisma:error 
+Invalid `prisma.homepageSlot.findMany()` invocation:
+
+
+Can't reach database server at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`
+
+Please make sure your database server is running at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`.
+prisma:error 
+Invalid `prisma.setting.findUnique()` invocation:
+
+
+Can't reach database server at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`
+
+Please make sure your database server is running at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`.
+[TypeError: fetch failed] {
+  [cause]: Error: connect EACCES 151.101.226.208:443
+      at <unknown> (Error: connect EACCES 151.101.226.208:443) {
+    errno: -4092,
+    code: 'EACCES',
+    syscall: 'connect',
+    address: '151.101.226.208',
+    port: 443
+  }
+}
+ ○ Compiling /_error ...
+[TypeError: fetch failed] {
+  [cause]: Error: connect EACCES 151.101.226.208:443
+      at <unknown> (Error: connect EACCES 151.101.226.208:443) {
+    errno: -4092,
+    code: 'EACCES',
+    syscall: 'connect',
+    address: '151.101.226.208',
+    port: 443
+  }
+}
+[TypeError: fetch failed] {
+  [cause]: Error: connect EACCES 151.101.226.208:443
+      at <unknown> (Error: connect EACCES 151.101.226.208:443) {
+    errno: -4092,
+    code: 'EACCES',
+    syscall: 'connect',
+    address: '151.101.226.208',
+    port: 443
+  }
+}
+ GET / 200 in 31558ms
+[TypeError: fetch failed] {
+  [cause]: Error: connect EACCES 151.101.226.208:443
+      at <unknown> (Error: connect EACCES 151.101.226.208:443) {
+    errno: -4092,
+    code: 'EACCES',
+    syscall: 'connect',
+    address: '151.101.226.208',
+    port: 443
+  }
+}
+ ✓ Compiled /_error in 35.2s (1208 modules)
+ GET /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1529107386315-e1a2ecb4819d%3Fw%3D800%26h%3D500%26fit%3Dcrop&w=128&q=75 500 in 38126ms
+ GET /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1529107386315-e1a2ecb4819d%3Fw%3D800%26h%3D500%26fit%3Dcrop&w=128&q=75 500 in 37692ms
+ GET /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1574629810360-7efbbe195018%3Fw%3D800%26h%3D500%26fit%3Dcrop&w=128&q=75 500 in 37441ms
+ GET /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1574629810360-7efbbe195018%3Fw%3D800%26h%3D500%26fit%3Dcrop&w=128&q=75 500 in 36741ms
+ GET /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1529107386315-e1a2ecb4819d%3Fw%3D800%26h%3D500%26fit%3Dcrop&w=640&q=75 500 in 32733ms
+ GET /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1529107386315-e1a2ecb4819d%3Fw%3D800%26h%3D500%26fit%3Dcrop&w=640&q=75 500 in 32570ms
+ GET /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1574629810360-7efbbe195018%3Fw%3D800%26h%3D500%26fit%3Dcrop&w=640&q=75 500 in 31300ms
+ GET /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1574629810360-7efbbe195018%3Fw%3D800%26h%3D500%26fit%3Dcrop&w=640&q=75 500 in 31206ms
+ ✓ Compiled in 1451ms (501 modules)
+prisma:error 
+Invalid `prisma.breakingNews.findMany()` invocation:
+
+
+Can't reach database server at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`
+
+Please make sure your database server is running at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`.
+prisma:error 
+Invalid `prisma.socialLink.findMany()` invocation:
+
+
+Can't reach database server at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`
+
+Please make sure your database server is running at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`.
+prisma:error 
+Invalid `prisma.homepageSlot.findMany()` invocation:
+
+
+Can't reach database server at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`
+
+Please make sure your database server is running at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`.
+prisma:error 
+Invalid `prisma.setting.findUnique()` invocation:
+
+
+Can't reach database server at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`
+
+Please make sure your database server is running at `ep-long-darkness-axvd7ik4-pooler.c-4.us-east-2.aws.neon.tech:5432`.
+ GET / 200 in 4379ms
+ ✓ Compiled in 819ms (501 modules)
+ ✓ Compiled in 719ms (501 modules)
+[?25h

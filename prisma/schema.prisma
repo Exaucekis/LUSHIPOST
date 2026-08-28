@@ -70,6 +70,8 @@ model User {
   name          String
   // Champ standard du PrismaAdapter NextAuth.
   emailVerified DateTime?
+  username      String?   @unique
+  preferences   Json?
   role          Role      @default(ABONNE)
   // NextAuth PrismaAdapter utilise le nom standard `image` pour la photo de profil.
   // La colonne existante est conservée afin de ne pas perdre les données déjà stockées.

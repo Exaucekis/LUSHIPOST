@@ -16,7 +16,7 @@ export default async function NewsletterConfirmationPage({
         </h1>
         <p className="mt-4 text-lp-gray">
           {confirmed
-            ? "Votre adresse e-mail est désormais inscrite à la newsletter LUSHIPOST."
+            ? "Votre adresse e-mail est désormais inscrite à la newsletter LUBUMBASHIPOST."
             : "Ce lien est invalide ou a déjà été utilisé. Vous pouvez demander un nouveau lien depuis l'accueil."}
         </p>
         <Link href="/" className="lp-btn-primary mt-8 inline-flex px-6 py-3">

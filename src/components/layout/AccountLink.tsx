@@ -53,7 +53,7 @@ export function AccountLink() {
       className="flex items-center gap-1.5 rounded-sm px-2 py-1.5 text-sm font-semibold uppercase tracking-wide transition-colors hover:bg-lp-light hover:text-lp-accent"
     >
       <User className="h-5 w-5" />
-      <span className="hidden sm:inline">S&apos;abonner</span>
+      <span className="hidden sm:inline">Connexion</span>
     </Link>
   );
 }
