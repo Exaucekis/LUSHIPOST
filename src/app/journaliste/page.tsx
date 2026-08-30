@@ -1,4 +1,5 @@
 import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import { ArticleStatus } from "@prisma/client";
 import { authOptions } from "@/lib/auth";
@@ -8,7 +9,7 @@ import { VideoSubmissionForm } from "@/components/admin/VideoSubmissionForm";
 
 export default async function JournalistDashboard() {
   const session = await getServerSession(authOptions);
-  if (!session) return null;
+  if (!session) redirect("/connexion?mode=staff&callbackUrl=/journaliste");
   const userId = session.user.id;
   const [articles, notifications] = await Promise.all([
     prisma.article.findMany({ where: { userId }, include: { category: true }, orderBy: { updatedAt: "desc" }, take: 20 }),

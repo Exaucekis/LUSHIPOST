@@ -1,11 +1,13 @@
 import { isJournalistRole, isStaffRole } from "@/lib/roles";
 
+export function homePathForRole(role?: string | null) {
+  if (role && isJournalistRole(role)) return "/journaliste";
+  if (role && isStaffRole(role)) return "/admin";
+  return "/compte";
+}
+
 export function getSafeCallbackUrl(callbackUrl: string | null, role?: string) {
-  const fallback = role && isJournalistRole(role)
-    ? "/journaliste"
-    : role && isStaffRole(role)
-      ? "/admin"
-      : "/compte";
+  const fallback = homePathForRole(role);
 
   if (!callbackUrl || !callbackUrl.startsWith("/") || callbackUrl.startsWith("//")) {
     return fallback;

@@ -6,11 +6,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import bcrypt from "bcryptjs";
 import { Role } from "@prisma/client";
 import prisma from "./prisma";
-import {
-  isStaffRole,
-  STAFF_SESSION_MAX_AGE,
-  SUBSCRIBER_SESSION_MAX_AGE,
-} from "./roles";
+import { isStaffRole, SUBSCRIBER_SESSION_MAX_AGE } from "./roles";
 
 async function syncNewsletterSubscription(email: string) {
   await prisma.newsletterSubscriber.upsert({
@@ -91,6 +87,7 @@ function buildProviders() {
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
+  secret: process.env.NEXTAUTH_SECRET,
   session: { strategy: "jwt", maxAge: SUBSCRIBER_SESSION_MAX_AGE },
   pages: {
     signIn: "/connexion",
@@ -126,18 +123,33 @@ export const authOptions: NextAuthOptions = {
         if (!role && user.email) {
           const dbUser = await prisma.user.findUnique({
             where: { email: user.email.toLowerCase().trim() },
+            select: { role: true, id: true },
           });
           role = dbUser?.role;
+          if (dbUser?.id) token.id = dbUser.id;
         }
         token.role = role;
-        token.id = user.id;
+        token.id = (user.id as string | undefined) ?? token.id;
+        token.sub = token.id ?? token.sub;
         token.email = user.email ?? undefined;
         token.name = user.name ?? undefined;
+      }
 
-        const maxAge = role && isStaffRole(role)
-          ? STAFF_SESSION_MAX_AGE
-          : SUBSCRIBER_SESSION_MAX_AGE;
-        token.exp = Math.floor(Date.now() / 1000) + maxAge;
+      if (!token.role && (token.sub || token.email)) {
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: token.sub ? { id: String(token.sub) } : { email: String(token.email).toLowerCase().trim() },
+            select: { role: true, id: true, email: true, name: true },
+          });
+          if (dbUser) {
+            token.role = dbUser.role;
+            token.id = dbUser.id;
+            token.email = dbUser.email;
+            token.name = dbUser.name ?? token.name;
+          }
+        } catch {
+          // Ne pas faire échouer la session si le repli base de données échoue.
+        }
       }
 
       if (trigger === "update" && session?.user) {
@@ -158,8 +170,13 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      if (url.startsWith("/")) return `${baseUrl}${url}`;
-      if (new URL(url).origin === baseUrl) return url;
+      try {
+        if (url.startsWith("/")) return `${baseUrl}${url}`;
+        const dest = new URL(url);
+        if (dest.origin === new URL(baseUrl).origin) return url;
+      } catch {
+        // URL invalide : retomber sur l'accueil plutôt que de faire échouer la connexion.
+      }
       return baseUrl;
     },
   },

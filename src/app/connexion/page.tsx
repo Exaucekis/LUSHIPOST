@@ -1,7 +1,7 @@
 "use client";
 
 import { signIn, useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { Logo } from "@/components/layout/Logo";
@@ -56,14 +56,15 @@ function ConnexionForm() {
       .catch(() => {});
   }, []);
 
+  const goToApp = useCallback((role?: string) => {
+    window.location.assign(getSafeCallbackUrl(callbackUrl ?? null, role));
+  }, [callbackUrl]);
+
   useEffect(() => {
-    // Une session valide suffit pour quitter cette page. Le rôle peut arriver
-    // après le premier rendu du SessionProvider ; dans ce cas, /compte est la
-    // destination sûre pour un lecteur.
     if (sessionStatus === "authenticated") {
-      router.replace(getSafeCallbackUrl(callbackUrl ?? null, session?.user?.role));
+      goToApp(session?.user?.role);
     }
-  }, [callbackUrl, router, session?.user?.role, sessionStatus]);
+  }, [goToApp, session?.user?.role, sessionStatus]);
 
   const handleSubscriberEmail = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,19 +138,20 @@ function ConnexionForm() {
     setLoading(true);
     setError("");
 
+    const dest = getSafeCallbackUrl(callbackUrl ?? null, staffRole ?? undefined);
     const result = await signIn("credentials", {
       email: email.toLowerCase().trim(),
       password,
       redirect: false,
+      callbackUrl: dest,
     });
 
     if (result?.error) {
       setError("Mot de passe incorrect.");
       setLoading(false);
-    } else {
-      router.replace(getSafeCallbackUrl(callbackUrl ?? null, staffRole ?? undefined));
-      router.refresh();
+      return;
     }
+    window.location.assign(dest);
   };
 
   const handleGoogle = () => {
@@ -165,18 +167,19 @@ function ConnexionForm() {
   };
 
   const finishPasswordSignIn = async () => {
+    const dest = getSafeCallbackUrl(callbackUrl ?? null);
     const result = await signIn("credentials", {
       email: email.toLowerCase().trim(),
       password,
       redirect: false,
+      callbackUrl: dest,
     });
     if (result?.error) {
       setError("Adresse e-mail ou mot de passe incorrect.");
       setLoading(false);
       return;
     }
-    router.replace(getSafeCallbackUrl(callbackUrl ?? null));
-    router.refresh();
+    window.location.assign(dest);
   };
 
   const handleSubscriberPassword = async (event: React.FormEvent) => {

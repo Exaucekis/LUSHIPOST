@@ -1,77 +1,71 @@
-import { withAuth } from "next-auth/middleware";
-import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
+import { homePathForRole } from "@/lib/navigation";
 import { isJournalistRole, isStaffRole } from "@/lib/roles";
 
-export default withAuth(
-  function middleware(req) {
-    const token = req.nextauth.token;
-    const path = req.nextUrl.pathname;
+function loginRedirect(req: NextRequest, callbackPath: string, staff = false) {
+  const url = new URL("/connexion", req.url);
+  url.searchParams.set("callbackUrl", callbackPath);
+  if (staff) url.searchParams.set("mode", "staff");
+  return NextResponse.redirect(url);
+}
 
-    if (path.startsWith("/connexion") && token?.sub) {
-      return NextResponse.redirect(
-        new URL(
-          isJournalistRole(token.role as string)
-            ? "/journaliste"
-            : isStaffRole(token.role as string)
-              ? "/admin"
-              : "/compte",
-          req.url
-        )
-      );
+export async function middleware(req: NextRequest) {
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  const path = req.nextUrl.pathname;
+  const role = typeof token?.role === "string" ? token.role : undefined;
+  const isAuthenticated = Boolean(token?.sub || token?.id);
+
+  if (path.startsWith("/connexion")) {
+    if (isAuthenticated) {
+      return NextResponse.redirect(new URL(homePathForRole(role), req.url));
     }
+    return NextResponse.next();
+  }
 
-    if (path.startsWith("/admin") && token?.role === "ABONNE") {
-      return NextResponse.redirect(
-        new URL("/compte?error=staff-only", req.url)
-      );
-    }
+  if (path.startsWith("/admin/login")) {
+    return NextResponse.next();
+  }
 
-    if (path.startsWith("/admin") && token?.role === "JOURNALISTE") {
+  if (path.startsWith("/admin")) {
+    if (!isAuthenticated) return loginRedirect(req, path, true);
+    if (isJournalistRole(role ?? "")) {
       return NextResponse.redirect(new URL("/journaliste", req.url));
     }
-
-    if (path.startsWith("/journaliste") && token?.role !== "JOURNALISTE") {
-      return NextResponse.redirect(
-        new URL(token?.role && isStaffRole(token.role as string) ? "/admin" : "/compte", req.url)
-      );
+    if (role === "ABONNE") {
+      return NextResponse.redirect(new URL("/compte?error=staff-only", req.url));
     }
-
-    if (path.startsWith("/compte") && token?.role && isStaffRole(token.role as string)) {
-      return NextResponse.redirect(
-        new URL(isJournalistRole(token.role as string) ? "/journaliste" : "/admin", req.url)
-      );
-    }
-
     return NextResponse.next();
-  },
-  {
-    pages: { signIn: "/connexion" },
-    callbacks: {
-      authorized: ({ token, req }) => {
-        const path = req.nextUrl.pathname;
-
-        if (path.startsWith("/admin/login")) {
-          return true;
-        }
-
-        if (path.startsWith("/admin")) {
-          return !!token && token.role !== "ABONNE";
-        }
-
-        if (path.startsWith("/compte")) {
-          return !!token;
-        }
-
-        if (path.startsWith("/journaliste")) {
-          return !!token && token.role === "JOURNALISTE";
-        }
-
-        return true;
-      },
-    },
   }
-);
+
+  if (path.startsWith("/journaliste")) {
+    if (!isAuthenticated) return loginRedirect(req, path, true);
+    if (!isJournalistRole(role ?? "")) {
+      return NextResponse.redirect(new URL(homePathForRole(role), req.url));
+    }
+    return NextResponse.next();
+  }
+
+  if (path.startsWith("/compte")) {
+    if (!isAuthenticated) return loginRedirect(req, path);
+    if (role && isStaffRole(role)) {
+      return NextResponse.redirect(new URL(homePathForRole(role), req.url));
+    }
+    return NextResponse.next();
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
-  matcher: ["/admin/:path*", "/journaliste/:path*", "/compte/:path*", "/connexion/:path*"],
+  matcher: [
+    "/admin",
+    "/admin/:path*",
+    "/journaliste",
+    "/journaliste/:path*",
+    "/compte",
+    "/compte/:path*",
+    "/connexion",
+    "/connexion/:path*",
+  ],
 };
