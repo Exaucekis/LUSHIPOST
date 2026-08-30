@@ -88,7 +88,11 @@ function buildProviders() {
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma) as NextAuthOptions["adapter"],
   secret: process.env.NEXTAUTH_SECRET,
-  session: { strategy: "jwt", maxAge: SUBSCRIBER_SESSION_MAX_AGE },
+  session: {
+    strategy: "jwt",
+    maxAge: SUBSCRIBER_SESSION_MAX_AGE,
+    updateAge: 24 * 60 * 60,
+  },
   pages: {
     signIn: "/connexion",
     error: "/connexion",

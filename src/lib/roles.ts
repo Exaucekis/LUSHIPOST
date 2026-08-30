@@ -22,4 +22,7 @@ export function isJournalistRole(role: Role | string): boolean {
 }
 
 export const STAFF_SESSION_MAX_AGE = 8 * 60 * 60;
-export const SUBSCRIBER_SESSION_MAX_AGE = 30 * 24 * 60 * 60;
+// La session JWT est renouvelée par NextAuth lors de l'utilisation du site.
+// Cette durée longue évite de déconnecter un lecteur actif tout en laissant une
+// limite de sécurité pour un navigateur abandonné ou un appareil partagé.
+export const SUBSCRIBER_SESSION_MAX_AGE = 180 * 24 * 60 * 60;

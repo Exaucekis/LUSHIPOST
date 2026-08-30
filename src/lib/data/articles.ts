@@ -43,7 +43,7 @@ export const getPublishedArticles = cache(async function getPublishedArticles({
         ...(intlRegion && { intlRegion }),
       },
       include: articleInclude,
-      orderBy: { publishedAt: "desc" },
+      orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
       take: limit,
       skip: offset,
     });
@@ -61,25 +61,22 @@ export async function getArticlesGroupedByCategorySlugs(
   if (slugs.length === 0) return new Map<string, Awaited<ReturnType<typeof getPublishedArticles>>>();
 
   try {
-    const articles = await prisma.article.findMany({
-      where: {
-        status: ArticleStatus.PUBLIE,
-        publishedAt: { lte: new Date() },
-        category: { slug: { in: slugs } },
-      },
-      include: articleInclude,
-      orderBy: { publishedAt: "desc" },
-      take: slugs.length * limitPerCategory * 2,
-    });
-
-    const grouped = new Map<string, typeof articles>();
-    for (const slug of slugs) grouped.set(slug, []);
-    for (const article of articles) {
-      const slug = article.category.slug;
-      const bucket = grouped.get(slug);
-      if (bucket && bucket.length < limitPerCategory) bucket.push(article);
-    }
-    return grouped;
+    const results = await Promise.all(
+      slugs.map(async (slug) => [
+        slug,
+        await prisma.article.findMany({
+          where: {
+            status: ArticleStatus.PUBLIE,
+            publishedAt: { lte: new Date() },
+            category: { slug },
+          },
+          include: articleInclude,
+          orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
+          take: limitPerCategory,
+        }),
+      ] as const)
+    );
+    return new Map(results);
   } catch {
     const grouped = new Map<string, typeof MOCK_ARTICLES>();
     for (const slug of slugs) {
@@ -143,7 +140,7 @@ export async function getRelatedArticles(
         ],
       },
       include: articleInclude,
-      orderBy: { publishedAt: "desc" },
+      orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
       take: limit,
     });
   } catch {
@@ -243,7 +240,7 @@ export async function searchArticles(query: string, type?: string, limit = 20) {
       },
       include: articleInclude,
       take: limit,
-      orderBy: { publishedAt: "desc" },
+      orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
     });
   } catch {
     const q = query.toLowerCase();
@@ -271,7 +268,7 @@ export const getVideos = cache(async function getVideos(limit = 12) {
   try {
     return await prisma.video.findMany({
       where: { publishedAt: { not: null, lte: new Date() } },
-      orderBy: { publishedAt: "desc" },
+      orderBy: [{ publishedAt: "desc" }, { createdAt: "desc" }],
       take: limit,
     });
   } catch {
@@ -363,24 +360,7 @@ export const getHomepageData = cache(async function getHomepageData(
       take: 4,
     });
 
-    const categoryArticles = await prisma.article.findMany({
-      where: {
-        status: ArticleStatus.PUBLIE,
-        publishedAt: { lte: new Date() },
-        category: { slug: { in: categorySlugs } },
-      },
-      include: articleInclude,
-      orderBy: { publishedAt: "desc" },
-      take: categorySlugs.length * 8,
-    });
-
-    const grouped = new Map<string, typeof categoryArticles>();
-    for (const slug of categorySlugs) grouped.set(slug, []);
-    for (const article of categoryArticles) {
-      const slug = article.category.slug;
-      const bucket = grouped.get(slug);
-      if (bucket && bucket.length < 4) bucket.push(article);
-    }
+    const grouped = await getArticlesGroupedByCategorySlugs(categorySlugs, 4);
 
     return {
       hero: { main, secondary },
