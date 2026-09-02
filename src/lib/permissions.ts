@@ -23,6 +23,7 @@ const PERMISSIONS: Record<Role, string[]> = {
     "articles:read",
     "articles:create",
     "articles:update:own",
+    "articles:delete:own",
     "media:upload",
   ],
   EDITEUR: [

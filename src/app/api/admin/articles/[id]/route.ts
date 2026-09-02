@@ -132,15 +132,29 @@ export async function DELETE(_request: Request, context: RouteContext) {
   }
 
   const { id } = await context.params;
-  await prisma.article.delete({ where: { id } });
+  const existing = await prisma.article.findUnique({ where: { id } });
+  if (!existing) {
+    return NextResponse.json({ error: "Article introuvable" }, { status: 404 });
+  }
 
-  await prisma.auditLog.create({
-    data: {
-      action: "DELETE",
-      entity: "Article",
-      entityId: id,
-      userId: session.user.id,
-    },
+  await prisma.$transaction(async (tx) => {
+    await tx.breakingNews.updateMany({
+      where: { articleId: id },
+      data: { articleId: null },
+    });
+    await tx.liveEvent.updateMany({
+      where: { articleId: id },
+      data: { articleId: null },
+    });
+    await tx.article.delete({ where: { id } });
+    await tx.auditLog.create({
+      data: {
+        action: "DELETE",
+        entity: "Article",
+        entityId: id,
+        userId: session.user.id,
+      },
+    });
   });
 
   return NextResponse.json({ ok: true });

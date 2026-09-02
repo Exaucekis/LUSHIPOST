@@ -116,12 +116,16 @@ export function ArticleForm({
 
     const payload = {
       ...form,
-      scheduledAt: form.scheduledAt || undefined,
-      subtitle: form.subtitle || undefined,
-      excerpt: form.excerpt || undefined,
-      featuredImage: form.featuredImage || undefined,
-      featuredImageAlt: form.featuredImageAlt || undefined,
-      geoZone: form.geoZone || undefined,
+      title: form.title.trim(),
+      slug: form.slug?.trim() || undefined,
+      subtitle: form.subtitle?.trim() || undefined,
+      excerpt: form.excerpt?.trim() || undefined,
+      content: form.content.trim(),
+      categoryId: form.categoryId.trim(),
+      scheduledAt: form.scheduledAt?.trim() || undefined,
+      featuredImage: form.featuredImage?.trim() || undefined,
+      featuredImageAlt: form.featuredImageAlt?.trim() || undefined,
+      geoZone: form.geoZone?.trim() || undefined,
     };
 
     if (!canPublish && payload.status === "PUBLIE") {

@@ -4,6 +4,7 @@ import { ArticleStatus, ContentType } from "@prisma/client";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { isJournalistRole } from "@/lib/roles";
+import { hasPermission } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
 import { articleFormSchema } from "@/lib/article-schema";
 import { slugifyTitle } from "@/lib/article-schema";
@@ -85,4 +86,39 @@ export async function PATCH(request: Request, context: RouteContext) {
     }
     return NextResponse.json({ error: "Impossible d'enregistrer la publication" }, { status: 500 });
   }
+}
+
+export async function DELETE(_request: Request, context: RouteContext) {
+  const session = await getServerSession(authOptions);
+  if (!session || !isJournalistRole(session.user.role)) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
+  const { id } = await context.params;
+  const article = await getOwnArticle(session.user.id, id);
+  if (!article) return NextResponse.json({ error: "Publication introuvable" }, { status: 404 });
+  if (!hasPermission(session.user.role, "articles:delete:own")) {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.breakingNews.updateMany({
+      where: { articleId: id },
+      data: { articleId: null },
+    });
+    await tx.liveEvent.updateMany({
+      where: { articleId: id },
+      data: { articleId: null },
+    });
+    await tx.article.delete({ where: { id } });
+    await tx.auditLog.create({
+      data: {
+        action: "DELETE",
+        entity: "Article",
+        entityId: id,
+        userId: session.user.id,
+        details: { title: article.title },
+      },
+    });
+  });
+
+  return NextResponse.json({ ok: true });
 }

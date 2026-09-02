@@ -1,22 +1,30 @@
 import { z } from "zod";
 
+const optionalTrimmedString = z.preprocess(
+  (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+  z.string().trim().min(1).optional()
+);
+
 export const articleFormSchema = z.object({
-  title: z.string().min(5),
+  title: z.string().trim().min(5, "Le titre doit contenir au moins 5 caractères."),
   // Généré depuis le titre côté serveur : ce détail technique reste invisible
   // au journaliste.
-  slug: z.string().min(3).optional(),
-  subtitle: z.string().optional(),
-  excerpt: z.string().optional(),
-  content: z.string().min(10),
-  categoryId: z.string(),
+  slug: z.preprocess(
+    (value) => (typeof value === "string" && value.trim() === "" ? undefined : value),
+    z.string().trim().min(3, "Le slug doit contenir au moins 3 caractères.").optional()
+  ),
+  subtitle: optionalTrimmedString,
+  excerpt: optionalTrimmedString,
+  content: z.string().trim().min(10, "Le contenu doit contenir au moins 10 caractères."),
+  categoryId: z.string().min(1, "Veuillez sélectionner une catégorie."),
   status: z
     .enum(["BROUILLON", "EN_REVISION", "APPROUVE", "PROGRAMME", "PUBLIE", "REFUSE", "ARCHIVE"])
     .optional(),
   contentType: z.enum(["FAITS", "ANALYSE", "OPINION"]).optional(),
-  featuredImage: z.string().optional(),
-  featuredImageAlt: z.string().optional(),
-  geoZone: z.string().optional(),
-  scheduledAt: z.string().optional(),
+  featuredImage: optionalTrimmedString,
+  featuredImageAlt: optionalTrimmedString,
+  geoZone: optionalTrimmedString,
+  scheduledAt: optionalTrimmedString,
 });
 
 export type ArticleFormValues = z.infer<typeof articleFormSchema>;

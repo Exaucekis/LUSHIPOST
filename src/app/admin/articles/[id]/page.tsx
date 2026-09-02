@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { ArticleForm } from "@/components/admin/ArticleForm";
-import { canPublish } from "@/lib/permissions";
+import { DeleteArticleButton } from "@/components/admin/DeleteArticleButton";
+import { canPublish, hasPermission } from "@/lib/permissions";
 import { STATUS_LABELS } from "@/lib/constants";
 import type { ArticleFormValues } from "@/lib/article-schema";
 import { ModerationPanel } from "@/components/admin/ModerationPanel";
@@ -69,6 +70,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
   }
 
   const userCanPublish = session?.user?.role ? canPublish(session.user.role) : false;
+  const userCanDelete = session?.user?.role ? hasPermission(session.user.role, "articles:delete") : false;
 
   return (
     <div>
@@ -79,15 +81,24 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
             Statut : {STATUS_LABELS[meta?.status || ""] || meta?.status} · {meta?.viewCount ?? 0} vues
           </p>
         </div>
-        {meta?.slug && (
-          <Link
-            href={`/article/${meta.slug}`}
-            target="_blank"
-            className="text-sm font-semibold text-lp-accent hover:underline"
-          >
-            Voir sur le site →
-          </Link>
-        )}
+        <div className="flex flex-wrap items-center gap-3">
+          {meta?.slug && (
+            <Link
+              href={`/article/${meta.slug}`}
+              target="_blank"
+              className="text-sm font-semibold text-lp-accent hover:underline"
+            >
+              Voir sur le site →
+            </Link>
+          )}
+          {userCanDelete && (
+            <DeleteArticleButton
+              articleId={articleId}
+              redirectTo="/admin/articles"
+              label="Supprimer"
+            />
+          )}
+        </div>
       </div>
 
       {userCanPublish && meta?.status === "EN_REVISION" && <ModerationPanel articleId={articleId} />}

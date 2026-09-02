@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import { STATUS_LABELS } from "@/lib/constants";
 import { formatRelativeDate } from "@/lib/utils";
 import { ArticleStatus } from "@prisma/client";
+import { DeleteArticleButton } from "@/components/admin/DeleteArticleButton";
 
 export default async function AdminArticlesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
@@ -69,12 +70,19 @@ export default async function AdminArticlesPage({ searchParams }: { searchParams
                     : formatRelativeDate(article.updatedAt)}
                 </td>
                 <td className="px-4 py-3">
-                  <Link
-                    href={`/admin/articles/${article.id}`}
-                    className="text-lp-accent hover:underline"
-                  >
-                    Modifier
-                  </Link>
+                  <div className="flex items-center gap-3">
+                    <Link
+                      href={`/admin/articles/${article.id}`}
+                      className="text-lp-accent hover:underline"
+                    >
+                      Modifier
+                    </Link>
+                    <DeleteArticleButton
+                      articleId={article.id}
+                      redirectTo="/admin/articles"
+                      label="Supprimer"
+                    />
+                  </div>
                 </td>
               </tr>
             ))}

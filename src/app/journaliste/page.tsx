@@ -6,6 +6,7 @@ import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { STATUS_LABELS } from "@/lib/constants";
 import { VideoSubmissionForm } from "@/components/admin/VideoSubmissionForm";
+import { DeleteArticleButton } from "@/components/admin/DeleteArticleButton";
 
 export default async function JournalistDashboard() {
   const session = await getServerSession(authOptions);
@@ -32,7 +33,26 @@ export default async function JournalistDashboard() {
         <section className="lp-panel lg:col-span-2">
           <div className="lp-panel-heading"><h2 className="font-bold">Mes publications</h2></div>
           {articles.length === 0 ? <p className="p-6 text-sm text-lp-gray">Aucune publication pour le moment.</p> : (
-            <div className="divide-y divide-gray-100">{articles.map((article) => <Link key={article.id} href={`/journaliste/articles/${article.id}`} className="block px-4 py-4 hover:bg-gray-50 sm:px-5"><div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:justify-between sm:gap-4"><div className="min-w-0"><p className="break-words font-semibold">{article.title}</p><p className="mt-1 text-xs text-lp-gray">{article.category.name} · modifié le {article.updatedAt.toLocaleDateString("fr-FR")}</p></div><span className="h-fit w-fit shrink-0 rounded bg-gray-100 px-2 py-1 text-xs font-semibold">{STATUS_LABELS[article.status]}</span></div>{article.status === ArticleStatus.REFUSE && article.rejectionReason && <p className="mt-2 break-words text-sm text-red-700">Motif : {article.rejectionReason}</p>}</Link>)}</div>
+            <div className="divide-y divide-gray-100">{articles.map((article) => (
+              <div key={article.id} className="flex flex-col gap-3 px-4 py-4 hover:bg-gray-50 sm:px-5 sm:flex-row sm:items-start sm:justify-between">
+                <Link href={`/journaliste/articles/${article.id}`} className="block min-w-0 flex-1">
+                  <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:justify-between sm:gap-4">
+                    <div className="min-w-0">
+                      <p className="break-words font-semibold">{article.title}</p>
+                      <p className="mt-1 text-xs text-lp-gray">{article.category.name} · modifié le {article.updatedAt.toLocaleDateString("fr-FR")}</p>
+                    </div>
+                    <span className="h-fit w-fit shrink-0 rounded bg-gray-100 px-2 py-1 text-xs font-semibold">{STATUS_LABELS[article.status]}</span>
+                  </div>
+                  {article.status === ArticleStatus.REFUSE && article.rejectionReason && <p className="mt-2 break-words text-sm text-red-700">Motif : {article.rejectionReason}</p>}
+                </Link>
+                <DeleteArticleButton
+                  articleId={article.id}
+                  endpoint="/api/journaliste/articles"
+                  redirectTo="/journaliste"
+                  label="Supprimer"
+                />
+              </div>
+            ))}</div>
           )}
         </section>
         <aside className="lp-panel"><div className="lp-panel-heading"><h2 className="font-bold">Notifications</h2></div><div className="divide-y divide-gray-100">{notifications.length === 0 ? <p className="p-5 text-sm text-lp-gray">Aucune notification.</p> : notifications.map((notification) => <div key={notification.id} className="p-4"><p className="text-sm font-semibold">{notification.title}</p><p className="mt-1 text-xs text-lp-gray">{notification.body}</p></div>)}</div></aside>
