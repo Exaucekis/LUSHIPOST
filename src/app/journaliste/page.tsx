@@ -9,7 +9,8 @@ import { VideoSubmissionForm } from "@/components/admin/VideoSubmissionForm";
 import { DeleteArticleButton } from "@/components/admin/DeleteArticleButton";
 import { DeleteVideoButton } from "@/components/admin/DeleteVideoButton";
 
-export default async function JournalistDashboard() {
+export default async function JournalistDashboard({ searchParams }: { searchParams: Promise<{ notice?: string }> }) {
+  const { notice } = await searchParams;
   const session = await getServerSession(authOptions);
   if (!session) redirect("/connexion?mode=staff&callbackUrl=/journaliste");
   const userId = session.user.id;
@@ -25,7 +26,7 @@ export default async function JournalistDashboard() {
       <div className="lp-dashboard-header">
         <div><p className="lp-dashboard-eyebrow">Mon espace rédaction</p><h1 className="text-3xl font-bold sm:text-4xl">Espace journaliste</h1><p className="mt-2 text-lp-gray">Créez, soumettez et suivez vos publications en temps réel.</p></div>
         <Link href="/journaliste/articles/new" className="lp-btn-accent">+ Nouvelle publication</Link>
-      </div>
+      </div>{notice && <p className="mb-6 rounded border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800" role="status">{notice}</p>}
       <div className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {[ ["Brouillons", count(ArticleStatus.BROUILLON)], ["En attente", count(ArticleStatus.EN_REVISION)], ["Programmées", count(ArticleStatus.PROGRAMME)], ["Publiées", count(ArticleStatus.PUBLIE)], ["Refusées", count(ArticleStatus.REFUSE)] ].map(([label, value]) => (
           <div key={String(label)} className="lp-kpi-card"><p className="text-xs font-bold uppercase text-lp-gray">{label}</p><p className="mt-2 text-3xl font-black">{value}</p></div>

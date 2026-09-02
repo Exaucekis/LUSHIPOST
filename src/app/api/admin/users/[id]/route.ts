@@ -37,7 +37,10 @@ export async function PATCH(request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;
     const data = updateSchema.parse(await request.json());
+    const target = await prisma.user.findUnique({ where: { id }, select: { role: true } });
+    if (!target) return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
     if (id === session.user.id && data.isActive === false) return NextResponse.json({ error: "Vous ne pouvez pas désactiver votre propre compte" }, { status: 400 });
+    if (target.role === Role.SUPER_ADMIN && session.user.role !== Role.SUPER_ADMIN) return NextResponse.json({ error: "Compte réservé au Super Admin" }, { status: 403 });
     if (data.role === Role.SUPER_ADMIN && session.user.role !== Role.SUPER_ADMIN) return NextResponse.json({ error: "Rôle réservé au Super Admin" }, { status: 403 });
     const user = await prisma.user.update({ where: { id }, data: { ...data, role: data.role as Role | undefined, email: data.email?.toLowerCase().trim() }, select: { id: true, name: true, email: true, role: true, isActive: true, createdAt: true } });
     await prisma.auditLog.create({ data: { action: "UPDATE", entity: "User", entityId: id, userId: session.user.id, details: data } });

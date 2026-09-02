@@ -4,8 +4,14 @@ import { ROLE_LABELS } from "@/lib/constants";
 import { STAFF_ROLES } from "@/lib/roles";
 import { CreateStaffUserForm } from "@/components/admin/CreateStaffUserForm";
 import { UserActions } from "@/components/admin/UserActions";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { hasPermission } from "@/lib/permissions";
+import { redirect } from "next/navigation";
 
 export default async function AdminUsersPage({ searchParams }: { searchParams: Promise<{ q?: string; scope?: string }> }) {
+  const session = await getServerSession(authOptions);
+  if (!session || !hasPermission(session.user.role, "users:read")) redirect("/admin?error=forbidden");
   const { q, scope } = await searchParams;
   const users = await prisma.user.findMany({
     where: {

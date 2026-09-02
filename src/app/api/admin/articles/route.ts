@@ -42,6 +42,10 @@ export async function POST(request: Request) {
     if (status === ArticleStatus.PUBLIE && !canPublishNow) {
       return NextResponse.json({ error: "Permission de publication requise" }, { status: 403 });
     }
+    const scheduledAt = status === ArticleStatus.PROGRAMME && data.scheduledAt ? new Date(data.scheduledAt) : null;
+    if (status === ArticleStatus.PROGRAMME && (!scheduledAt || scheduledAt <= new Date())) {
+      return NextResponse.json({ error: "Choisissez une date et une heure futures pour programmer la publication." }, { status: 400 });
+    }
 
     const article = await prisma.article.create({
       data: {
@@ -56,7 +60,7 @@ export async function POST(request: Request) {
         featuredImage: data.featuredImage || null,
         featuredImageAlt: data.featuredImageAlt || null,
         geoZone: data.geoZone || null,
-        scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
+        scheduledAt,
         userId: session.user.id,
         publishedAt: status === ArticleStatus.PUBLIE ? new Date() : null,
       },

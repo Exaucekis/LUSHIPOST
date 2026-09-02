@@ -139,17 +139,26 @@ export const authOptions: NextAuthOptions = {
         token.name = user.name ?? undefined;
       }
 
-      if (!token.role && (token.sub || token.email)) {
+      // Le JWT peut durer longtemps, mais ses droits doivent toujours refléter
+      // le compte courant : un compte désactivé ou rétrogradé est effectif dès
+      // la prochaine requête, sans attendre son expiration.
+      if (token.sub || token.email) {
         try {
           const dbUser = await prisma.user.findUnique({
             where: token.sub ? { id: String(token.sub) } : { email: String(token.email).toLowerCase().trim() },
-            select: { role: true, id: true, email: true, name: true },
+            select: { role: true, id: true, email: true, name: true, isActive: true },
           });
-          if (dbUser) {
+          if (dbUser?.isActive) {
             token.role = dbUser.role;
             token.id = dbUser.id;
             token.email = dbUser.email;
             token.name = dbUser.name ?? token.name;
+          } else if (dbUser) {
+            token.id = undefined;
+            token.sub = undefined;
+            token.role = undefined;
+            token.email = undefined;
+            token.name = undefined;
           }
         } catch {
           // Ne pas faire échouer la session si le repli base de données échoue.

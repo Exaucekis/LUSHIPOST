@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { CommentModerationActions } from "@/components/admin/CommentModerationActions";
 
 export default async function AdminCommentsPage() {
   const comments = await prisma.comment.findMany({
@@ -35,6 +36,7 @@ export default async function AdminCommentsPage() {
             <p className="mt-2 text-xs text-lp-gray">
               Sur : {comment.article.title}
             </p>
+            <CommentModerationActions id={comment.id} status={comment.status} />
           </div>
         ))}
         {comments.length === 0 && (

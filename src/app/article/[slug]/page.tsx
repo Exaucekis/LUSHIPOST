@@ -14,6 +14,7 @@ import { ShareButtons } from "@/components/articles/ShareButtons";
 import { ArticleInteractions } from "@/components/articles/ArticleInteractions";
 import { sanitizeArticleHtml } from "@/lib/content-sanitizer";
 import { ArticleCard } from "@/components/articles/ArticleCard";
+import { ArticleEngagement } from "@/components/articles/ArticleEngagement";
 import { formatDate, formatTime, getSiteUrl } from "@/lib/utils";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
@@ -258,6 +259,7 @@ export default async function ArticlePage({ params }: PageProps) {
             <div className="mt-8 border-t border-gray-200 pt-6">
               <ShareButtons url={articleUrl} title={article.title} />
             </div>
+            <ArticleEngagement articleId={article.id} />
 
             <ArticleInteractions
               articleId={article.id}

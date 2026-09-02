@@ -69,6 +69,11 @@ export async function PATCH(request: Request, context: RouteContext) {
       return NextResponse.json({ error: "Permission de publication requise" }, { status: 403 });
     }
 
+    const scheduledAt = status === ArticleStatus.PROGRAMME && data.scheduledAt ? new Date(data.scheduledAt) : null;
+    if (status === ArticleStatus.PROGRAMME && (!scheduledAt || scheduledAt <= new Date())) {
+      return NextResponse.json({ error: "Choisissez une date et une heure futures pour programmer la publication." }, { status: 400 });
+    }
+
     const willPublish = status === ArticleStatus.PUBLIE;
 
     const article = await prisma.article.update({
@@ -85,7 +90,7 @@ export async function PATCH(request: Request, context: RouteContext) {
         featuredImage: data.featuredImage || null,
         featuredImageAlt: data.featuredImageAlt || null,
         geoZone: data.geoZone || null,
-        scheduledAt: data.scheduledAt ? new Date(data.scheduledAt) : null,
+        scheduledAt,
         publishedAt: willPublish
           ? existing.publishedAt ?? new Date()
           : existing.publishedAt,

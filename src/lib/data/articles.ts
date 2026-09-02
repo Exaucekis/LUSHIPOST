@@ -17,6 +17,14 @@ const articleInclude = {
   tags: { include: { tag: true } },
 } as const;
 
+// Les anciennes publications peuvent ne pas avoir de date de mise en ligne.
+// Leur statut PUBLIE reste la source de vérité ; les articles programmés sont
+// protégés par leur statut PROGRAMME et ne passent donc jamais ce filtre.
+const publicArticleWhere = (now = new Date()) => ({
+  status: ArticleStatus.PUBLIE,
+  AND: [{ OR: [{ publishedAt: null }, { publishedAt: { lte: now } }] }],
+});
+
 export const getPublishedArticles = cache(async function getPublishedArticles({
   categorySlug,
   limit = 10,
@@ -35,8 +43,7 @@ export const getPublishedArticles = cache(async function getPublishedArticles({
   try {
     return await prisma.article.findMany({
       where: {
-        status: ArticleStatus.PUBLIE,
-        publishedAt: { lte: new Date() },
+        ...publicArticleWhere(),
         ...(categorySlug && { category: { slug: categorySlug } }),
         ...(geoZone && { geoZone }),
         ...(africaRegion && { africaRegion }),
@@ -66,8 +73,7 @@ export async function getArticlesGroupedByCategorySlugs(
         slug,
         await prisma.article.findMany({
           where: {
-            status: ArticleStatus.PUBLIE,
-            publishedAt: { lte: new Date() },
+            ...publicArticleWhere(),
             category: { slug },
           },
           include: articleInclude,
@@ -94,8 +100,7 @@ export const getArticleBySlug = cache(async function getArticleBySlug(slug: stri
     return await prisma.article.findFirst({
       where: {
         slug,
-        status: ArticleStatus.PUBLIE,
-        publishedAt: { lte: new Date() },
+        ...publicArticleWhere(),
       },
       include: articleInclude,
     });
@@ -108,8 +113,7 @@ export const getPopularArticles = cache(async function getPopularArticles(limit 
   try {
     return await prisma.article.findMany({
       where: {
-        status: ArticleStatus.PUBLIE,
-        publishedAt: { lte: new Date() },
+        ...publicArticleWhere(),
       },
       include: articleInclude,
       orderBy: { viewCount: "desc" },
@@ -129,8 +133,7 @@ export async function getRelatedArticles(
   try {
     return await prisma.article.findMany({
       where: {
-        status: ArticleStatus.PUBLIE,
-        publishedAt: { lte: new Date() },
+        ...publicArticleWhere(),
         id: { not: articleId },
         OR: [
           { categoryId },
@@ -332,8 +335,7 @@ export const getHomepageData = cache(async function getHomepageData(
 
     const latest = await prisma.article.findMany({
       where: {
-        status: ArticleStatus.PUBLIE,
-        publishedAt: { lte: new Date() },
+        ...publicArticleWhere(),
       },
       include: articleInclude,
       orderBy: { publishedAt: "desc" },
@@ -347,8 +349,7 @@ export const getHomepageData = cache(async function getHomepageData(
 
     const popular = await prisma.article.findMany({
       where: {
-        status: ArticleStatus.PUBLIE,
-        publishedAt: { lte: new Date() },
+        ...publicArticleWhere(),
       },
       include: articleInclude,
       orderBy: { viewCount: "desc" },

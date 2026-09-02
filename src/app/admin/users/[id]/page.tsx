@@ -2,8 +2,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { ROLE_LABELS, STATUS_LABELS } from "@/lib/constants";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { hasPermission } from "@/lib/permissions";
 
 export default async function UserDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const session = await getServerSession(authOptions);
+  if (!session || !hasPermission(session.user.role, "users:read")) notFound();
   const { id } = await params;
   const user = await prisma.user.findUnique({
     where: { id },

@@ -5,8 +5,8 @@ import { formatRelativeDate } from "@/lib/utils";
 import { ArticleStatus } from "@prisma/client";
 import { DeleteArticleButton } from "@/components/admin/DeleteArticleButton";
 
-export default async function AdminArticlesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
-  const { status } = await searchParams;
+export default async function AdminArticlesPage({ searchParams }: { searchParams: Promise<{ status?: string; notice?: string }> }) {
+  const { status, notice } = await searchParams;
   const validStatus = status && Object.values(ArticleStatus).includes(status as ArticleStatus) ? status as ArticleStatus : undefined;
   const articles = await prisma.article.findMany({
     where: validStatus ? { status: validStatus } : undefined,
@@ -26,6 +26,7 @@ export default async function AdminArticlesPage({ searchParams }: { searchParams
         </Link>
       </div>
 
+      {notice && <p className="mb-5 rounded border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800" role="status">{notice}</p>}
       <div className="mb-5 flex flex-wrap gap-2 text-sm">
         <Link href="/admin/articles" className="border px-3 py-1.5 hover:border-lp-accent">Toutes</Link>
         <Link href="/admin/articles?status=EN_REVISION" className="border px-3 py-1.5 hover:border-lp-accent">À valider</Link>
