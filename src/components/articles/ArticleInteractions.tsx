@@ -13,6 +13,17 @@ type CommentItem = {
   authorName?: string | null;
 };
 
+async function parseJsonResponse(response: Response) {
+  const text = await response.text();
+  if (!text) return {};
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {};
+  }
+}
+
 interface ArticleInteractionsProps {
   articleId: string;
   articleSlug: string;
@@ -51,10 +62,10 @@ export function ArticleInteractions({
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Impossible de mettre à jour le like.");
-      setLiked(Boolean(data.liked));
-      setLikeCount(Number(data.count || 0));
+      const data = await parseJsonResponse(response);
+      if (!response.ok) throw new Error(data?.error || "Impossible de mettre à jour le like.");
+      setLiked(Boolean(data?.liked));
+      setLikeCount(Number(data?.count || 0));
     } catch (error) {
       setLikeError(error instanceof Error ? error.message : "Impossible de mettre à jour le like.");
     }
@@ -82,9 +93,11 @@ export function ArticleInteractions({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: nextComment, articleId }),
       });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Impossible d’ajouter le commentaire.");
-      setComments((previous) => [data.comment, ...previous]);
+      const data = await parseJsonResponse(response);
+      if (!response.ok) throw new Error(data?.error || "Impossible d’ajouter le commentaire.");
+      if (data?.comment) {
+        setComments((previous) => [data.comment, ...previous]);
+      }
       setComment("");
     } catch (error) {
       setCommentError(error instanceof Error ? error.message : "Impossible d’ajouter le commentaire.");
