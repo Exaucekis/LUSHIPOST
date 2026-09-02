@@ -53,6 +53,7 @@ export function ArticleForm({
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [hasPreviewed, setHasPreviewed] = useState(false);
@@ -144,10 +145,23 @@ export function ArticleForm({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de l'enregistrement");
 
-      router.push(`${returnPath}/${data.id || articleId}`);
+      const destination = `${returnPath}/${data.id || articleId}`;
+      const isSamePage = typeof window !== "undefined" && window.location.pathname === destination;
+      const successMessage = payload.status === "PUBLIE" ? "Publication confirmée avec succès." : "Article enregistré avec succès.";
+
+      setSuccess(successMessage);
+      setError(null);
+
+      if (isSamePage) {
+        router.refresh();
+        return;
+      }
+
+      router.push(destination);
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur lors de l'enregistrement");
+      setSuccess(null);
     } finally {
       setLoading(false);
     }
@@ -158,6 +172,11 @@ export function ArticleForm({
       {error && (
         <p className="rounded border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
           {error}
+        </p>
+      )}
+      {success && (
+        <p className="rounded border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700" role="status">
+          {success}
         </p>
       )}
 
