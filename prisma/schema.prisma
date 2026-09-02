@@ -85,6 +85,7 @@ model User {
   articles      Article[]
   media         Media[]
   comments      Comment[]
+  articleLikes  ArticleLike[]
   auditLogs     AuditLog[]
   reviewedArticles Article[] @relation("ArticleReviewer")
   articleStatusChanges ArticleStatusHistory[] @relation("ArticleStatusChangedBy")
@@ -224,6 +225,7 @@ model Article {
   source          Source?       @relation(fields: [sourceId], references: [id])
   tags            ArticleTag[]
   comments        Comment[]
+  likes           ArticleLike[]
   views           ArticleView[]
   homepageSlots   HomepageSlot[]
   breakingNews    BreakingNews[]
@@ -355,6 +357,19 @@ model Comment {
   user      User?         @relation(fields: [userId], references: [id])
 
   @@index([articleId, status])
+}
+
+model ArticleLike {
+  id        String   @id @default(cuid())
+  articleId String
+  userId    String
+  createdAt DateTime @default(now())
+
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([articleId, userId])
+  @@index([articleId])
 }
 
 model NewsletterSubscriber {

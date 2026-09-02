@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -10,9 +11,12 @@ import {
   incrementArticleViews,
 } from "@/lib/data/articles";
 import { ShareButtons } from "@/components/articles/ShareButtons";
+import { ArticleInteractions } from "@/components/articles/ArticleInteractions";
 import { sanitizeArticleHtml } from "@/lib/content-sanitizer";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { formatDate, formatTime, getSiteUrl } from "@/lib/utils";
+import prisma from "@/lib/prisma";
+import { authOptions } from "@/lib/auth";
 import {
   SITE_NAME,
   FACT_CHECK_LABELS,
@@ -71,6 +75,37 @@ export default async function ArticlePage({ params }: PageProps) {
   const articleUrl = `${getSiteUrl()}/article/${article.slug}`;
   const keyPoints = article.keyPoints as string[] | null;
   const safeArticleContent = sanitizeArticleHtml(article.content);
+
+  const [initialComments, initialLikeState] = await Promise.all([
+    prisma.comment
+      .findMany({
+        where: { articleId: article.id, status: "APPROUVE" },
+        include: { user: { select: { id: true, name: true } } },
+        orderBy: { createdAt: "desc" },
+      })
+      .then((comments) =>
+        comments.map((comment) => ({
+          id: comment.id,
+          content: comment.content,
+          createdAt: comment.createdAt.toISOString(),
+          user: comment.user ? { id: comment.user.id, name: comment.user.name } : null,
+          authorName: comment.authorName,
+        }))
+      )
+      .catch(() => []),
+    prisma.articleLike
+      .count({ where: { articleId: article.id } })
+      .then(async (count: number) => {
+        const session = await getServerSession(authOptions);
+        const liked = session?.user?.id
+          ? !!(await prisma.articleLike.findUnique({
+              where: { articleId_userId: { articleId: article.id, userId: session.user.id } },
+            }))
+          : false;
+        return { count, liked };
+      })
+      .catch(() => ({ count: 0, liked: false })),
+  ]);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -223,6 +258,14 @@ export default async function ArticlePage({ params }: PageProps) {
             <div className="mt-8 border-t border-gray-200 pt-6">
               <ShareButtons url={articleUrl} title={article.title} />
             </div>
+
+            <ArticleInteractions
+              articleId={article.id}
+              articleSlug={article.slug}
+              initialComments={initialComments}
+              initialLikeCount={initialLikeState.count}
+              initialLikedByMe={initialLikeState.liked}
+            />
 
             {related.length > 0 && (
               <section className="mt-12 border-t border-gray-200 pt-8">
