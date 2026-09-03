@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
-import { SITE_NAME, SITE_PHONE, SITE_PHONE_HREF } from "@/lib/constants";
+import { SITE_EMAIL, SITE_EMAIL_HREF, SITE_NAME, SITE_PHONE, SITE_PHONE_HREF } from "@/lib/constants";
 import { SocialIcons } from "@/components/ui/SocialIcons";
-import { Phone } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import type { getSocialLinks } from "@/lib/data/articles";
 
 type SocialLink = Awaited<ReturnType<typeof getSocialLinks>>[number];
@@ -28,7 +28,7 @@ export function Footer({ socialLinks, tagline }: FooterProps) {
         <div className="flex flex-col items-center justify-between gap-6 md:flex-row md:items-end">
           <div className="flex flex-col items-center md:items-start">
             <Logo variant="footer" showTagline tagline={tagline} centered />
-            <div className="mt-3 flex items-center gap-4">
+            <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 md:justify-start">
               <SocialIcons links={socialLinks} variant="light" />
               <a
                 href={SITE_PHONE_HREF}
@@ -36,6 +36,13 @@ export function Footer({ socialLinks, tagline }: FooterProps) {
               >
                 <Phone className="h-3.5 w-3.5" aria-hidden="true" />
                 {SITE_PHONE}
+              </a>
+              <a
+                href={SITE_EMAIL_HREF}
+                className="inline-flex items-center gap-1.5 text-xs text-white/75 transition-colors hover:text-white"
+              >
+                <Mail className="h-3.5 w-3.5" aria-hidden="true" />
+                {SITE_EMAIL}
               </a>
             </div>
           </div>

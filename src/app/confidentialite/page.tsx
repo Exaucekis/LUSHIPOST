@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE_NAME } from "@/lib/constants";
+import { SITE_EMAIL, SITE_EMAIL_HREF, SITE_NAME } from "@/lib/constants";
 
 export const metadata: Metadata = { title: "Politique de confidentialité" };
 
@@ -15,7 +15,7 @@ export default function ConfidentialitePage() {
           <li>Données de navigation anonymisées (analytics)</li>
         </ul>
         <h2>Vos droits</h2>
-        <p>Vous pouvez demander l&apos;accès, la rectification ou la suppression de vos données en contactant : redaction@lushipost.com</p>
+        <p>Vous pouvez demander l&apos;accès, la rectification ou la suppression de vos données en contactant : <a href={SITE_EMAIL_HREF}>{SITE_EMAIL}</a></p>
       </div>
     </div>
   );

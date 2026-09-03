@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SITE_NAME, SITE_PHONE, SITE_PHONE_HREF } from "@/lib/constants";
+import { SITE_EMAIL, SITE_EMAIL_HREF, SITE_NAME, SITE_PHONE, SITE_PHONE_HREF } from "@/lib/constants";
 import { Phone, Mail, MapPin } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -12,8 +12,7 @@ export default function ContactPage() {
       <h1 className="mb-6 text-4xl font-bold">Contact</h1>
       <div className="lp-prose">
         <p>
-          Pour toute demande éditoriale, commerciale ou technique, contactez la
-          rédaction {SITE_NAME}.
+          Pour toute demande éditoriale, commerciale ou technique, écrivez directement à {SITE_NAME}.
         </p>
 
         <ul className="mt-8 space-y-4 list-none ml-0">
@@ -35,21 +34,10 @@ export default function ContactPage() {
             <Mail className="mt-1 h-5 w-5 shrink-0 text-lp-accent" aria-hidden="true" />
             <div>
               <strong className="block text-sm uppercase tracking-wider text-lp-gray">
-                Rédaction
+                E-mail
               </strong>
-              <a href="mailto:redaction@lushipost.com" className="hover:text-lp-accent">
-                redaction@lushipost.com
-              </a>
-            </div>
-          </li>
-          <li className="flex items-start gap-3">
-            <Mail className="mt-1 h-5 w-5 shrink-0 text-lp-accent" aria-hidden="true" />
-            <div>
-              <strong className="block text-sm uppercase tracking-wider text-lp-gray">
-                Publicité
-              </strong>
-              <a href="mailto:publicite@lushipost.com" className="hover:text-lp-accent">
-                publicite@lushipost.com
+              <a href={SITE_EMAIL_HREF} className="text-lg font-semibold text-lp-black no-underline hover:text-lp-accent">
+                {SITE_EMAIL}
               </a>
             </div>
           </li>

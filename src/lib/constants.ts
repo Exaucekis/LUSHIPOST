@@ -4,6 +4,8 @@ export const LIVE_BRAND = "LUBUMBASHIPOST LIVE";
 export const SITE_TAGLINE = "L'information au cœur de Lubumbashi.";
 export const SITE_PHONE = "+243 970 824 872";
 export const SITE_PHONE_HREF = "tel:+243970824872";
+export const SITE_EMAIL = "contact@lubumbashipost.com";
+export const SITE_EMAIL_HREF = `mailto:${SITE_EMAIL}`;
 export const SITE_DESCRIPTION =
   "LUBUMBASHIPOST — Média d'information numérique basé à Lubumbashi. Actualités du Haut-Katanga, de la RDC, de l'Afrique et du monde.";
 
