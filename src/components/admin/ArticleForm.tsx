@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Eye, ImagePlus, Library, X } from "lucide-react";
+import { Eye, ImagePlus, Library, Trash2, X } from "lucide-react";
 import type { ArticleFormValues } from "@/lib/article-schema";
 
 type Category = { id: string; name: string; slug: string };
@@ -14,6 +14,8 @@ type MediaItem = {
   url: string;
   type: string;
 };
+
+type GalleryImage = { url: string; alt?: string; caption?: string };
 
 const EMPTY_FORM: ArticleFormValues = {
   title: "",
@@ -26,6 +28,7 @@ const EMPTY_FORM: ArticleFormValues = {
   contentType: "FAITS",
   featuredImage: "",
   featuredImageAlt: "",
+  gallery: [],
   geoZone: "",
   scheduledAt: "",
 };
@@ -55,6 +58,7 @@ export function ArticleForm({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
+  const [showGalleryPicker, setShowGalleryPicker] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [hasPreviewed, setHasPreviewed] = useState(false);
   const [form, setForm] = useState<ArticleFormValues>({
@@ -87,6 +91,27 @@ export function ArticleForm({
     });
   };
 
+  const addGalleryImage = (image: GalleryImage) => {
+    setForm((prev) => {
+      const gallery = prev.gallery || [];
+      if (gallery.length >= 4 || gallery.some((item) => item.url === image.url)) return prev;
+      return { ...prev, gallery: [...gallery, image] };
+    });
+  };
+
+  const removeGalleryImage = (index: number) => {
+    setForm((prev) => ({ ...prev, gallery: (prev.gallery || []).filter((_, itemIndex) => itemIndex !== index) }));
+  };
+
+  const updateGalleryImage = (index: number, field: "alt" | "caption", value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      gallery: (prev.gallery || []).map((image, itemIndex) =>
+        itemIndex === index ? { ...image, [field]: value } : image
+      ),
+    }));
+  };
+
   const handleUpload = async (file: File) => {
     setUploading(true);
     setError(null);
@@ -98,6 +123,24 @@ export function ArticleForm({
       if (!res.ok) throw new Error(data.error || "Upload échoué");
       update("featuredImage", data.url);
       if (!form.featuredImageAlt) update("featuredImageAlt", file.name.replace(/\.[^.]+$/, ""));
+      loadMedia();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Upload échoué");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleGalleryUpload = async (file: File) => {
+    setUploading(true);
+    setError(null);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch("/api/admin/media/upload", { method: "POST", body });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload échoué");
+      addGalleryImage({ url: data.url, alt: file.name.replace(/\.[^.]+$/, "") });
       loadMedia();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Upload échoué");
@@ -126,6 +169,11 @@ export function ArticleForm({
       scheduledAt: form.scheduledAt?.trim() || undefined,
       featuredImage: form.featuredImage?.trim() || undefined,
       featuredImageAlt: form.featuredImageAlt?.trim() || undefined,
+      gallery: (form.gallery || []).map((image) => ({
+        url: image.url,
+        alt: image.alt?.trim() || undefined,
+        caption: image.caption?.trim() || undefined,
+      })),
       geoZone: form.geoZone?.trim() || undefined,
     };
 
@@ -334,6 +382,53 @@ export function ArticleForm({
           </div>
         )}
       </div>
+
+      <section className="lp-form-shell space-y-4" aria-labelledby="gallery-title">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 id="gallery-title" className="text-sm font-bold uppercase tracking-wider">Photos de l&apos;info</h2>
+            <p className="mt-1 text-xs text-lp-gray">Ajoutez de 1 à 4 photos. Sur l&apos;article, elles se parcourent au doigt et la photo active s&apos;agrandit.</p>
+          </div>
+          <span className="rounded-full bg-lp-accent-soft px-2.5 py-1 text-xs font-bold text-lp-accent">{(form.gallery || []).length}/4</span>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition hover:border-lp-accent hover:bg-lp-accent-soft">
+            <ImagePlus className="h-4 w-4" />
+            {uploading ? "Upload..." : "Ajouter une photo"}
+            <input type="file" accept="image/*" className="hidden" disabled={uploading || (form.gallery || []).length >= 4} onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleGalleryUpload(file);
+            }} />
+          </label>
+          <button type="button" onClick={() => { setShowGalleryPicker((value) => !value); loadMedia(); }} disabled={(form.gallery || []).length >= 4} className="inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold transition hover:border-lp-accent hover:bg-lp-accent-soft disabled:cursor-not-allowed disabled:opacity-50">
+            <Library className="h-4 w-4" /> Médiathèque
+          </button>
+        </div>
+        {showGalleryPicker && (
+          <div className="grid max-h-64 gap-2 overflow-y-auto sm:grid-cols-3">
+            {media.filter((item) => item.type === "IMAGE").map((item) => (
+              <button key={item.id} type="button" onClick={() => addGalleryImage({ url: item.url, alt: item.name })} disabled={(form.gallery || []).some((image) => image.url === item.url)} className="overflow-hidden rounded border text-left hover:ring-2 hover:ring-lp-accent disabled:opacity-40">
+                <Image src={item.url} alt={item.name} width={640} height={360} className="aspect-video w-full object-cover" />
+                <span className="block truncate px-2 py-1 text-xs">{item.name}</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {(form.gallery || []).length > 0 && (
+          <div className="grid gap-4 sm:grid-cols-2">
+            {(form.gallery || []).map((image, index) => (
+              <div key={image.url} className="overflow-hidden rounded-xl border border-gray-200 bg-white">
+                <Image src={image.url} alt={image.alt || `Photo ${index + 1}`} width={960} height={540} className="aspect-video w-full object-cover" />
+                <div className="space-y-2 p-3">
+                  <input value={image.alt || ""} onChange={(e) => updateGalleryImage(index, "alt", e.target.value)} className="lp-form-input py-2 text-xs" placeholder="Description de l&apos;image" />
+                  <input value={image.caption || ""} onChange={(e) => updateGalleryImage(index, "caption", e.target.value)} className="lp-form-input py-2 text-xs" placeholder="Légende (facultative)" />
+                  <button type="button" onClick={() => removeGalleryImage(index)} className="inline-flex items-center gap-1 text-xs font-semibold text-red-600 hover:underline"><Trash2 className="h-3.5 w-3.5" /> Retirer</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <button type="button" onClick={() => { setHasPreviewed(true); setShowPreview(true); }} className="lp-btn-outline sm:w-auto">

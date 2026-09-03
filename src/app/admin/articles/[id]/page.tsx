@@ -36,6 +36,7 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
             contentType: article.contentType,
             featuredImage: article.featuredImage || "",
             featuredImageAlt: article.featuredImageAlt || "",
+            gallery: Array.isArray(article.gallery) ? article.gallery : [],
             geoZone: article.geoZone || "",
             scheduledAt: article.scheduledAt
               ? new Date(article.scheduledAt).toISOString().slice(0, 16)

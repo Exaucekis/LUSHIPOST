@@ -14,6 +14,7 @@ import { ShareButtons } from "@/components/articles/ShareButtons";
 import { ArticleInteractions } from "@/components/articles/ArticleInteractions";
 import { sanitizeArticleHtml } from "@/lib/content-sanitizer";
 import { ArticleCard } from "@/components/articles/ArticleCard";
+import { ArticleGallery, type GalleryImage } from "@/components/articles/ArticleGallery";
 import { formatDate, formatTime, getSiteUrl } from "@/lib/utils";
 import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
@@ -75,6 +76,11 @@ export default async function ArticlePage({ params }: PageProps) {
   const articleUrl = `${getSiteUrl()}/article/${article.slug}`;
   const keyPoints = article.keyPoints as string[] | null;
   const safeArticleContent = sanitizeArticleHtml(article.content);
+  const gallery = Array.isArray(article.gallery)
+    ? article.gallery.filter((image): image is GalleryImage =>
+        !!image && typeof image === "object" && "url" in image && typeof image.url === "string"
+      ).slice(0, 4)
+    : [];
 
   const [initialComments, initialLikeState] = await Promise.all([
     prisma.comment
@@ -232,6 +238,8 @@ export default async function ArticlePage({ params }: PageProps) {
               className="lp-prose"
               dangerouslySetInnerHTML={{ __html: safeArticleContent }}
             />
+
+            <ArticleGallery images={gallery} />
 
             {article.source && (
               <div className="mt-8 border-t border-gray-200 pt-4">

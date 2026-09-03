@@ -107,17 +107,17 @@ export function ArticleCard({
                 sizes="(max-width: 768px) 100vw, 66vw"
               />
               <div className="absolute inset-0 lp-hero-overlay" />
-              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-8">
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
                 {article.category && (
-                  <span className="mb-3 inline-block rounded-sm bg-lp-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
+                  <span className="mb-2 inline-block rounded-sm bg-lp-accent px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
                     {article.category.name}
                   </span>
                 )}
-                <h2 className="lp-article-title-lg text-balance text-white group-hover:text-red-200">
+                <h2 className="lp-article-title-lg line-clamp-2 text-balance text-white group-hover:text-red-200">
                   {article.title}
                 </h2>
                 {showExcerpt && article.excerpt && (
-                  <p className="mt-3 line-clamp-2 max-w-3xl text-sm leading-relaxed text-white/80 sm:text-base">
+                  <p className="mt-2 line-clamp-1 max-w-2xl text-xs leading-relaxed text-white/85 sm:text-sm">
                     {article.excerpt}
                   </p>
                 )}

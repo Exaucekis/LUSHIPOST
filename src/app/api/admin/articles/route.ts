@@ -4,7 +4,7 @@ import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { canPublish, hasPermission } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-import { ArticleStatus, ContentType } from "@prisma/client";
+import { ArticleStatus, ContentType, Prisma } from "@prisma/client";
 
 import { articleFormSchema } from "@/lib/article-schema";
 import { slugifyTitle } from "@/lib/article-schema";
@@ -59,6 +59,7 @@ export async function POST(request: Request) {
         contentType: (data.contentType as ContentType) || ContentType.FAITS,
         featuredImage: data.featuredImage || null,
         featuredImageAlt: data.featuredImageAlt || null,
+        gallery: data.gallery?.length ? data.gallery : Prisma.JsonNull,
         geoZone: data.geoZone || null,
         scheduledAt,
         userId: session.user.id,

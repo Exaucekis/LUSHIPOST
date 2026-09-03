@@ -5,6 +5,12 @@ const optionalTrimmedString = z.preprocess(
   z.string().trim().min(1).optional()
 );
 
+const galleryImageSchema = z.object({
+  url: z.string().trim().min(1),
+  alt: z.string().trim().optional(),
+  caption: z.string().trim().optional(),
+});
+
 export const articleFormSchema = z.object({
   title: z.string().trim().min(5, "Le titre doit contenir au moins 5 caractères."),
   // Généré depuis le titre côté serveur : ce détail technique reste invisible
@@ -23,6 +29,7 @@ export const articleFormSchema = z.object({
   contentType: z.enum(["FAITS", "ANALYSE", "OPINION"]).optional(),
   featuredImage: optionalTrimmedString,
   featuredImageAlt: optionalTrimmedString,
+  gallery: z.array(galleryImageSchema).max(4, "Une info peut contenir jusqu’à 4 photos.").optional(),
   geoZone: optionalTrimmedString,
   scheduledAt: optionalTrimmedString,
 });
