@@ -40,6 +40,7 @@ interface ArticleFormProps {
   canPublish?: boolean;
   apiBase?: string;
   returnPath?: string;
+  canManageGallery?: boolean;
 }
 
 export function ArticleForm({
@@ -49,6 +50,7 @@ export function ArticleForm({
   canPublish = false,
   apiBase = "/api/admin/articles",
   returnPath = "/admin/articles",
+  canManageGallery = false,
 }: ArticleFormProps) {
   const router = useRouter();
   const [categories, setCategories] = useState<Category[]>([]);
@@ -169,11 +171,11 @@ export function ArticleForm({
       scheduledAt: form.scheduledAt?.trim() || undefined,
       featuredImage: form.featuredImage?.trim() || undefined,
       featuredImageAlt: form.featuredImageAlt?.trim() || undefined,
-      gallery: (form.gallery || []).map((image) => ({
+      ...(canManageGallery ? { gallery: (form.gallery || []).map((image) => ({
         url: image.url,
         alt: image.alt?.trim() || undefined,
         caption: image.caption?.trim() || undefined,
-      })),
+      })) } : {}),
       geoZone: form.geoZone?.trim() || undefined,
     };
 
@@ -383,7 +385,7 @@ export function ArticleForm({
         )}
       </div>
 
-      <section className="lp-form-shell space-y-4" aria-labelledby="gallery-title">
+      {canManageGallery && <section className="lp-form-shell space-y-4" aria-labelledby="gallery-title">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 id="gallery-title" className="text-sm font-bold uppercase tracking-wider">Photos de l&apos;info</h2>
@@ -428,7 +430,7 @@ export function ArticleForm({
             ))}
           </div>
         )}
-      </section>
+      </section>}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
         <button type="button" onClick={() => { setHasPreviewed(true); setShowPreview(true); }} className="lp-btn-outline sm:w-auto">

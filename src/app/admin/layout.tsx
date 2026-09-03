@@ -16,7 +16,7 @@ export default async function AdminLayout({
   }
 
   return (
-    <AdminProviders>
+    <AdminProviders session={session}>
       <div className="min-h-screen min-w-0 bg-[#edf0f5]">
         <AdminSidebar />
         <div className="min-w-0 md:pl-56 lg:pl-64">

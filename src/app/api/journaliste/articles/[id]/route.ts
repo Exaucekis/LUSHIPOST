@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
-import { ArticleStatus, ContentType, Prisma } from "@prisma/client";
+import { ArticleStatus, ContentType } from "@prisma/client";
 import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { isJournalistRole } from "@/lib/roles";
@@ -57,7 +57,6 @@ export async function PATCH(request: Request, context: RouteContext) {
         contentType: (data.contentType as ContentType) || existing.contentType,
         featuredImage: data.featuredImage || null,
         featuredImageAlt: data.featuredImageAlt || null,
-        gallery: data.gallery?.length ? data.gallery : Prisma.JsonNull,
         geoZone: data.geoZone || null,
         status: nextStatus,
         submittedAt: submitted ? new Date() : existing.submittedAt,

@@ -59,7 +59,7 @@ export async function POST(request: Request) {
         contentType: (data.contentType as ContentType) || ContentType.FAITS,
         featuredImage: data.featuredImage || null,
         featuredImageAlt: data.featuredImageAlt || null,
-        gallery: data.gallery?.length ? data.gallery : Prisma.JsonNull,
+        gallery: session.user.role === "SUPER_ADMIN" && data.gallery?.length ? data.gallery : Prisma.JsonNull,
         geoZone: data.geoZone || null,
         scheduledAt,
         userId: session.user.id,

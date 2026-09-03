@@ -37,7 +37,7 @@ const NAV_ITEMS = [
   { href: "/admin/categories", label: "Catégories", icon: Tags, permissions: ["categories:manage"] },
   { href: "/admin/breaking", label: "Dernières infos", icon: Radio, permissions: ["breaking:manage"] },
   { href: "/admin/media", label: "Médiathèque", icon: ImageIcon, permissions: ["media:manage", "media:upload"] },
-  { href: "/admin/photos", label: "Photos des infos", icon: Images, permissions: ["articles:read"] },
+  { href: "/admin/photos", label: "Photos des infos", icon: Images, permissions: ["photos:manage"] },
   { href: "/admin/videos", label: "Vidéos", icon: Video, permissions: ["videos:manage"] },
   { href: "/admin/comments", label: "Commentaires", icon: MessageSquare, permissions: ["comments:moderate"] },
   { href: "/admin/users", label: "Utilisateurs", icon: Users, permissions: ["users:read"] },

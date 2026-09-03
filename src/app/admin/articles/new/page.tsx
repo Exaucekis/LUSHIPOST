@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { ArticleForm } from "@/components/admin/ArticleForm";
-import { canPublish } from "@/lib/permissions";
+import { canManageArticlePhotos, canPublish } from "@/lib/permissions";
 
 export default function NewArticlePage() {
   const { data: session } = useSession();
@@ -13,6 +13,7 @@ export default function NewArticlePage() {
       <ArticleForm
         mode="create"
         canPublish={session?.user?.role ? canPublish(session.user.role) : false}
+        canManageGallery={session?.user?.role ? canManageArticlePhotos(session.user.role) : false}
       />
     </div>
   );

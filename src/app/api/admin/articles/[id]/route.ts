@@ -89,7 +89,9 @@ export async function PATCH(request: Request, context: RouteContext) {
         contentType: (data.contentType as ContentType) || existing.contentType,
         featuredImage: data.featuredImage || null,
         featuredImageAlt: data.featuredImageAlt || null,
-        gallery: data.gallery?.length ? data.gallery : Prisma.JsonNull,
+        ...(session.user.role === "SUPER_ADMIN"
+          ? { gallery: data.gallery?.length ? data.gallery : Prisma.JsonNull }
+          : {}),
         geoZone: data.geoZone || null,
         scheduledAt,
         publishedAt: willPublish

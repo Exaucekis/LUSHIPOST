@@ -58,6 +58,10 @@ export function canManageHomepage(role: Role | string): boolean {
   return hasPermission(role, "homepage:manage");
 }
 
+export function canManageArticlePhotos(role: Role | string): boolean {
+  return role === Role.SUPER_ADMIN;
+}
+
 export function isAdminRole(role: Role | string): boolean {
   return [
     "SUPER_ADMIN",
