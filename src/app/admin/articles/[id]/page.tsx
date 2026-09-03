@@ -8,7 +8,6 @@ import { DeleteArticleButton } from "@/components/admin/DeleteArticleButton";
 import { canPublish, hasPermission } from "@/lib/permissions";
 import { STATUS_LABELS } from "@/lib/constants";
 import type { ArticleFormValues } from "@/lib/article-schema";
-import { ModerationPanel } from "@/components/admin/ModerationPanel";
 
 export default function EditArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const { data: session } = useSession();
@@ -101,7 +100,6 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
         </div>
       </div>
 
-      {userCanPublish && meta?.status === "EN_REVISION" && <ModerationPanel articleId={articleId} />}
       {meta?.status === "REFUSE" && meta.rejectionReason && (
         <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-900">
           <strong>Motif du refus :</strong> {meta.rejectionReason}

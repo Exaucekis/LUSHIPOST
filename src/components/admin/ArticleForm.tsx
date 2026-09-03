@@ -145,18 +145,28 @@ export function ArticleForm({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Erreur lors de l'enregistrement");
 
-      const destination = `${returnPath}/${data.id || articleId}`;
-      const isSamePage = typeof window !== "undefined" && window.location.pathname === destination;
-      const successMessage = payload.status === "PUBLIE" ? "Publication confirmée avec succès." : "Article enregistré avec succès.";
+      const successMessage =
+        payload.status === "PUBLIE"
+          ? "Publication publiée avec succès."
+          : payload.status === "EN_REVISION"
+            ? "Publication envoyée pour validation."
+            : payload.status === "PROGRAMME"
+              ? "Publication programmée avec succès."
+              : "Brouillon enregistré avec succès.";
+      const adminList = returnPath === "/admin/articles";
+      const statusFilter = payload.status === "PUBLIE"
+        ? "PUBLIE"
+        : payload.status === "PROGRAMME"
+          ? "PROGRAMME"
+          : payload.status === "EN_REVISION"
+            ? "EN_REVISION"
+            : "";
+      const destination = adminList
+        ? `/admin/articles${statusFilter ? `?status=${statusFilter}&` : "?"}notice=${encodeURIComponent(successMessage)}`
+        : `${returnPath}?notice=${encodeURIComponent(successMessage)}`;
 
       setSuccess(successMessage);
       setError(null);
-
-      if (isSamePage) {
-        router.refresh();
-        return;
-      }
-
       router.push(destination);
       router.refresh();
     } catch (e) {
@@ -244,7 +254,7 @@ export function ArticleForm({
             className="lp-form-input"
           >
             <option value="BROUILLON">Brouillon</option>
-            <option value="EN_REVISION">Soumettre pour validation</option>
+            {!canPublish && <option value="EN_REVISION">Soumettre pour validation</option>}
             {!canPublish && <option value="PROGRAMME">Programmer et soumettre pour validation</option>}
             {canPublish && <option value="PROGRAMME">Programmer la publication</option>}
             {canPublish && <option value="PUBLIE">Publier immédiatement</option>}

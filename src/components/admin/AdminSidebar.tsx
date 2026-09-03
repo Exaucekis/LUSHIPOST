@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import {
   LayoutDashboard,
   FileText,
+  ClipboardCheck,
   Layout,
   Tags,
   Image as ImageIcon,
@@ -30,6 +31,7 @@ import type { Role } from "@prisma/client";
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, permissions: [] as string[], exact: true },
   { href: "/admin/articles", label: "Articles", icon: FileText, permissions: ["articles:read"] },
+  { href: "/admin/validations", label: "Validations", icon: ClipboardCheck, permissions: ["articles:moderate"] },
   { href: "/admin/homepage", label: "Gestion de la UNE", icon: Layout, permissions: ["homepage:manage"] },
   { href: "/admin/categories", label: "Catégories", icon: Tags, permissions: ["categories:manage"] },
   { href: "/admin/breaking", label: "Dernières infos", icon: Radio, permissions: ["breaking:manage"] },

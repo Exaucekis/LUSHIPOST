@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export function ModerationPanel({ articleId }: { articleId: string }) {
+export function ModerationPanel({ articleId, returnPath }: { articleId: string; returnPath?: string }) {
   const router = useRouter();
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState<"approve" | "reject" | null>(null);
@@ -25,6 +25,10 @@ export function ModerationPanel({ articleId }: { articleId: string }) {
     if (!response.ok) {
       setError(data.error || "La modération a échoué.");
       setLoading(null);
+      return;
+    }
+    if (returnPath) {
+      router.push(`${returnPath}?notice=${encodeURIComponent(action === "approve" ? "Publication approuvée et publiée." : "Publication refusée.")}`);
       return;
     }
     router.refresh();

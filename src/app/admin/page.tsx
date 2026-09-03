@@ -41,7 +41,7 @@ export default async function AdminDashboard() {
 
   const workflowCards = [
     { label: "Brouillons", value: stats.drafts, href: "/admin/articles?status=BROUILLON" },
-    { label: "À valider", value: stats.pending, href: "/admin/articles?status=EN_REVISION" },
+    { label: "À valider", value: stats.pending, href: "/admin/validations" },
     { label: "Programmées", value: stats.scheduled, href: "/admin/articles?status=PROGRAMME" },
     { label: "Refusées", value: stats.refused, href: "/admin/articles?status=REFUSE" },
     { label: "Publiées", value: stats.published, href: "/admin/articles?status=PUBLIE" },
@@ -78,7 +78,7 @@ export default async function AdminDashboard() {
       </section>
 
       <section className="mb-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <Link href="/admin/articles?status=EN_REVISION" className="lp-action-card border-amber-200 bg-amber-50"><p className="relative font-bold text-amber-950">Modération</p><p className="relative mt-1 text-sm text-amber-900">Examiner les publications en attente</p></Link>
+        <Link href="/admin/validations" className="lp-action-card border-amber-200 bg-amber-50"><p className="relative font-bold text-amber-950">Validations</p><p className="relative mt-1 text-sm text-amber-900">Examiner les publications des journalistes</p></Link>
         <Link href="/admin/users?scope=staff" className="lp-action-card"><p className="relative font-bold">Journalistes</p><p className="relative mt-1 text-sm text-lp-gray">Créer et gérer la rédaction</p></Link>
         <Link href="/admin/homepage" className="lp-action-card"><p className="relative font-bold">À la une</p><p className="relative mt-1 text-sm text-lp-gray">Choisir les contenus mis en avant</p></Link>
         <Link href="/admin/categories" className="lp-action-card"><p className="relative font-bold">Rubriques</p><p className="relative mt-1 text-sm text-lp-gray">Organiser les catégories du site</p></Link>

@@ -29,7 +29,6 @@ export default async function AdminArticlesPage({ searchParams }: { searchParams
       {notice && <p className="mb-5 rounded border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800" role="status">{notice}</p>}
       <div className="mb-5 flex flex-wrap gap-2 text-sm">
         <Link href="/admin/articles" className="border px-3 py-1.5 hover:border-lp-accent">Toutes</Link>
-        <Link href="/admin/articles?status=EN_REVISION" className="border px-3 py-1.5 hover:border-lp-accent">À valider</Link>
         <Link href="/admin/articles?status=PUBLIE" className="border px-3 py-1.5 hover:border-lp-accent">Publiées</Link>
         <Link href="/admin/articles?status=REFUSE" className="border px-3 py-1.5 hover:border-lp-accent">Refusées</Link>
       </div>
