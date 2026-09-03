@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { ArticleForm } from "@/components/admin/ArticleForm";
 import { DeleteArticleButton } from "@/components/admin/DeleteArticleButton";
-import { canManageArticlePhotos, canPublish, hasPermission } from "@/lib/permissions";
+import { canPublish, hasPermission } from "@/lib/permissions";
 import { STATUS_LABELS } from "@/lib/constants";
 import type { ArticleFormValues } from "@/lib/article-schema";
 
@@ -112,7 +112,6 @@ export default function EditArticlePage({ params }: { params: Promise<{ id: stri
         articleId={articleId}
         initialValues={initialValues}
         canPublish={userCanPublish}
-        canManageGallery={session?.user?.role ? canManageArticlePhotos(session.user.role) : false}
       />
     </div>
   );

@@ -282,6 +282,18 @@ model Media {
   user      User?     @relation(fields: [userId], references: [id])
 }
 
+model PhotoInfo {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?  @db.Text
+  photos    Json
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([isActive, createdAt])
+}
+
 model Video {
   id          String   @id @default(cuid())
   title       String

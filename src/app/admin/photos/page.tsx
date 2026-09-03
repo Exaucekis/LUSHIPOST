@@ -1,33 +1,17 @@
-import Link from "next/link";
-import { Image as ImageIcon } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
 import { authOptions } from "@/lib/auth";
 import { canManageArticlePhotos } from "@/lib/permissions";
+import { PhotoInfoManager } from "@/components/photo-infos/PhotoInfoManager";
 
 export default async function ArticlePhotosPage() {
   const session = await getServerSession(authOptions);
   if (!session || !canManageArticlePhotos(session.user.role)) redirect("/admin");
-  const articles = await prisma.article.findMany({
-    select: { id: true, title: true, gallery: true },
-    orderBy: { updatedAt: "desc" },
-  });
-
   return (
     <div>
       <h1 className="mb-2 text-3xl font-bold">Photos des infos</h1>
-      <p className="mb-8 text-lp-gray">Espace réservé au Super Admin. Choisissez une info pour ajouter jusqu&apos;à quatre photos, visibles publiquement dans un carrousel tactile.</p>
-      <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
-        {articles.map((article) => {
-          const count = Array.isArray(article.gallery) ? article.gallery.length : 0;
-          return <Link key={article.id} href={`/admin/articles/${article.id}`} className="flex items-center justify-between gap-4 border-b border-gray-100 p-4 last:border-b-0 hover:bg-lp-accent-soft">
-            <span className="min-w-0 truncate font-semibold">{article.title}</span>
-            <span className="flex shrink-0 items-center gap-1.5 text-xs font-bold text-lp-accent"><ImageIcon className="h-4 w-4" /> {count}/4 photos</span>
-          </Link>;
-        })}
-        {articles.length === 0 && <p className="p-5 text-sm text-lp-gray">Aucune info disponible.</p>}
-      </div>
+      <p className="mb-8 text-lp-gray">Espace indépendant des articles, réservé au Super Admin. Écrivez une courte information puis ajoutez de 1 à 4 photos par téléversement ou lien.</p>
+      <PhotoInfoManager />
     </div>
   );
 }

@@ -7,6 +7,8 @@ import { VideoSection } from "@/components/home/VideoSection";
 import { getHomepageData } from "@/lib/data/articles";
 import { ArticleCard } from "@/components/articles/ArticleCard";
 import { HomePreferences } from "@/components/home/HomePreferences";
+import { PhotoInfoSection } from "@/components/home/PhotoInfoSection";
+import { getActivePhotoInfos } from "@/lib/data/photo-infos";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import prisma from "@/lib/prisma";
@@ -43,12 +45,15 @@ export default async function HomePage() {
     ...CATEGORY_SECTIONS.filter((section) => !preferences.includes(section.slug)),
   ];
   const categorySlugs = personalizedSections.map((cat) => cat.slug);
-  const { hero, latest, popular, videos, categoryArticles } =
-    await getHomepageData(categorySlugs);
+  const [{ hero, latest, popular, videos, categoryArticles }, photoInfos] = await Promise.all([
+    getHomepageData(categorySlugs),
+    getActivePhotoInfos(),
+  ]);
 
   return (
     <>
       <HeroSection hero={hero} />
+      <PhotoInfoSection items={photoInfos} />
       <QuickAccess />
       <HomePreferences />
 

@@ -4,7 +4,7 @@ import { z } from "zod";
 import { authOptions } from "@/lib/auth";
 import { canPublish, hasPermission } from "@/lib/permissions";
 import prisma from "@/lib/prisma";
-import { ArticleStatus, ContentType, Prisma } from "@prisma/client";
+import { ArticleStatus, ContentType } from "@prisma/client";
 import { articleFormSchema } from "@/lib/article-schema";
 import { slugifyTitle } from "@/lib/article-schema";
 import { statusHistoryEntry } from "@/lib/article-status-history";
@@ -89,9 +89,6 @@ export async function PATCH(request: Request, context: RouteContext) {
         contentType: (data.contentType as ContentType) || existing.contentType,
         featuredImage: data.featuredImage || null,
         featuredImageAlt: data.featuredImageAlt || null,
-        ...(session.user.role === "SUPER_ADMIN"
-          ? { gallery: data.gallery?.length ? data.gallery : Prisma.JsonNull }
-          : {}),
         geoZone: data.geoZone || null,
         scheduledAt,
         publishedAt: willPublish
