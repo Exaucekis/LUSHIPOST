@@ -213,7 +213,20 @@
     animation-play-state: paused;
   }
 
+  .lp-photo-info-ticker {
+    animation: photoInfoTicker 32s linear infinite;
+  }
+
+  .lp-photo-info-ticker:hover {
+    animation-play-state: paused;
+  }
+
   @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes photoInfoTicker {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
   }
