@@ -52,8 +52,8 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroSection hero={hero} />
       <PhotoInfoSection items={photoInfos} />
+      <HeroSection hero={hero} />
       <QuickAccess />
       <HomePreferences />
 
