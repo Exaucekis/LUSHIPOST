@@ -33,8 +33,8 @@ export function PhotoInfoSection({ items }: { items: PhotoInfo[] }) {
       <div className="lp-container flex min-w-0 items-center gap-3 py-3 sm:gap-4 sm:py-4">
         <div className="flex shrink-0 items-center gap-2">
             {visiblePhotos.map(({ item, photo }, index) => (
-              <div key={`${item.id}-${photo.url}`} className={`relative overflow-hidden rounded-lg bg-gray-200 shadow-md ring-1 ring-black/10 transition-opacity ${index === 0 ? "h-20 w-32 sm:h-24 sm:w-36" : "hidden h-16 w-24 opacity-80 sm:block sm:h-20 sm:w-28"}`}>
-                <Image src={photo.url} alt={photo.alt || `Photo : ${item.title}`} fill sizes="(max-width: 640px) 128px, 144px" className="object-cover" />
+              <div key={`${item.id}-${photo.url}`} className={`relative overflow-hidden rounded-lg bg-gray-200 shadow-md ring-1 ring-black/10 transition-opacity ${index === 0 ? "h-24 w-36 sm:h-28 sm:w-44" : "hidden h-20 w-28 opacity-80 sm:block sm:h-24 sm:w-36"}`}>
+                <Image src={photo.url} alt={photo.alt || `Photo : ${item.title}`} fill sizes="(max-width: 640px) 144px, 176px" className="object-cover" />
               </div>
             ))}
         </div>
